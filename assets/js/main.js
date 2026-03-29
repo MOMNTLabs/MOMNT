@@ -7,10 +7,22 @@ const openVideoButtons = document.querySelectorAll("[data-open-video]");
 const closeVideoButtons = document.querySelectorAll("[data-close-video]");
 const videoElement = videoModal?.querySelector("video");
 const currentYear = document.querySelector("#current-year");
+const filterButtons = Array.from(document.querySelectorAll("[data-filter]"));
+const productCards = Array.from(document.querySelectorAll(".product-card"));
+const filterSummary = document.querySelector("[data-filter-summary]");
 
 if (currentYear) {
   currentYear.textContent = new Date().getFullYear();
 }
+
+const closeNav = () => {
+  if (!siteNav || !menuToggle) {
+    return;
+  }
+
+  siteNav.classList.remove("is-open");
+  menuToggle.setAttribute("aria-expanded", "false");
+};
 
 if (menuToggle && siteNav) {
   menuToggle.addEventListener("click", () => {
@@ -19,10 +31,31 @@ if (menuToggle && siteNav) {
   });
 
   pageLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      siteNav.classList.remove("is-open");
-      menuToggle.setAttribute("aria-expanded", "false");
-    });
+    link.addEventListener("click", closeNav);
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!siteNav.classList.contains("is-open")) {
+      return;
+    }
+
+    const target = event.target;
+
+    if (!(target instanceof Node)) {
+      return;
+    }
+
+    if (siteNav.contains(target) || menuToggle.contains(target)) {
+      return;
+    }
+
+    closeNav();
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 900) {
+      closeNav();
+    }
   });
 }
 
@@ -39,9 +72,9 @@ if ("IntersectionObserver" in window) {
       });
     },
     {
-      threshold: 0.15,
+      threshold: 0.14,
       rootMargin: "0px 0px -40px 0px",
-    }
+    },
   );
 
   revealItems.forEach((item) => revealObserver.observe(item));
@@ -73,6 +106,7 @@ const closeVideo = () => {
 
   if (videoElement) {
     videoElement.pause();
+    videoElement.currentTime = 0;
   }
 };
 
@@ -86,6 +120,56 @@ closeVideoButtons.forEach((button) => {
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
+    closeNav();
     closeVideo();
   }
 });
+
+const applyFilter = (filter) => {
+  if (!productCards.length) {
+    return;
+  }
+
+  let visibleCount = 0;
+
+  productCards.forEach((card) => {
+    const matches = filter === "all" || card.dataset.category === filter;
+    card.classList.toggle("is-hidden", !matches);
+
+    if (matches) {
+      visibleCount += 1;
+    }
+  });
+
+  if (!filterSummary) {
+    return;
+  }
+
+  if (filter === "all") {
+    filterSummary.textContent = `${visibleCount} modelos visiveis entre pronta entrega e preview.`;
+    return;
+  }
+
+  const activeButton = filterButtons.find(
+    (button) => button.dataset.filter === filter,
+  );
+  const activeLabel = activeButton?.textContent?.trim() || "Colecao";
+  const noun = visibleCount === 1 ? "modelo visivel" : "modelos visiveis";
+
+  filterSummary.textContent = `${visibleCount} ${noun} em ${activeLabel}.`;
+};
+
+filterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    filterButtons.forEach((item) => {
+      item.classList.toggle("is-active", item === button);
+      item.setAttribute("aria-pressed", String(item === button));
+    });
+
+    applyFilter(button.dataset.filter || "all");
+  });
+});
+
+if (filterButtons.length) {
+  applyFilter("all");
+}
