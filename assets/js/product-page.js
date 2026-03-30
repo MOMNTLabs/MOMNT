@@ -3,6 +3,7 @@
     ? window.MOMNT_PRODUCTS
     : [];
   const categoryMeta = window.MOMNT_CATEGORY_META ?? {};
+  const cart = window.MOMNT_CART ?? null;
   const root = document.querySelector("#product-page-root");
 
   if (!root) {
@@ -58,6 +59,90 @@
 
   const category = categoryMeta[product.category] ?? categoryMeta.all;
   const relatedProducts = buildRelatedProducts(product);
+  const isPurchasable = Boolean(cart?.canSellProduct(product));
+
+  const renderPurchaseBlock = () => {
+    if (!isPurchasable) {
+      return `
+        <section class="pdp-purchase-box">
+          <span class="breadcrumb">Disponibilidade</span>
+          <p class="pdp-purchase-copy">
+            Este modelo ainda nao esta pronto para checkout. Deixe seu contato para
+            receber aviso ou finalizar com atendimento assistido.
+          </p>
+          <div class="pdp-actions">
+            <a
+              class="shop-button shop-button-primary"
+              href="${buildWhatsappUrl(product.whatsappText)}"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Receber aviso
+            </a>
+            <a
+              class="shop-button shop-button-secondary"
+              href="${buildCatalogUrl(product.category)}"
+            >
+              Ver categoria
+            </a>
+          </div>
+        </section>
+      `;
+    }
+
+    return `
+      <section class="pdp-purchase-box">
+        <div class="pdp-purchase-top">
+          <div>
+            <span class="breadcrumb">Comprar agora</span>
+            <p class="pdp-purchase-copy">
+              Adicione ao carrinho ou siga direto para o checkout com este modelo.
+            </p>
+          </div>
+
+          <div class="quantity-stepper" aria-label="Quantidade">
+            <button type="button" data-quantity-decrease aria-label="Diminuir quantidade">
+              -
+            </button>
+            <input
+              type="number"
+              min="1"
+              step="1"
+              value="1"
+              inputmode="numeric"
+              data-quantity-input
+              aria-label="Quantidade de ${product.name}"
+            />
+            <button type="button" data-quantity-increase aria-label="Aumentar quantidade">
+              +
+            </button>
+          </div>
+        </div>
+
+        <div class="pdp-actions">
+          <button class="shop-button shop-button-primary" type="button" data-add-to-cart>
+            Adicionar ao carrinho
+          </button>
+          <button class="shop-button shop-button-secondary" type="button" data-buy-now>
+            Ir para checkout
+          </button>
+        </div>
+
+        <div class="pdp-support-links">
+          <a href="carrinho.html">Ver carrinho</a>
+          <a
+            href="${buildWhatsappUrl(product.whatsappText)}"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Compra assistida no WhatsApp
+          </a>
+        </div>
+
+        <p class="pdp-feedback" data-cart-feedback hidden></p>
+      </section>
+    `;
+  };
 
   root.innerHTML = `
     <nav class="breadcrumb breadcrumb-row reveal is-visible" aria-label="Breadcrumb">
@@ -111,26 +196,7 @@
               <span class="pdp-tag">${product.materials}</span>
             </div>
 
-            <div class="pdp-actions">
-              <a
-                class="shop-button shop-button-primary"
-                href="${buildWhatsappUrl(product.whatsappText)}"
-                target="_blank"
-                rel="noreferrer"
-              >
-                ${
-                  product.availability === "Pronta entrega"
-                    ? "Comprar no WhatsApp"
-                    : "Receber aviso"
-                }
-              </a>
-              <a
-                class="shop-button shop-button-secondary"
-                href="${buildCatalogUrl(product.category)}"
-              >
-                Ver categoria
-              </a>
-            </div>
+            ${renderPurchaseBlock()}
 
             <div class="pdp-panels">
               <section class="pdp-panel">
@@ -205,6 +271,12 @@
 
   const mainImage = document.querySelector("#pdp-main-image");
   const thumbButtons = document.querySelectorAll("[data-image-index]");
+  const feedbackElement = document.querySelector("[data-cart-feedback]");
+  const quantityInput = document.querySelector("[data-quantity-input]");
+  const decreaseButton = document.querySelector("[data-quantity-decrease]");
+  const increaseButton = document.querySelector("[data-quantity-increase]");
+  const addToCartButton = document.querySelector("[data-add-to-cart]");
+  const buyNowButton = document.querySelector("[data-buy-now]");
 
   thumbButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -228,6 +300,48 @@
       button.classList.add("is-active");
     });
   });
+
+  if (isPurchasable && quantityInput instanceof HTMLInputElement && cart) {
+    const readQuantity = () => {
+      const quantity = Number.parseInt(quantityInput.value, 10);
+      return Number.isFinite(quantity) && quantity > 0 ? quantity : 1;
+    };
+
+    const syncQuantity = (nextQuantity) => {
+      quantityInput.value = String(Math.max(1, nextQuantity));
+    };
+
+    const showFeedback = (message) => {
+      if (!(feedbackElement instanceof HTMLElement)) {
+        return;
+      }
+
+      feedbackElement.hidden = false;
+      feedbackElement.textContent = message;
+    };
+
+    decreaseButton?.addEventListener("click", () => {
+      syncQuantity(readQuantity() - 1);
+    });
+
+    increaseButton?.addEventListener("click", () => {
+      syncQuantity(readQuantity() + 1);
+    });
+
+    quantityInput.addEventListener("change", () => {
+      syncQuantity(readQuantity());
+    });
+
+    addToCartButton?.addEventListener("click", () => {
+      cart.addItem(product.slug, readQuantity());
+      showFeedback(`${product.name} foi adicionado ao carrinho.`);
+    });
+
+    buyNowButton?.addEventListener("click", () => {
+      cart.addItem(product.slug, readQuantity());
+      window.location.href = "checkout.html";
+    });
+  }
 
   document.title = `MOMNT | ${product.name}`;
 })();

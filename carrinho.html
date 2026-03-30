@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MOMNT | Produto</title>
+    <title>MOMNT | Carrinho</title>
     <meta
       name="description"
-      content="Pagina de produto MOMNT com galeria, detalhes, especificacoes e navegacao por categoria."
+      content="Carrinho da MOMNT com resumo do pedido, quantidade por item e atalho para checkout."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,16 +18,16 @@
     <link rel="stylesheet" href="assets/css/styles-v3.css?v=20260329b" />
     <link rel="stylesheet" href="assets/css/shop-pages.css?v=20260329c" />
   </head>
-  <body class="product-page">
+  <body class="cart-page">
     <div class="announcement-bar">
       <div class="container announcement-row">
         <p>
-          <strong>Compra assistida</strong>
-          com suporte da MOMNT para fechar o modelo pelo WhatsApp.
+          <strong>Checkout assistido</strong>
+          com validacao final do pedido pelo WhatsApp da MOMNT.
         </p>
         <a
           class="announcement-link"
-          href="https://wa.me/5511963238610?text=Oi%2C%20vim%20da%20pagina%20de%20produto%20da%20MOMNT."
+          href="https://wa.me/5511963238610?text=Oi%2C%20vim%20do%20carrinho%20da%20MOMNT."
           target="_blank"
           rel="noreferrer"
         >
@@ -37,15 +37,6 @@
     </div>
 
     <section class="hero page-top-hero">
-      <div class="hero-media">
-        <img
-          src="assets/images/lifestyle-03.jpg"
-          alt="Pagina de produto MOMNT com visual editorial"
-          fetchpriority="high"
-        />
-        <div class="hero-overlay" aria-hidden="true"></div>
-      </div>
-
       <header class="site-header">
         <div class="container header-shell">
           <a class="brand" href="index.html#top" aria-label="MOMNT">
@@ -124,27 +115,28 @@
         </div>
       </header>
 
-      <div class="container hero-content">
-        <div class="hero-kicker-row">
-          <span></span>
-          <p class="hero-kicker">pagina de produto</p>
+      <div class="container hero-content compact-page-intro">
+        <div class="compact-page-intro-copy">
+          <p class="hero-kicker">compra MOMNT</p>
+          <h1 class="page-hero-title">carrinho</h1>
+          <p class="hero-text">
+            Revise os itens, ajuste quantidades e siga para o checkout.
+          </p>
         </div>
-        <h1 class="page-hero-title">detalhe</h1>
-        <p class="hero-text">
-          Galeria, especificacoes, CTA de compra e relacionados para cada modelo
-          da MOMNT.
-        </p>
-        <div class="hero-actions">
-          <a class="button button-outline" href="produtos.html">Ver catalogo</a>
-          <a class="button button-ghost" href="index.html#contato"
-            >Falar com a marca</a
+
+        <div class="hero-actions compact-page-intro-actions">
+          <a class="button button-outline" href="produtos.html">
+            Continuar comprando
+          </a>
+          <a class="button button-ghost" href="checkout.html"
+            >Ir para checkout</a
           >
         </div>
       </div>
     </section>
 
     <main class="page-main">
-      <div class="container page-shell" id="product-page-root"></div>
+      <div class="container page-shell" id="cart-page-root"></div>
     </main>
 
     <footer class="site-footer">
@@ -155,26 +147,25 @@
         <nav class="footer-nav" aria-label="Rodape">
           <a href="produtos.html">Novidades</a>
           <a href="produtos.html">Colecoes</a>
-          <a href="index.html#editorial">Editorial</a>
+          <a href="checkout.html">Checkout</a>
           <a href="index.html#contato">Contato</a>
         </nav>
         <p class="footer-copy">
-          Pagina individual pronta para receber os produtos finais da MOMNT sem
-          refazer a estrutura.
+          Carrinho estatico da MOMNT para revisar o pedido antes do checkout.
         </p>
       </div>
     </footer>
 
     <div class="mobile-dock" aria-label="Acoes rapidas no celular">
-      <a class="mobile-dock-link" href="produtos.html">Catalogo</a>
-      <a class="mobile-dock-link mobile-dock-link-primary" href="carrinho.html">
-        Carrinho
+      <a class="mobile-dock-link" href="produtos.html">Produtos</a>
+      <a class="mobile-dock-link mobile-dock-link-primary" href="checkout.html">
+        Checkout
       </a>
     </div>
 
     <script src="assets/js/catalog-data.js?v=20260329a"></script>
     <script src="assets/js/cart.js?v=20260329a"></script>
-    <script src="assets/js/product-page.js?v=20260329a"></script>
+    <script src="assets/js/cart-page.js?v=20260329a"></script>
     <script src="assets/js/main-v3.js"></script>
   </body>
 </html>

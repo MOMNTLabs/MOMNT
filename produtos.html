@@ -16,7 +16,7 @@
     />
     <link rel="icon" type="image/png" href="assets/images/momnt-symbol.png" />
     <link rel="stylesheet" href="assets/css/styles-v3.css?v=20260329b" />
-    <link rel="stylesheet" href="assets/css/shop-pages.css?v=20260329b" />
+    <link rel="stylesheet" href="assets/css/shop-pages.css?v=20260329c" />
   </head>
   <body class="catalog-page">
     <div class="announcement-bar">
@@ -109,11 +109,11 @@
                 </svg>
               </a>
               <a
-                href="https://wa.me/5511963238610?text=Oi%2C%20vim%20do%20catalogo%20da%20MOMNT."
-                target="_blank"
-                rel="noreferrer"
+                class="header-cart-link"
+                href="carrinho.html"
                 aria-label="Sacola"
               >
+                <span class="cart-count-badge" data-cart-count hidden></span>
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M6 8h12l-1 12H7L6 8Z"></path>
                   <path d="M9 8a3 3 0 0 1 6 0"></path>
@@ -124,8 +124,8 @@
         </div>
       </header>
 
-      <div class="container hero-content catalog-page-intro">
-        <div class="catalog-page-intro-copy">
+      <div class="container hero-content compact-page-intro">
+        <div class="compact-page-intro-copy">
           <p class="hero-kicker">catalogo MOMNT</p>
           <h1 class="page-hero-title">produtos</h1>
           <p class="hero-text">
@@ -134,7 +134,7 @@
           </p>
         </div>
 
-        <div class="hero-actions catalog-page-intro-actions">
+        <div class="hero-actions compact-page-intro-actions">
           <a class="button button-outline" href="#catalog-grid"
             >Explorar vitrine</a
           >
@@ -265,17 +265,13 @@
 
     <div class="mobile-dock" aria-label="Acoes rapidas no celular">
       <a class="mobile-dock-link" href="index.html#top">Home</a>
-      <a
-        class="mobile-dock-link mobile-dock-link-primary"
-        href="https://wa.me/5511963238610?text=Oi%2C%20vim%20do%20catalogo%20da%20MOMNT."
-        target="_blank"
-        rel="noreferrer"
-      >
-        WhatsApp
+      <a class="mobile-dock-link mobile-dock-link-primary" href="carrinho.html">
+        Carrinho
       </a>
     </div>
 
     <script src="assets/js/catalog-data.js?v=20260329a"></script>
+    <script src="assets/js/cart.js?v=20260329a"></script>
     <script src="assets/js/catalog-page.js?v=20260329a"></script>
     <script src="assets/js/main-v3.js"></script>
   </body>
