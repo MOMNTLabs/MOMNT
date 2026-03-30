@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MOMNT | Produtos</title>
+    <meta
+      name="description"
+      content="Catalogo MOMNT com categorias, busca e cards prontos para receber os produtos finais."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/png" href="assets/images/momnt-symbol.png" />
+    <link rel="stylesheet" href="assets/css/styles-v3.css?v=20260329b" />
+    <link rel="stylesheet" href="assets/css/shop-pages.css?v=20260329a" />
+  </head>
+  <body class="catalog-page">
+    <div class="announcement-bar">
+      <div class="container announcement-row">
+        <p>
+          <strong>Entrega local rapida</strong>
+          na Grande Vitoria com compra assistida pelo WhatsApp.
+        </p>
+        <a
+          class="announcement-link"
+          href="https://wa.me/5511963238610?text=Oi%2C%20vim%20do%20catalogo%20da%20MOMNT%20e%20quero%20ajuda%20para%20escolher%20um%20modelo."
+          target="_blank"
+          rel="noreferrer"
+        >
+          Falar com a MOMNT
+        </a>
+      </div>
+    </div>
+
+    <section class="hero page-top-hero">
+      <div class="hero-media">
+        <img
+          src="assets/images/hero-banner.png"
+          alt="Catalogo MOMNT com banner editorial"
+          fetchpriority="high"
+        />
+        <div class="hero-overlay" aria-hidden="true"></div>
+      </div>
+
+      <header class="site-header">
+        <div class="container header-shell">
+          <a class="brand" href="index.html#top" aria-label="MOMNT">
+            <img src="assets/images/momnt-logo.png" alt="MOMNT" />
+          </a>
+
+          <button
+            class="menu-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="site-nav"
+            aria-label="Abrir navegacao"
+          >
+            <span></span>
+            <span></span>
+          </button>
+
+          <nav class="site-nav" id="site-nav" aria-label="Principal">
+            <a href="produtos.html">Novidades</a>
+            <a href="produtos.html?categoria=modern">Modern</a>
+            <a href="produtos.html?categoria=classic">Classic</a>
+            <a href="produtos.html?categoria=sport">Sport</a>
+            <a href="index.html#editorial">Editorial</a>
+            <a class="nav-link-highlight" href="produtos.html">Outlet</a>
+            <a href="index.html#contato">Contato</a>
+          </nav>
+
+          <div class="header-tools">
+            <form
+              class="search-shell"
+              role="search"
+              action="produtos.html"
+              method="get"
+            >
+              <input
+                type="search"
+                name="busca"
+                placeholder="Buscar no catalogo"
+                aria-label="Buscar no catalogo"
+              />
+              <button type="submit" aria-label="Buscar">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="6.5"></circle>
+                  <path d="M16 16L21 21"></path>
+                </svg>
+              </button>
+            </form>
+
+            <div class="icon-links" aria-label="Acoes rapidas">
+              <a href="produtos.html" aria-label="Favoritos">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 20.5L4.8 13.6A4.7 4.7 0 1 1 12 7.9a4.7 4.7 0 1 1 7.2 5.7L12 20.5Z"
+                  ></path>
+                </svg>
+              </a>
+              <a href="index.html#contato" aria-label="Minha conta">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="8" r="4"></circle>
+                  <path d="M4 20c1.9-3.4 5-5 8-5s6.1 1.6 8 5"></path>
+                </svg>
+              </a>
+              <a
+                href="https://wa.me/5511963238610?text=Oi%2C%20vim%20do%20catalogo%20da%20MOMNT."
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Sacola"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 8h12l-1 12H7L6 8Z"></path>
+                  <path d="M9 8a3 3 0 0 1 6 0"></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="container hero-content">
+        <div class="hero-kicker-row">
+          <span></span>
+          <p class="hero-kicker">catalogo MOMNT</p>
+        </div>
+        <h1 class="page-hero-title">vitrine</h1>
+        <p class="hero-text">
+          Categorias, placeholders e cards prontos para receber os modelos
+          definitivos sem mudar a experiencia de compra.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-outline" href="#catalog-grid">Ver produtos</a>
+          <a
+            class="button button-ghost"
+            href="https://wa.me/5511963238610?text=Oi%2C%20vim%20do%20catalogo%20da%20MOMNT%20e%20quero%20ajuda."
+            target="_blank"
+            rel="noreferrer"
+          >
+            Comprar no WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <main class="page-main">
+      <div class="container page-shell">
+        <section class="catalog-hero reveal">
+          <div class="catalog-hero-media">
+            <img
+              id="catalog-hero-image"
+              src="assets/images/lifestyle-04.jpg"
+              alt="Catalogo MOMNT"
+            />
+          </div>
+          <div class="catalog-hero-content">
+            <div class="catalog-copy">
+              <span class="catalog-eyebrow" id="catalog-eyebrow"></span>
+              <h1 id="catalog-title"></h1>
+              <p id="catalog-description"></p>
+            </div>
+
+            <div class="catalog-hero-stats">
+              <article class="catalog-stat">
+                <span>Categoria ativa</span>
+                <strong id="catalog-active-category"></strong>
+              </article>
+              <article class="catalog-stat">
+                <span>Modelos exibidos</span>
+                <strong id="catalog-visible-count"></strong>
+              </article>
+              <article class="catalog-stat">
+                <span>Slots editaveis</span>
+                <strong id="catalog-preview-count"></strong>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="catalog-toolbar reveal">
+          <div class="catalog-toolbar-inner">
+            <div
+              class="catalog-filters"
+              id="catalog-filters"
+              aria-label="Categorias de produto"
+            ></div>
+
+            <div class="catalog-actions">
+              <form class="catalog-search-form" role="search">
+                <input
+                  class="catalog-search"
+                  id="catalog-search"
+                  type="search"
+                  name="busca"
+                  placeholder="Filtrar por nome ou descricao"
+                  aria-label="Filtrar por nome ou descricao"
+                />
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <section class="catalog-summary reveal">
+          <p id="catalog-summary-text"></p>
+          <a
+            class="shop-button shop-button-secondary"
+            href="index.html#colecoes"
+          >
+            Voltar para a home
+          </a>
+        </section>
+
+        <section
+          class="catalog-grid"
+          id="catalog-grid"
+          aria-live="polite"
+        ></section>
+
+        <article class="not-found-card reveal" id="catalog-empty" hidden>
+          <span class="breadcrumb">Nenhum resultado</span>
+          <h1>Nenhum produto bateu com este filtro.</h1>
+          <p>
+            Ajuste a busca, troque a categoria ou volte para o catalogo completo
+            para continuar a navegacao.
+          </p>
+          <div class="catalog-card-actions">
+            <a class="shop-button shop-button-primary" href="produtos.html">
+              Ver catalogo completo
+            </a>
+            <a
+              class="shop-button shop-button-secondary"
+              href="index.html#colecoes"
+            >
+              Ir para a home
+            </a>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-shell">
+        <a class="brand footer-brand" href="index.html#top" aria-label="MOMNT">
+          <img src="assets/images/momnt-logo.png" alt="MOMNT" />
+        </a>
+        <nav class="footer-nav" aria-label="Rodape">
+          <a href="produtos.html">Novidades</a>
+          <a href="produtos.html">Colecoes</a>
+          <a href="index.html#editorial">Editorial</a>
+          <a href="index.html#contato">Contato</a>
+        </nav>
+        <p class="footer-copy">
+          Catalogo modular da MOMNT com categorias, placeholders e jornada
+          pronta para crescer.
+        </p>
+      </div>
+    </footer>
+
+    <div class="mobile-dock" aria-label="Acoes rapidas no celular">
+      <a class="mobile-dock-link" href="index.html#top">Home</a>
+      <a
+        class="mobile-dock-link mobile-dock-link-primary"
+        href="https://wa.me/5511963238610?text=Oi%2C%20vim%20do%20catalogo%20da%20MOMNT."
+        target="_blank"
+        rel="noreferrer"
+      >
+        WhatsApp
+      </a>
+    </div>
+
+    <script src="assets/js/catalog-data.js?v=20260329a"></script>
+    <script src="assets/js/catalog-page.js?v=20260329a"></script>
+    <script src="assets/js/main-v3.js"></script>
+  </body>
+</html>

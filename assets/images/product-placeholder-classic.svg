@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Classic product placeholder</title>
+  <desc id="desc">Generic placeholder graphic for a classic sunglasses product.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f2e8dc"/>
+      <stop offset="100%" stop-color="#cab7a1"/>
+    </linearGradient>
+    <linearGradient id="lens" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5e4533" stop-opacity="0.94"/>
+      <stop offset="100%" stop-color="#2b1d15" stop-opacity="0.94"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <circle cx="930" cy="260" r="170" fill="#ffffff" opacity="0.12"/>
+  <circle cx="150" cy="160" r="100" fill="#ffffff" opacity="0.1"/>
+  <g fill="none" stroke="#342016" stroke-width="24" stroke-linecap="round" stroke-linejoin="round" opacity="0.95">
+    <path d="M246 554h100"/>
+    <path d="M854 554h100"/>
+    <path d="M520 526h160"/>
+  </g>
+  <g>
+    <rect x="260" y="420" width="320" height="220" rx="110" fill="url(#lens)"/>
+    <rect x="620" y="420" width="320" height="220" rx="110" fill="url(#lens)"/>
+    <rect x="260" y="420" width="320" height="220" rx="110" fill="none" stroke="#342016" stroke-width="24"/>
+    <rect x="620" y="420" width="320" height="220" rx="110" fill="none" stroke="#342016" stroke-width="24"/>
+    <path d="M520 526c28-20 132-20 160 0" fill="none" stroke="#342016" stroke-width="20" stroke-linecap="round"/>
+  </g>
+  <g fill="#342016" opacity="0.94" font-family="Manrope, Arial, sans-serif" text-anchor="middle">
+    <text x="600" y="848" font-size="56" font-weight="800" letter-spacing="12">CLASSIC SLOT</text>
+    <text x="600" y="916" font-size="28" font-weight="600" letter-spacing="6">USE YOUR FINAL PRODUCT PHOTO HERE</text>
+  </g>
+</svg>

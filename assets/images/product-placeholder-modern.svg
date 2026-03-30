@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Modern product placeholder</title>
+  <desc id="desc">Generic placeholder graphic for a modern sunglasses product.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1b1a23"/>
+      <stop offset="100%" stop-color="#4f6176"/>
+    </linearGradient>
+    <linearGradient id="lens" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d5e8ff" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#93b0cf" stop-opacity="0.8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <circle cx="960" cy="210" r="180" fill="#ffffff" opacity="0.05"/>
+  <circle cx="240" cy="1010" r="240" fill="#ffffff" opacity="0.04"/>
+  <g fill="none" stroke="#f6efe8" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" opacity="0.92">
+    <path d="M258 564h96"/>
+    <path d="M846 564h96"/>
+    <path d="M510 520h180"/>
+  </g>
+  <g>
+    <path d="M330 440h250c42 0 76 34 76 76v86c0 42-34 76-76 76H344c-48 0-88-40-88-88v-38c0-62 50-112 112-112Z" fill="url(#lens)" opacity="0.9"/>
+    <path d="M620 440h250c62 0 112 50 112 112v38c0 48-40 88-88 88H658c-42 0-76-34-76-76v-86c0-42 34-76 76-76Z" fill="url(#lens)" opacity="0.9"/>
+    <path d="M330 440h250c42 0 76 34 76 76v86c0 42-34 76-76 76H344c-48 0-88-40-88-88v-38c0-62 50-112 112-112Z" fill="none" stroke="#fff8f0" stroke-width="26"/>
+    <path d="M620 440h250c62 0 112 50 112 112v38c0 48-40 88-88 88H658c-42 0-76-34-76-76v-86c0-42 34-76 76-76Z" fill="none" stroke="#fff8f0" stroke-width="26"/>
+    <path d="M510 508c32-26 148-26 180 0" fill="none" stroke="#fff8f0" stroke-width="24" stroke-linecap="round"/>
+  </g>
+  <g fill="#fff8f0" opacity="0.95" font-family="Manrope, Arial, sans-serif" text-anchor="middle">
+    <text x="600" y="860" font-size="58" font-weight="800" letter-spacing="14">MODERN DROP</text>
+    <text x="600" y="930" font-size="28" font-weight="600" letter-spacing="8">REPLACE WITH FINAL PRODUCT IMAGE</text>
+  </g>
+</svg>

@@ -63,19 +63,25 @@
           </button>
 
           <nav class="site-nav" id="site-nav" aria-label="Principal">
-            <a href="#vitrine">Novidades</a>
-            <a href="#colecoes">Modern</a>
-            <a href="#colecoes">Classic</a>
-            <a href="#colecoes">Sport</a>
+            <a href="produtos.html">Novidades</a>
+            <a href="produtos.html?categoria=modern">Modern</a>
+            <a href="produtos.html?categoria=classic">Classic</a>
+            <a href="produtos.html?categoria=sport">Sport</a>
             <a href="#editorial">Editorial</a>
-            <a class="nav-link-highlight" href="#vitrine">Outlet</a>
+            <a class="nav-link-highlight" href="produtos.html">Outlet</a>
             <a href="#contato">Contato</a>
           </nav>
 
           <div class="header-tools">
-            <form class="search-shell" role="search">
+            <form
+              class="search-shell"
+              role="search"
+              action="produtos.html"
+              method="get"
+            >
               <input
                 type="search"
+                name="busca"
                 placeholder="O que voce procura?"
                 aria-label="O que voce procura?"
               />
@@ -88,7 +94,7 @@
             </form>
 
             <div class="icon-links" aria-label="Acoes rapidas">
-              <a href="#vitrine" aria-label="Favoritos">
+              <a href="produtos.html" aria-label="Favoritos">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path
                     d="M12 20.5L4.8 13.6A4.7 4.7 0 1 1 12 7.9a4.7 4.7 0 1 1 7.2 5.7L12 20.5Z"
@@ -129,7 +135,9 @@
           desejo, produto e compra.
         </p>
         <div class="hero-actions">
-          <a class="button button-outline" href="#vitrine">Conferir as pecas</a>
+          <a class="button button-outline" href="produtos.html"
+            >Conferir as pecas</a
+          >
           <button class="button button-ghost" type="button" data-open-video>
             Assistir campanha
           </button>
@@ -171,13 +179,8 @@
                 <p class="product-category">Modern collection</p>
                 <h2>Wave 2.0</h2>
                 <p class="product-price">R$ 150,00</p>
-                <a
-                  class="product-link"
-                  href="https://wa.me/5511963238610?text=Oi%2C%20tenho%20interesse%20no%20Wave%202.0%20da%20MOMNT."
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Comprar
+                <a class="product-link" href="produto.html?slug=wave-2">
+                  Ver produto
                 </a>
               </div>
             </article>
@@ -206,13 +209,8 @@
                 <p class="product-category">Modern collection</p>
                 <h2>Groove</h2>
                 <p class="product-price">R$ 150,00</p>
-                <a
-                  class="product-link"
-                  href="https://wa.me/5511963238610?text=Oi%2C%20tenho%20interesse%20no%20Groove%20da%20MOMNT."
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Comprar
+                <a class="product-link" href="produto.html?slug=groove">
+                  Ver produto
                 </a>
               </div>
             </article>
@@ -241,13 +239,8 @@
                 <p class="product-category">Classic collection</p>
                 <h2>Phase</h2>
                 <p class="product-price">R$ 150,00</p>
-                <a
-                  class="product-link"
-                  href="https://wa.me/5511963238610?text=Oi%2C%20tenho%20interesse%20no%20Phase%20da%20MOMNT."
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Comprar
+                <a class="product-link" href="produto.html?slug=phase">
+                  Ver produto
                 </a>
               </div>
             </article>
@@ -276,13 +269,8 @@
                 <p class="product-category">Sport collection</p>
                 <h2>Loop</h2>
                 <p class="product-price">R$ 150,00</p>
-                <a
-                  class="product-link"
-                  href="https://wa.me/5511963238610?text=Oi%2C%20tenho%20interesse%20no%20Loop%20da%20MOMNT."
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Comprar
+                <a class="product-link" href="produto.html?slug=loop">
+                  Ver produto
                 </a>
               </div>
             </article>
@@ -312,7 +300,7 @@
                 <div class="feature-overlay">
                   <p class="section-label">Modern</p>
                   <h3>Shapes fortes para abrir a vitrine.</h3>
-                  <a href="#vitrine">Conferir modelos</a>
+                  <a href="produtos.html?categoria=modern">Conferir modelos</a>
                 </div>
               </article>
 
@@ -325,6 +313,7 @@
                 <div class="feature-overlay">
                   <p class="section-label">Classic</p>
                   <h3>Leveza, uso diario e encaixe facil.</h3>
+                  <a href="produtos.html?categoria=classic">Ver categoria</a>
                 </div>
               </article>
 
@@ -337,6 +326,7 @@
                 <div class="feature-overlay">
                   <p class="section-label">Sport</p>
                   <h3>Energia urbana e contraste visual.</h3>
+                  <a href="produtos.html?categoria=sport">Ver categoria</a>
                 </div>
               </article>
             </div>
@@ -458,8 +448,8 @@
           <img src="assets/images/momnt-logo.png" alt="MOMNT" />
         </a>
         <nav class="footer-nav" aria-label="Rodape">
-          <a href="#vitrine">Novidades</a>
-          <a href="#colecoes">Colecoes</a>
+          <a href="produtos.html">Novidades</a>
+          <a href="produtos.html">Colecoes</a>
           <a href="#editorial">Editorial</a>
           <a href="#contato">Contato</a>
         </nav>
@@ -471,7 +461,7 @@
     </footer>
 
     <div class="mobile-dock" aria-label="Acoes rapidas no celular">
-      <a class="mobile-dock-link" href="#vitrine">Ver modelos</a>
+      <a class="mobile-dock-link" href="produtos.html">Ver modelos</a>
       <a
         class="mobile-dock-link mobile-dock-link-primary"
         href="https://wa.me/5511963238610?text=Oi%2C%20vim%20do%20site%20da%20MOMNT."

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Sport product placeholder</title>
+  <desc id="desc">Generic placeholder graphic for a sport sunglasses product.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1118"/>
+      <stop offset="100%" stop-color="#113334"/>
+    </linearGradient>
+    <linearGradient id="lens" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9cf5c2" stop-opacity="0.96"/>
+      <stop offset="100%" stop-color="#0ebf71" stop-opacity="0.82"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <path d="M0 1020 1200 780V1200H0Z" fill="#fff" opacity="0.05"/>
+  <path d="M0 180 1200 0v120L0 300Z" fill="#fff" opacity="0.05"/>
+  <g fill="none" stroke="#eafff3" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M238 546h86"/>
+    <path d="M876 546h86"/>
+    <path d="M504 514h192"/>
+  </g>
+  <g>
+    <path d="M260 470c34-28 88-48 154-48h178c34 0 62 28 62 62v134c0 34-28 62-62 62H376c-58 0-108-42-118-100l-18-110c-3-18 4-36 20-50Z" fill="url(#lens)" opacity="0.92"/>
+    <path d="M940 470c16 14 23 32 20 50l-18 110c-10 58-60 100-118 100H608c-34 0-62-28-62-62V534c0-34 28-62 62-62h178c66 0 120 20 154 48Z" fill="url(#lens)" opacity="0.92"/>
+    <path d="M260 470c34-28 88-48 154-48h178c34 0 62 28 62 62v134c0 34-28 62-62 62H376c-58 0-108-42-118-100l-18-110c-3-18 4-36 20-50Z" fill="none" stroke="#eafff3" stroke-width="24"/>
+    <path d="M940 470c16 14 23 32 20 50l-18 110c-10 58-60 100-118 100H608c-34 0-62-28-62-62V534c0-34 28-62 62-62h178c66 0 120 20 154 48Z" fill="none" stroke="#eafff3" stroke-width="24"/>
+    <path d="M504 514c34-18 158-18 192 0" fill="none" stroke="#eafff3" stroke-width="20" stroke-linecap="round"/>
+  </g>
+  <g fill="#eafff3" font-family="Manrope, Arial, sans-serif" text-anchor="middle">
+    <text x="600" y="862" font-size="58" font-weight="800" letter-spacing="12">SPORT PREVIEW</text>
+    <text x="600" y="932" font-size="28" font-weight="600" letter-spacing="8">SWAP FOR THE FINAL PRODUCT VISUAL</text>
+  </g>
+</svg>
