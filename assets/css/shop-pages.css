@@ -60,9 +60,17 @@ body.checkout-page {
   align-items: end;
 }
 
+.catalog-page .compact-page-intro {
+  padding-inline: clamp(0.35rem, 1vw, 0.9rem);
+}
+
 .compact-page-intro-copy {
   display: grid;
   gap: 0.7rem;
+}
+
+.catalog-page .compact-page-intro-copy {
+  padding-inline-start: clamp(0.75rem, 1.2vw, 1.35rem);
 }
 
 .catalog-page .hero-kicker,
@@ -1099,6 +1107,14 @@ body.checkout-page {
   .compact-page-intro-actions {
     width: 100%;
     gap: 0.55rem;
+  }
+
+  .catalog-page .compact-page-intro {
+    padding-inline: 0.35rem;
+  }
+
+  .catalog-page .compact-page-intro-copy {
+    padding-inline-start: 0.35rem;
   }
 
   .pdp-purchase-top,
