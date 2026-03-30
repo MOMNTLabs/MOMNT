@@ -16,6 +16,64 @@ body.product-page {
   background: var(--shop-bg);
 }
 
+.catalog-page .page-top-hero {
+  min-height: auto;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(210, 173, 123, 0.2),
+      transparent 32%
+    ),
+    linear-gradient(180deg, #111 0%, #171717 100%);
+}
+
+.catalog-page .page-top-hero .hero-media,
+.catalog-page .page-top-hero .hero-overlay {
+  display: none;
+}
+
+.catalog-page .page-top-hero .site-header {
+  padding-top: 0.45rem;
+}
+
+.catalog-page .page-top-hero .hero-content {
+  min-height: auto;
+  padding: 1.35rem 0 1.25rem;
+}
+
+.catalog-page-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.catalog-page-intro-copy {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.catalog-page .hero-kicker {
+  color: var(--shop-accent);
+}
+
+.catalog-page .page-hero-title {
+  font-size: clamp(2.8rem, 5vw, 4.4rem);
+  line-height: 0.86;
+}
+
+.catalog-page .hero-text {
+  max-width: 58ch;
+  margin-top: 0;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.catalog-page-intro-actions {
+  margin-top: 0;
+}
+
 .page-top-hero {
   min-height: auto;
 }
@@ -45,8 +103,16 @@ body.product-page {
   text-transform: lowercase;
 }
 
+.catalog-page .page-main {
+  padding: 1rem 0 4rem;
+}
+
 .page-main {
   padding: 2rem 0 4rem;
+}
+
+.catalog-page .page-shell {
+  gap: 0.9rem;
 }
 
 .page-shell {
@@ -84,8 +150,8 @@ body.product-page {
 .catalog-hero {
   position: relative;
   overflow: hidden;
-  min-height: 400px;
-  padding: 2rem;
+  min-height: 300px;
+  padding: 1.35rem;
   display: grid;
   align-items: end;
   color: #fff;
@@ -99,11 +165,11 @@ body.product-page {
   background:
     linear-gradient(
       90deg,
-      rgba(0, 0, 0, 0.68) 0%,
-      rgba(0, 0, 0, 0.22) 52%,
-      rgba(0, 0, 0, 0.62) 100%
+      rgba(0, 0, 0, 0.76) 0%,
+      rgba(0, 0, 0, 0.38) 52%,
+      rgba(0, 0, 0, 0.72) 100%
     ),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.24) 0%, rgba(0, 0, 0, 0.52) 100%);
+    linear-gradient(180deg, rgba(0, 0, 0, 0.38) 0%, rgba(0, 0, 0, 0.62) 100%);
   z-index: 0;
 }
 
@@ -129,7 +195,7 @@ body.product-page {
 .catalog-hero-content {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 1.2rem;
+  gap: 1rem;
   align-items: end;
 }
 
@@ -156,10 +222,10 @@ body.product-page {
 .catalog-copy h1,
 .pdp-info h1,
 .not-found-card h1 {
-  margin-top: 0.7rem;
+  margin-top: 0.55rem;
   font-family: "Cormorant Garamond", serif;
-  font-size: clamp(3rem, 6vw, 5.2rem);
-  line-height: 0.92;
+  font-size: clamp(2.5rem, 4.6vw, 4rem);
+  line-height: 0.94;
   letter-spacing: -0.05em;
 }
 
@@ -175,21 +241,22 @@ body.product-page {
 }
 
 .catalog-copy p {
-  max-width: 52ch;
-  margin-top: 0.85rem;
+  max-width: 46ch;
+  margin-top: 0.55rem;
+  line-height: 1.65;
 }
 
 .catalog-hero-stats {
   display: grid;
-  gap: 0.8rem;
-  min-width: 240px;
+  gap: 0.65rem;
+  min-width: 220px;
 }
 
 .catalog-stat {
-  padding: 1rem 1.05rem;
+  padding: 0.8rem 0.9rem;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
 }
 
@@ -204,19 +271,19 @@ body.product-page {
 
 .catalog-stat strong {
   display: block;
-  margin-top: 0.55rem;
-  font-size: 1rem;
+  margin-top: 0.45rem;
+  font-size: 0.95rem;
   line-height: 1.4;
 }
 
 .catalog-toolbar {
-  padding: 1rem 1.1rem;
+  padding: 0.85rem 0.95rem;
 }
 
 .catalog-toolbar-inner {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 1rem;
+  gap: 0.85rem;
   align-items: center;
 }
 
@@ -224,7 +291,7 @@ body.product-page {
 .catalog-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 0.55rem;
 }
 
 .catalog-search-form {
@@ -234,13 +301,14 @@ body.product-page {
 .catalog-chip {
   align-items: center;
   justify-content: center;
-  min-height: 42px;
-  padding: 0 1rem;
+  min-height: 38px;
+  padding: 0 0.85rem;
   border: 1px solid var(--shop-line);
   border-radius: 999px;
   background: #fff;
   color: var(--shop-dark);
   cursor: pointer;
+  font-size: 0.68rem;
   transition:
     transform 0.2s ease,
     background 0.2s ease,
@@ -261,8 +329,8 @@ body.product-page {
 
 .catalog-search {
   min-width: 280px;
-  height: 42px;
-  padding: 0 1rem;
+  height: 40px;
+  padding: 0 0.95rem;
   border: 1px solid var(--shop-line);
   border-radius: 999px;
   background: var(--shop-bg);
@@ -277,12 +345,17 @@ body.product-page {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem 1.1rem;
+  gap: 0.75rem;
+  padding: 0.85rem 0.95rem;
 }
 
 .catalog-summary strong {
   color: var(--shop-dark);
+}
+
+.catalog-summary p {
+  margin: 0;
+  font-size: 0.86rem;
 }
 
 .catalog-summary p,
@@ -297,7 +370,7 @@ body.product-page {
 .catalog-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+  gap: 0.9rem;
 }
 
 .catalog-card {
@@ -308,22 +381,22 @@ body.product-page {
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 320px;
-  padding: 1.25rem;
+  min-height: 280px;
+  padding: 1rem;
   background: var(--shop-surface-soft);
 }
 
 .catalog-card-media img {
   width: 100%;
-  max-width: 260px;
+  max-width: 220px;
   aspect-ratio: 1 / 1;
   object-fit: contain;
 }
 
 .catalog-card-badge {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
+  top: 0.85rem;
+  left: 0.85rem;
   min-height: 32px;
   padding: 0 0.8rem;
   border-radius: 999px;
@@ -350,8 +423,8 @@ body.product-page {
 
 .catalog-card-copy {
   display: grid;
-  gap: 0.65rem;
-  padding: 1.15rem 1.15rem 1.25rem;
+  gap: 0.45rem;
+  padding: 0.95rem 1rem 1.05rem;
 }
 
 .catalog-card-meta {
@@ -361,8 +434,18 @@ body.product-page {
 .catalog-card-copy h2,
 .related-product-card h3 {
   margin: 0;
-  font-size: 1.35rem;
-  line-height: 1.08;
+  font-size: 1.2rem;
+  line-height: 1.04;
+}
+
+.catalog-card-description {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  min-height: 3.2em;
+  margin: 0.1rem 0 0.15rem;
+  line-height: 1.6;
 }
 
 .catalog-card-price,
@@ -376,8 +459,16 @@ body.product-page {
 .pdp-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem;
+  gap: 0.55rem;
   margin-top: 0.2rem;
+}
+
+.catalog-card .shop-button,
+.catalog-summary .shop-button {
+  min-height: 40px;
+  padding: 0 0.95rem;
+  font-size: 0.67rem;
+  letter-spacing: 0.14em;
 }
 
 .shop-button {
@@ -598,6 +689,7 @@ body.product-page {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .catalog-page-intro,
   .pdp-layout,
   .catalog-hero-content,
   .catalog-toolbar-inner,
@@ -619,13 +711,21 @@ body.product-page {
     grid-template-columns: 1fr;
   }
 
+  .catalog-page .page-main {
+    padding-top: 0.75rem;
+  }
+
+  .catalog-page .page-shell {
+    gap: 0.75rem;
+  }
+
   .pdp-thumbs {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .catalog-toolbar-inner,
   .catalog-summary {
-    gap: 0.85rem;
+    gap: 0.7rem;
   }
 
   .catalog-summary {
@@ -639,6 +739,32 @@ body.product-page {
 }
 
 @media (max-width: 640px) {
+  .catalog-page .page-top-hero .site-header {
+    padding-top: 0.2rem;
+  }
+
+  .catalog-page .page-top-hero .hero-content {
+    padding: 0.8rem 0 0.95rem;
+  }
+
+  .catalog-page .page-hero-title {
+    font-size: clamp(2.2rem, 10vw, 2.9rem);
+  }
+
+  .catalog-page .hero-text {
+    font-size: 0.82rem;
+    line-height: 1.55;
+  }
+
+  .catalog-page-intro-copy {
+    gap: 0.5rem;
+  }
+
+  .catalog-page-intro-actions {
+    width: 100%;
+    gap: 0.55rem;
+  }
+
   .page-top-hero .hero-content {
     padding-top: 3.7rem;
   }
@@ -654,18 +780,75 @@ body.product-page {
   .pdp-card,
   .related-shell,
   .not-found-card {
-    border-radius: 22px;
+    border-radius: 20px;
   }
 
   .catalog-hero {
-    min-height: 340px;
-    padding: 1.25rem;
+    min-height: 210px;
+    padding: 1rem;
+  }
+
+  .catalog-hero-content {
+    gap: 0.65rem;
   }
 
   .catalog-copy h1,
   .pdp-info h1,
   .not-found-card h1 {
-    font-size: clamp(2.6rem, 12vw, 3.6rem);
+    font-size: clamp(2.15rem, 10vw, 3rem);
+  }
+
+  .catalog-copy p {
+    max-width: 32ch;
+    margin-top: 0.35rem;
+    font-size: 0.82rem;
+  }
+
+  .catalog-stat {
+    padding: 0.7rem 0.8rem;
+  }
+
+  .catalog-hero-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  .catalog-stat span {
+    font-size: 0.56rem;
+    letter-spacing: 0.14em;
+  }
+
+  .catalog-stat strong {
+    margin-top: 0.25rem;
+    font-size: 0.74rem;
+    line-height: 1.3;
+  }
+
+  .catalog-toolbar {
+    padding: 0.7rem;
+  }
+
+  .catalog-summary {
+    padding: 0.7rem;
+  }
+
+  .catalog-card-media {
+    min-height: 220px;
+    padding: 0.85rem;
+  }
+
+  .catalog-card-media img {
+    max-width: 180px;
+  }
+
+  .catalog-card-copy {
+    gap: 0.4rem;
+    padding: 0.85rem 0.9rem 0.95rem;
+  }
+
+  .catalog-card-description {
+    min-height: auto;
+    -webkit-line-clamp: 2;
   }
 
   .catalog-card-actions,
