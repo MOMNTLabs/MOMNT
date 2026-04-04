@@ -31,12 +31,7 @@ body {
   background: #fff;
 }
 
-body.modal-open {
-  overflow: hidden;
-}
-
-img,
-video {
+img {
   display: block;
   max-width: 100%;
 }
@@ -719,45 +714,6 @@ figure {
 .mobile-dock-link-primary {
   background: #111;
   color: #fff;
-}
-
-.video-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-}
-
-.video-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.72);
-}
-
-.video-dialog {
-  position: relative;
-  width: min(920px, calc(100vw - 24px));
-  margin: clamp(2rem, 6vw, 4rem) auto 0;
-  padding: 1rem;
-  border-radius: var(--radius-lg);
-  background: rgba(12, 12, 12, 0.96);
-  color: #fff;
-}
-
-.video-close {
-  display: inline-flex;
-  margin-left: auto;
-  padding: 0.5rem 0.9rem;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 999px;
-  background: transparent;
-  color: #fff;
-}
-
-.campaign-video {
-  width: 100%;
-  margin-top: 0.85rem;
-  border-radius: 18px;
-  background: #000;
 }
 
 @media (max-width: 1180px) {

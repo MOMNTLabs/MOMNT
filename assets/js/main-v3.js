@@ -2,10 +2,6 @@ const menuToggle = document.querySelector(".menu-toggle");
 const siteNav = document.querySelector(".site-nav");
 const pageLinks = document.querySelectorAll(".site-nav a");
 const revealItems = document.querySelectorAll(".reveal");
-const videoModal = document.querySelector("[data-video-modal]");
-const openVideoButtons = document.querySelectorAll("[data-open-video]");
-const closeVideoButtons = document.querySelectorAll("[data-close-video]");
-const videoElement = videoModal?.querySelector("video");
 
 const closeNav = () => {
   if (!siteNav || !menuToggle) {
@@ -68,45 +64,8 @@ if ("IntersectionObserver" in window) {
   revealItems.forEach((item) => item.classList.add("is-visible"));
 }
 
-const openVideo = () => {
-  if (!videoModal) {
-    return;
-  }
-
-  videoModal.hidden = false;
-  document.body.classList.add("modal-open");
-
-  if (videoElement) {
-    videoElement.currentTime = 0;
-    void videoElement.play().catch(() => {});
-  }
-};
-
-const closeVideo = () => {
-  if (!videoModal) {
-    return;
-  }
-
-  videoModal.hidden = true;
-  document.body.classList.remove("modal-open");
-
-  if (videoElement) {
-    videoElement.pause();
-    videoElement.currentTime = 0;
-  }
-};
-
-openVideoButtons.forEach((button) => {
-  button.addEventListener("click", openVideo);
-});
-
-closeVideoButtons.forEach((button) => {
-  button.addEventListener("click", closeVideo);
-});
-
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeNav();
-    closeVideo();
   }
 });
