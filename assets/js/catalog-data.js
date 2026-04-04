@@ -48,7 +48,7 @@ window.MOMNT_PRODUCTS = [
     images: [
       "assets/images/product-groove.png",
       "assets/images/lifestyle-02.jpg",
-      "assets/images/welcome-banner.png",
+      "assets/images/collection-placeholder-modern.svg",
     ],
     whatsappText: "Oi, quero saber mais detalhes do Groove da MOMNT.",
   },
@@ -73,7 +73,7 @@ window.MOMNT_PRODUCTS = [
     ],
     images: [
       "assets/images/product-placeholder-modern.svg",
-      "assets/images/welcome-banner.png",
+      "assets/images/collection-placeholder-modern.svg",
       "assets/images/lifestyle-04.jpg",
     ],
     whatsappText:
@@ -100,7 +100,7 @@ window.MOMNT_PRODUCTS = [
     ],
     images: [
       "assets/images/product-phase.png",
-      "assets/images/category-classic.png",
+      "assets/images/collection-placeholder-classic.svg",
       "assets/images/lifestyle-03.jpg",
     ],
     whatsappText: "Oi, quero saber mais detalhes do Phase da MOMNT.",
@@ -126,7 +126,7 @@ window.MOMNT_PRODUCTS = [
     ],
     images: [
       "assets/images/product-placeholder-classic.svg",
-      "assets/images/category-classic.png",
+      "assets/images/collection-placeholder-classic.svg",
       "assets/images/lifestyle-01.jpg",
     ],
     whatsappText:
@@ -153,7 +153,7 @@ window.MOMNT_PRODUCTS = [
     ],
     images: [
       "assets/images/product-loop.png",
-      "assets/images/category-sport.png",
+      "assets/images/collection-placeholder-sport.svg",
       "assets/images/lifestyle-02.jpg",
     ],
     whatsappText: "Oi, quero saber mais detalhes do Loop da MOMNT.",
@@ -180,7 +180,7 @@ window.MOMNT_PRODUCTS = [
     ],
     images: [
       "assets/images/product-placeholder-sport.svg",
-      "assets/images/category-sport.png",
+      "assets/images/collection-placeholder-sport.svg",
       "assets/images/lifestyle-03.jpg",
     ],
     whatsappText:
@@ -211,7 +211,7 @@ window.MOMNT_CATEGORY_META = {
     title: "Silhuetas mais leves para uma leitura atemporal",
     description:
       "A categoria Classic organiza modelos com encaixe versatil, foco em uso diario e visual mais refinado.",
-    heroImage: "assets/images/category-classic.png",
+    heroImage: "assets/images/collection-placeholder-classic.svg",
   },
   sport: {
     label: "Sport",
@@ -219,6 +219,6 @@ window.MOMNT_CATEGORY_META = {
     title: "Energia urbana, contraste visual e espaco para novos drops",
     description:
       "A linha Sport agrupa produtos com leitura mais dinamica, incluindo placeholders preparados para futuras entradas.",
-    heroImage: "assets/images/category-sport.png",
+    heroImage: "assets/images/collection-placeholder-sport.svg",
   },
 };

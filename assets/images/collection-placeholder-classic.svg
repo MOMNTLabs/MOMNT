@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1400" role="img" aria-labelledby="title desc">
+  <title id="title">Classic collection placeholder</title>
+  <desc id="desc">Generic placeholder art for the Classic collection card.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090909"/>
+      <stop offset="100%" stop-color="#1a1714"/>
+    </linearGradient>
+    <linearGradient id="lens" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d0a235" stop-opacity="0.96"/>
+      <stop offset="100%" stop-color="#a46a18" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1400" fill="url(#bg)"/>
+  <circle cx="360" cy="250" r="190" fill="#ffffff" opacity="0.04"/>
+  <circle cx="1310" cy="1070" r="240" fill="#ffffff" opacity="0.04"/>
+  <g fill="none" stroke="#f3cc67" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+    <path d="M422 482 566 742"/>
+    <path d="M1178 482 1034 742"/>
+  </g>
+  <g>
+    <path d="M264 774h414c28 0 52 12 70 32l42 44c20 22 56 22 76 0l42-44c18-20 42-32 70-32h358c62 0 112 50 112 112v48c0 102-82 184-184 184H360c-112 0-204-92-204-204v-28c0-62 46-112 108-112Z" fill="url(#lens)"/>
+    <path d="M264 774h414c28 0 52 12 70 32l42 44c20 22 56 22 76 0l42-44c18-20 42-32 70-32h358c62 0 112 50 112 112v48c0 102-82 184-184 184H360c-112 0-204-92-204-204v-28c0-62 46-112 108-112Z" fill="none" stroke="#1f1a14" stroke-width="22"/>
+    <path d="M390 730 478 540" fill="none" stroke="#24211f" stroke-width="28" stroke-linecap="round"/>
+    <path d="M1210 730 1122 540" fill="none" stroke="#24211f" stroke-width="28" stroke-linecap="round"/>
+  </g>
+  <g fill="#f2cf72" font-family="Manrope, Arial, sans-serif">
+    <text x="192" y="152" font-size="44" font-weight="800" letter-spacing="14" opacity="0.7">CLASSIC PLACEHOLDER</text>
+    <text x="192" y="212" font-size="24" font-weight="600" letter-spacing="6" opacity="0.46">REPLACE THIS WITH YOUR FINAL CATEGORY IMAGE</text>
+  </g>
+</svg>

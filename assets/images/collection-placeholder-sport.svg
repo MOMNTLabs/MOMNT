@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1400" role="img" aria-labelledby="title desc">
+  <title id="title">Sport collection placeholder</title>
+  <desc id="desc">Generic placeholder art for the Sport collection card.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050505"/>
+      <stop offset="100%" stop-color="#111111"/>
+    </linearGradient>
+    <linearGradient id="visor" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c2a10d" stop-opacity="0.96"/>
+      <stop offset="100%" stop-color="#ca842b" stop-opacity="0.92"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1400" fill="url(#bg)"/>
+  <path d="M0 230 1600 0v118L0 348Z" fill="#ffffff" opacity="0.04"/>
+  <path d="M0 1180 1600 1020v380H0Z" fill="#ffffff" opacity="0.04"/>
+  <g fill="none" stroke="#2d2d2d" stroke-width="30" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M444 466 300 662"/>
+    <path d="M1156 466 1300 662"/>
+  </g>
+  <g>
+    <path d="M306 768c66-54 150-84 242-84h504c92 0 176 30 242 84l44 36c24 20 36 50 30 80l-14 68c-14 70-76 120-148 120H394c-72 0-134-50-148-120l-14-68c-6-30 6-60 30-80Z" fill="url(#visor)"/>
+    <path d="M306 768c66-54 150-84 242-84h504c92 0 176 30 242 84l44 36c24 20 36 50 30 80l-14 68c-14 70-76 120-148 120H394c-72 0-134-50-148-120l-14-68c-6-30 6-60 30-80Z" fill="none" stroke="#171717" stroke-width="22"/>
+    <path d="M674 744c30-18 222-18 252 0" fill="none" stroke="#171717" stroke-width="20" stroke-linecap="round"/>
+  </g>
+  <g fill="#d7b24f" font-family="Manrope, Arial, sans-serif">
+    <text x="194" y="152" font-size="44" font-weight="800" letter-spacing="14" opacity="0.76">SPORT PLACEHOLDER</text>
+    <text x="194" y="212" font-size="24" font-weight="600" letter-spacing="6" opacity="0.5">SWAP THIS IMAGE WHEN THE FINAL DROP IS READY</text>
+  </g>
+</svg>
