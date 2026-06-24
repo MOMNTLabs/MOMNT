@@ -408,12 +408,35 @@ button {
   border: 1px solid var(--admin-line);
 }
 
+.image-choice {
+  display: grid;
+  gap: 14px;
+}
+
+.image-choice[hidden] {
+  display: none;
+}
+
+.image-choice img {
+  width: 100%;
+  max-height: 56vh;
+  object-fit: contain;
+  background: #171512;
+  border: 1px solid var(--admin-line);
+}
+
 .crop-stage {
   position: relative;
   overflow: hidden;
   background: #171512;
   cursor: grab;
   touch-action: none;
+}
+
+.crop-stage[hidden],
+.image-editor-controls[hidden],
+#crop-actions[hidden] {
+  display: none;
 }
 
 .crop-stage.is-dragging {
@@ -423,7 +446,7 @@ button {
 .crop-stage canvas {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: var(--crop-aspect-ratio, 4 / 3);
 }
 
 .crop-guides {

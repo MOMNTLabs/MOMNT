@@ -41,13 +41,20 @@
     importJson: document.querySelector("#import-json"),
     resetCatalog: document.querySelector("#reset-catalog"),
     imageEditor: document.querySelector("#image-editor"),
+    imageEditorTitle: document.querySelector("#image-editor-title"),
     imageEditorClose: document.querySelector("#image-editor-close"),
+    imageChoice: document.querySelector("#image-choice"),
+    imageChoicePreview: document.querySelector("#image-choice-preview"),
+    imageUseOriginal: document.querySelector("#image-use-original"),
+    imageOpenCrop: document.querySelector("#image-open-crop"),
     cropStage: document.querySelector("#crop-stage"),
     cropCanvas: document.querySelector("#crop-canvas"),
     cropZoom: document.querySelector("#crop-zoom"),
     cropSnap: document.querySelector("#crop-snap"),
     cropApply: document.querySelector("#crop-apply"),
     cropReset: document.querySelector("#crop-reset"),
+    cropControls: document.querySelector("#image-editor-controls"),
+    cropActions: document.querySelector("#crop-actions"),
   };
 
   const clone = (value) => JSON.parse(JSON.stringify(value));
@@ -71,6 +78,7 @@
       fileTarget: "",
       image: null,
       imageDataUrl: "",
+      mode: "choice",
       scale: 1,
       minScale: 1,
       offsetX: 0,
@@ -622,6 +630,47 @@
       .join("");
   };
 
+  const cropPresets = {
+    home: {
+      label: "Banner 16:9",
+      width: 1280,
+      height: 720,
+      aspectRatio: "16 / 9",
+    },
+    product: {
+      label: "Produto 4:3",
+      width: 1200,
+      height: 900,
+      aspectRatio: "4 / 3",
+    },
+    category: {
+      label: "Categoria 4:3",
+      width: 1200,
+      height: 900,
+      aspectRatio: "4 / 3",
+    },
+  };
+
+  const getCropPreset = (target) => cropPresets[target] ?? cropPresets.product;
+
+  const writeImageToTarget = (dataUrl, target) => {
+    if (target === "product" && elements.productForm) {
+      const input = elements.productForm.elements.images;
+      input.value = [input.value.trim(), dataUrl].filter(Boolean).join("\n");
+      readProductForm();
+    }
+
+    if (target === "category" && elements.categoryForm) {
+      elements.categoryForm.elements.heroImage.value = dataUrl;
+      readCategoryForm();
+    }
+
+    if (target === "home" && elements.homeForm) {
+      elements.homeForm.elements.heroImage.value = dataUrl;
+      readHomeForm();
+    }
+  };
+
   const getExportPayload = () => ({
     products: state.catalog.products,
     categoryMeta: state.catalog.categoryMeta,
@@ -704,6 +753,26 @@
     elements.cropCanvas instanceof HTMLCanvasElement
       ? elements.cropCanvas
       : null;
+
+  const setEditorMode = (mode) => {
+    state.imageEditor.mode = mode;
+
+    if (elements.imageChoice) {
+      elements.imageChoice.hidden = mode !== "choice";
+    }
+
+    if (elements.cropStage) {
+      elements.cropStage.hidden = mode !== "crop";
+    }
+
+    if (elements.cropControls) {
+      elements.cropControls.hidden = mode !== "crop";
+    }
+
+    if (elements.cropActions) {
+      elements.cropActions.hidden = mode !== "crop";
+    }
+  };
 
   const clampCrop = () => {
     const canvas = getCropCanvas();
@@ -837,21 +906,40 @@
       }
 
       const image = new Image();
+      const preset = getCropPreset(target);
 
       image.addEventListener("load", () => {
+        const canvas = getCropCanvas();
+
+        if (canvas) {
+          canvas.width = preset.width;
+          canvas.height = preset.height;
+          canvas.style.setProperty("--crop-aspect-ratio", preset.aspectRatio);
+        }
+
         state.imageEditor = {
           ...state.imageEditor,
           fileTarget: String(target ?? ""),
           image,
           imageDataUrl: dataUrl,
+          mode: "choice",
           scale: 1,
           minScale: 1,
           offsetX: 0,
           offsetY: 0,
           dragging: false,
         };
+
+        if (elements.imageEditorTitle) {
+          elements.imageEditorTitle.textContent = `Imagem | ${preset.label}`;
+        }
+
+        if (elements.imageChoicePreview instanceof HTMLImageElement) {
+          elements.imageChoicePreview.src = dataUrl;
+        }
+
         elements.imageEditor.hidden = false;
-        centerCropImage();
+        setEditorMode("choice");
       });
 
       image.src = dataUrl;
@@ -863,9 +951,14 @@
   const closeImageEditor = () => {
     state.imageEditor.image = null;
     state.imageEditor.imageDataUrl = "";
+    state.imageEditor.mode = "choice";
 
     if (elements.imageEditor) {
       elements.imageEditor.hidden = true;
+    }
+
+    if (elements.imageChoicePreview instanceof HTMLImageElement) {
+      elements.imageChoicePreview.removeAttribute("src");
     }
   };
 
@@ -882,23 +975,29 @@
       ? webpDataUrl
       : canvas.toDataURL("image/jpeg", 0.82);
 
-    if (target === "product" && elements.productForm) {
-      const input = elements.productForm.elements.images;
-      input.value = [input.value.trim(), dataUrl].filter(Boolean).join("\n");
-      readProductForm();
-    }
-
-    if (target === "category" && elements.categoryForm) {
-      elements.categoryForm.elements.heroImage.value = dataUrl;
-      readCategoryForm();
-    }
-
-    if (target === "home" && elements.homeForm) {
-      elements.homeForm.elements.heroImage.value = dataUrl;
-      readHomeForm();
-    }
-
+    writeImageToTarget(dataUrl, target);
     closeImageEditor();
+  };
+
+  const useOriginalImage = () => {
+    if (!state.imageEditor.imageDataUrl) {
+      return;
+    }
+
+    writeImageToTarget(
+      state.imageEditor.imageDataUrl,
+      state.imageEditor.fileTarget,
+    );
+    closeImageEditor();
+  };
+
+  const openCropEditor = () => {
+    if (!state.imageEditor.image) {
+      return;
+    }
+
+    setEditorMode("crop");
+    centerCropImage();
   };
 
   const createProduct = () => {
@@ -1175,6 +1274,8 @@
   elements.homeForm?.addEventListener("input", readHomeForm);
 
   elements.imageEditorClose?.addEventListener("click", closeImageEditor);
+  elements.imageUseOriginal?.addEventListener("click", useOriginalImage);
+  elements.imageOpenCrop?.addEventListener("click", openCropEditor);
   elements.cropApply?.addEventListener("click", applyEditedImage);
   elements.cropReset?.addEventListener("click", centerCropImage);
 

@@ -12,7 +12,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/png" href="assets/images/momnt-symbol.png" />
-    <link rel="stylesheet" href="assets/css/admin.css?v=20260624a" />
+    <link rel="stylesheet" href="assets/css/admin.css?v=20260624e" />
   </head>
   <body class="admin-page">
     <section class="admin-lock" id="admin-lock">
@@ -349,7 +349,7 @@
     <div class="image-editor" id="image-editor" hidden>
       <div class="image-editor-panel" role="dialog" aria-modal="true" aria-label="Editar imagem">
         <div class="drawer-head">
-          <p class="admin-kicker">Editar imagem</p>
+          <p class="admin-kicker" id="image-editor-title">Imagem</p>
           <button class="admin-icon-button" type="button" id="image-editor-close" aria-label="Fechar editor" title="Fechar">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M6 6l12 12M18 6L6 18"></path>
@@ -357,7 +357,19 @@
           </button>
         </div>
 
-        <div class="crop-stage" id="crop-stage">
+        <div class="image-choice" id="image-choice">
+          <img id="image-choice-preview" alt="Preview da imagem" />
+          <div class="admin-form-actions">
+            <button class="admin-button admin-button-primary" type="button" id="image-use-original">
+              Usar original
+            </button>
+            <button class="admin-button" type="button" id="image-open-crop">
+              Editar recorte
+            </button>
+          </div>
+        </div>
+
+        <div class="crop-stage" id="crop-stage" hidden>
           <canvas id="crop-canvas" width="960" height="720"></canvas>
           <div class="crop-guides" aria-hidden="true">
             <span class="guide guide-v"></span>
@@ -369,7 +381,7 @@
           </div>
         </div>
 
-        <div class="image-editor-controls">
+        <div class="image-editor-controls" id="image-editor-controls" hidden>
           <label class="field">
             <span>Zoom</span>
             <input id="crop-zoom" type="range" min="1" max="3" step="0.01" value="1" />
@@ -380,7 +392,7 @@
           </label>
         </div>
 
-        <div class="admin-form-actions">
+        <div class="admin-form-actions" id="crop-actions" hidden>
           <button class="admin-button admin-button-primary" type="button" id="crop-apply">
             Aplicar
           </button>
@@ -392,6 +404,6 @@
     </div>
 
     <script src="assets/js/catalog-data.js?v=20260624d"></script>
-    <script src="assets/js/admin.js?v=20260624d"></script>
+    <script src="assets/js/admin.js?v=20260624e"></script>
   </body>
 </html>
