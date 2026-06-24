@@ -70,7 +70,7 @@
     imageEditor: {
       fileTarget: "",
       image: null,
-      imageUrl: "",
+      imageDataUrl: "",
       scale: 1,
       minScale: 1,
       offsetX: 0,
@@ -825,39 +825,42 @@
       return;
     }
 
-    if (state.imageEditor.imageUrl) {
-      URL.revokeObjectURL(state.imageEditor.imageUrl);
-    }
+    const reader = new FileReader();
 
-    const image = new Image();
-    const imageUrl = URL.createObjectURL(file);
+    reader.addEventListener("load", () => {
+      const dataUrl = String(reader.result ?? "");
 
-    image.addEventListener("load", () => {
-      state.imageEditor = {
-        ...state.imageEditor,
-        fileTarget: String(target ?? ""),
-        image,
-        imageUrl,
-        scale: 1,
-        minScale: 1,
-        offsetX: 0,
-        offsetY: 0,
-        dragging: false,
-      };
-      elements.imageEditor.hidden = false;
-      centerCropImage();
+      if (!dataUrl) {
+        return;
+      }
+
+      const image = new Image();
+
+      image.addEventListener("load", () => {
+        state.imageEditor = {
+          ...state.imageEditor,
+          fileTarget: String(target ?? ""),
+          image,
+          imageDataUrl: dataUrl,
+          scale: 1,
+          minScale: 1,
+          offsetX: 0,
+          offsetY: 0,
+          dragging: false,
+        };
+        elements.imageEditor.hidden = false;
+        centerCropImage();
+      });
+
+      image.src = dataUrl;
     });
 
-    image.src = imageUrl;
+    reader.readAsDataURL(file);
   };
 
   const closeImageEditor = () => {
-    if (state.imageEditor.imageUrl) {
-      URL.revokeObjectURL(state.imageEditor.imageUrl);
-    }
-
     state.imageEditor.image = null;
-    state.imageEditor.imageUrl = "";
+    state.imageEditor.imageDataUrl = "";
 
     if (elements.imageEditor) {
       elements.imageEditor.hidden = true;
