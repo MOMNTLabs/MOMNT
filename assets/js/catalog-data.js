@@ -236,6 +236,19 @@ window.MOMNT_SITE_CONTENT = {
     featuredProductSlugs: ["wave-2", "groove", "phase", "loop"],
     featuredCategoryKeys: ["modern", "classic", "sport"],
   },
+  theme: {
+    background: "#ffffff",
+    surface: "#ffffff",
+    surfaceSoft: "#f5efe7",
+    ink: "#121212",
+    textLight: "#f7f2eb",
+    muted: "#5f564f",
+    line: "#ece6dd",
+    accent: "#d2ad7b",
+    success: "#10b86b",
+    danger: "#d72b38",
+    dark: "#080808",
+  },
 };
 
 (function () {
@@ -257,6 +270,64 @@ window.MOMNT_SITE_CONTENT = {
     Array.isArray(value)
       ? value.map((item) => String(item ?? "").trim()).filter(Boolean)
       : [];
+
+  const defaultTheme = {
+    background: "#ffffff",
+    surface: "#ffffff",
+    surfaceSoft: "#f5efe7",
+    ink: "#121212",
+    textLight: "#f7f2eb",
+    muted: "#5f564f",
+    line: "#ece6dd",
+    accent: "#d2ad7b",
+    success: "#10b86b",
+    danger: "#d72b38",
+    dark: "#080808",
+  };
+
+  const isCssColor = (value) =>
+    Boolean(value) &&
+    window.CSS &&
+    typeof window.CSS.supports === "function" &&
+    window.CSS.supports("color", value);
+
+  const normalizeTheme = (theme = {}) =>
+    Object.fromEntries(
+      Object.entries(defaultTheme).map(([key, fallback]) => {
+        const value = String(theme[key] ?? "").trim();
+        return [key, isCssColor(value) ? value : fallback];
+      }),
+    );
+
+  const applyTheme = (theme = {}) => {
+    const normalizedTheme = normalizeTheme(theme);
+    const rootStyle = document.documentElement.style;
+    const pairs = {
+      "--black": normalizedTheme.dark,
+      "--ink": normalizedTheme.ink,
+      "--text": normalizedTheme.textLight,
+      "--muted": normalizedTheme.muted,
+      "--line": normalizedTheme.line,
+      "--surface": normalizedTheme.surface,
+      "--surface-soft": normalizedTheme.surfaceSoft,
+      "--gold": normalizedTheme.accent,
+      "--green": normalizedTheme.success,
+      "--red": normalizedTheme.danger,
+      "--shop-bg": normalizedTheme.background,
+      "--shop-surface": normalizedTheme.surface,
+      "--shop-surface-soft": normalizedTheme.surfaceSoft,
+      "--shop-line": normalizedTheme.line,
+      "--shop-muted": normalizedTheme.muted,
+      "--shop-dark": normalizedTheme.dark,
+      "--shop-accent": normalizedTheme.accent,
+      "--shop-green": normalizedTheme.success,
+      "--shop-red": normalizedTheme.danger,
+    };
+
+    Object.entries(pairs).forEach(([name, value]) => {
+      rootStyle.setProperty(name, value);
+    });
+  };
 
   const normalizeProduct = (product) => {
     if (!isPlainObject(product)) {
@@ -354,6 +425,15 @@ window.MOMNT_SITE_CONTENT = {
             ? catalog.siteContent.home
             : {}),
         },
+        theme: normalizeTheme({
+          ...defaultTheme,
+          ...(isPlainObject(defaultCatalog.siteContent?.theme)
+            ? defaultCatalog.siteContent.theme
+            : {}),
+          ...(isPlainObject(catalog.siteContent?.theme)
+            ? catalog.siteContent.theme
+            : {}),
+        }),
       },
     };
   };
@@ -377,4 +457,6 @@ window.MOMNT_SITE_CONTENT = {
     window.MOMNT_CATEGORY_META = savedCatalog.categoryMeta;
     window.MOMNT_SITE_CONTENT = savedCatalog.siteContent;
   }
+
+  applyTheme(window.MOMNT_SITE_CONTENT.theme);
 })();

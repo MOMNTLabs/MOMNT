@@ -35,6 +35,8 @@
     categoryPreview: document.querySelector("#category-preview"),
     homeForm: document.querySelector("#home-form"),
     homePreview: document.querySelector("#home-preview"),
+    themeForm: document.querySelector("#theme-form"),
+    themeFields: document.querySelector("#theme-fields"),
     exportOutput: document.querySelector("#export-output"),
     exportJson: document.querySelector("#export-json"),
     exportJs: document.querySelector("#export-js"),
@@ -64,6 +66,34 @@
   };
 
   const clone = (value) => JSON.parse(JSON.stringify(value));
+
+  const defaultTheme = {
+    background: "#ffffff",
+    surface: "#ffffff",
+    surfaceSoft: "#f5efe7",
+    ink: "#121212",
+    textLight: "#f7f2eb",
+    muted: "#5f564f",
+    line: "#ece6dd",
+    accent: "#d2ad7b",
+    success: "#10b86b",
+    danger: "#d72b38",
+    dark: "#080808",
+  };
+
+  const themeFields = [
+    ["background", "Fundo"],
+    ["surface", "Superfície"],
+    ["surfaceSoft", "Superfície suave"],
+    ["ink", "Texto"],
+    ["textLight", "Texto claro"],
+    ["muted", "Neutro"],
+    ["line", "Linha"],
+    ["accent", "Destaque"],
+    ["success", "Sucesso"],
+    ["danger", "Alerta"],
+    ["dark", "Escuro"],
+  ];
 
   const state = {
     catalog: {
@@ -105,6 +135,34 @@
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
 
+  const isCssColor = (value) =>
+    Boolean(value) &&
+    window.CSS &&
+    typeof window.CSS.supports === "function" &&
+    window.CSS.supports("color", value);
+
+  const sanitizeColor = (value, fallback) => {
+    const nextValue = String(value ?? "").trim();
+
+    return isCssColor(nextValue) ? nextValue : fallback;
+  };
+
+  const colorToHex = (value, fallback = "#000000") => {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+
+    if (!context) {
+      return fallback;
+    }
+
+    context.fillStyle = fallback;
+    context.fillStyle = value;
+
+    return /^#[0-9a-f]{6}$/i.test(context.fillStyle)
+      ? context.fillStyle
+      : fallback;
+  };
+
   const normalizeSlug = (value) =>
     String(value ?? "")
       .normalize("NFD")
@@ -139,6 +197,44 @@
 
   const setDirty = (dirty = true) => {
     state.dirty = dirty;
+  };
+
+  const normalizeTheme = (theme = {}) =>
+    Object.fromEntries(
+      themeFields.map(([key]) => [
+        key,
+        sanitizeColor(theme[key], defaultTheme[key]),
+      ]),
+    );
+
+  const applyTheme = (theme = {}) => {
+    const normalizedTheme = normalizeTheme(theme);
+    const rootStyle = document.documentElement.style;
+    const pairs = {
+      "--black": normalizedTheme.dark,
+      "--ink": normalizedTheme.ink,
+      "--text": normalizedTheme.textLight,
+      "--muted": normalizedTheme.muted,
+      "--line": normalizedTheme.line,
+      "--surface": normalizedTheme.surface,
+      "--surface-soft": normalizedTheme.surfaceSoft,
+      "--gold": normalizedTheme.accent,
+      "--green": normalizedTheme.success,
+      "--red": normalizedTheme.danger,
+      "--shop-bg": normalizedTheme.background,
+      "--shop-surface": normalizedTheme.surface,
+      "--shop-surface-soft": normalizedTheme.surfaceSoft,
+      "--shop-line": normalizedTheme.line,
+      "--shop-muted": normalizedTheme.muted,
+      "--shop-dark": normalizedTheme.dark,
+      "--shop-accent": normalizedTheme.accent,
+      "--shop-green": normalizedTheme.success,
+      "--shop-red": normalizedTheme.danger,
+    };
+
+    Object.entries(pairs).forEach(([name, value]) => {
+      rootStyle.setProperty(name, value);
+    });
   };
 
   const openProductEditor = (slug) => {
@@ -242,6 +338,11 @@
       ...(defaultCatalog.siteContent?.home ?? {}),
       ...(nextCatalog.siteContent.home ?? {}),
     };
+    nextCatalog.siteContent.theme = normalizeTheme({
+      ...defaultTheme,
+      ...(defaultCatalog.siteContent?.theme ?? {}),
+      ...(nextCatalog.siteContent.theme ?? {}),
+    });
 
     return nextCatalog;
   };
@@ -617,6 +718,84 @@
     ]);
   };
 
+  const getTheme = () =>
+    normalizeTheme({
+      ...defaultTheme,
+      ...(state.catalog.siteContent.theme ?? {}),
+    });
+
+  const fillThemeForm = () => {
+    if (!elements.themeFields) {
+      return;
+    }
+
+    const theme = getTheme();
+
+    elements.themeFields.innerHTML = themeFields
+      .map(([key, label]) => {
+        const value = theme[key];
+        const hexValue = colorToHex(value, defaultTheme[key]);
+
+        return `
+          <label class="color-field">
+            <span>${escapeHtml(label)}</span>
+            <div class="color-control">
+              <input type="color" value="${escapeHtml(hexValue)}" data-theme-color="${escapeHtml(key)}" />
+              <input type="text" value="${escapeHtml(value)}" data-theme-text="${escapeHtml(key)}" spellcheck="false" />
+            </div>
+          </label>
+        `;
+      })
+      .join("");
+  };
+
+  const readThemeForm = (event) => {
+    if (!elements.themeFields) {
+      return;
+    }
+
+    const target = event?.target;
+
+    if (!(target instanceof HTMLInputElement)) {
+      return;
+    }
+
+    const colorKey =
+      target.getAttribute("data-theme-color") ??
+      target.getAttribute("data-theme-text");
+
+    if (!colorKey || !defaultTheme[colorKey]) {
+      return;
+    }
+
+    const textInput = elements.themeFields.querySelector(
+      `[data-theme-text="${colorKey}"]`,
+    );
+    const colorInput = elements.themeFields.querySelector(
+      `[data-theme-color="${colorKey}"]`,
+    );
+    const isColorInput = target.hasAttribute("data-theme-color");
+    const nextValue = isColorInput
+      ? target.value
+      : sanitizeColor(target.value, getTheme()[colorKey]);
+
+    state.catalog.siteContent.theme = {
+      ...getTheme(),
+      [colorKey]: nextValue,
+    };
+
+    if (textInput instanceof HTMLInputElement) {
+      textInput.value = nextValue;
+    }
+
+    if (colorInput instanceof HTMLInputElement) {
+      colorInput.value = colorToHex(nextValue, defaultTheme[colorKey]);
+    }
+
+    applyTheme(state.catalog.siteContent.theme);
+    setDirty();
+  };
+
   const renderImagePreview = (root, images) => {
     if (!root) {
       return;
@@ -701,6 +880,47 @@
       "    categoryMeta: window.MOMNT_CATEGORY_META,",
       "    siteContent: window.MOMNT_SITE_CONTENT,",
       "  };",
+      `  const defaultTheme = ${JSON.stringify(defaultTheme, null, 4)};`,
+      "  const isCssColor = (value) =>",
+      "    Boolean(value) &&",
+      "    window.CSS &&",
+      "    typeof window.CSS.supports === 'function' &&",
+      "    window.CSS.supports('color', value);",
+      "  const normalizeTheme = (theme = {}) =>",
+      "    Object.fromEntries(",
+      "      Object.entries(defaultTheme).map(([key, fallback]) => {",
+      "        const value = String(theme[key] ?? '').trim();",
+      "        return [key, isCssColor(value) ? value : fallback];",
+      "      }),",
+      "    );",
+      "  const applyTheme = (theme = {}) => {",
+      "    const normalizedTheme = normalizeTheme(theme);",
+      "    const rootStyle = document.documentElement.style;",
+      "    const pairs = {",
+      "      '--black': normalizedTheme.dark,",
+      "      '--ink': normalizedTheme.ink,",
+      "      '--text': normalizedTheme.textLight,",
+      "      '--muted': normalizedTheme.muted,",
+      "      '--line': normalizedTheme.line,",
+      "      '--surface': normalizedTheme.surface,",
+      "      '--surface-soft': normalizedTheme.surfaceSoft,",
+      "      '--gold': normalizedTheme.accent,",
+      "      '--green': normalizedTheme.success,",
+      "      '--red': normalizedTheme.danger,",
+      "      '--shop-bg': normalizedTheme.background,",
+      "      '--shop-surface': normalizedTheme.surface,",
+      "      '--shop-surface-soft': normalizedTheme.surfaceSoft,",
+      "      '--shop-line': normalizedTheme.line,",
+      "      '--shop-muted': normalizedTheme.muted,",
+      "      '--shop-dark': normalizedTheme.dark,",
+      "      '--shop-accent': normalizedTheme.accent,",
+      "      '--shop-green': normalizedTheme.success,",
+      "      '--shop-red': normalizedTheme.danger,",
+      "    };",
+      "    Object.entries(pairs).forEach(([name, value]) => {",
+      "      rootStyle.setProperty(name, value);",
+      "    });",
+      "  };",
       "  window.MOMNT_ADMIN_STORAGE_KEY = STORAGE_KEY;",
       "  window.MOMNT_DEFAULT_CATALOG = clone(defaultCatalog);",
       "  try {",
@@ -711,6 +931,8 @@
       "      window.MOMNT_SITE_CONTENT = saved.siteContent || window.MOMNT_SITE_CONTENT;",
       "    }",
       "  } catch {}",
+      "  window.MOMNT_SITE_CONTENT.theme = normalizeTheme(window.MOMNT_SITE_CONTENT.theme);",
+      "  applyTheme(window.MOMNT_SITE_CONTENT.theme);",
       "})();",
       "",
     ].join("\n");
@@ -1640,10 +1862,13 @@
   };
 
   const renderAll = () => {
+    state.catalog.siteContent.theme = getTheme();
+    applyTheme(state.catalog.siteContent.theme);
     syncCategoryLabels();
     renderProducts();
     renderCategories();
     fillHomeForm();
+    fillThemeForm();
     renderExport();
   };
 
@@ -1701,6 +1926,7 @@
   elements.productForm?.addEventListener("input", readProductForm);
   elements.categoryForm?.addEventListener("input", readCategoryForm);
   elements.homeForm?.addEventListener("input", readHomeForm);
+  elements.themeFields?.addEventListener("input", readThemeForm);
 
   elements.imageEditorClose?.addEventListener("click", closeImageEditor);
   elements.imageUseOriginal?.addEventListener("click", useOriginalImage);

@@ -28,7 +28,7 @@ body {
   margin: 0;
   font-family: "Manrope", sans-serif;
   color: var(--ink);
-  background: #fff;
+  background: var(--surface);
 }
 
 img {
@@ -73,7 +73,7 @@ figure {
 }
 
 .announcement-bar {
-  background: #000;
+  background: var(--black);
   color: rgba(255, 255, 255, 0.88);
 }
 
@@ -98,7 +98,7 @@ figure {
   position: relative;
   min-height: 72vh;
   color: var(--text);
-  background: #000;
+  background: var(--black);
 }
 
 .hero-media,

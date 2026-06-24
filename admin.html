@@ -12,7 +12,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/png" href="assets/images/momnt-symbol.png" />
-    <link rel="stylesheet" href="assets/css/admin.css?v=20260624g" />
+    <link rel="stylesheet" href="assets/css/admin.css?v=20260624h" />
   </head>
   <body class="admin-page">
     <section class="admin-lock" id="admin-lock">
@@ -70,6 +70,9 @@
             </button>
             <button class="admin-tab" type="button" data-tab="home">
               Home e banners
+            </button>
+            <button class="admin-tab" type="button" data-tab="theme">
+              Cores
             </button>
             <button class="admin-tab" type="button" data-tab="export">
               Importar e exportar
@@ -303,6 +306,19 @@
             </form>
           </section>
 
+          <section class="admin-panel" data-panel="theme" hidden>
+            <div class="admin-panel-header">
+              <div>
+                <p class="admin-kicker">Visual</p>
+                <h2>Cores</h2>
+              </div>
+            </div>
+
+            <form class="admin-form" id="theme-form">
+              <div class="color-grid" id="theme-fields"></div>
+            </form>
+          </section>
+
           <section class="admin-panel" data-panel="export" hidden>
             <div class="admin-panel-header">
               <div>
@@ -410,7 +426,7 @@
       </div>
     </div>
 
-    <script src="assets/js/catalog-data.js?v=20260624d"></script>
-    <script src="assets/js/admin.js?v=20260624k"></script>
+    <script src="assets/js/catalog-data.js?v=20260624e"></script>
+    <script src="assets/js/admin.js?v=20260624l"></script>
   </body>
 </html>
