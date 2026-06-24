@@ -974,7 +974,7 @@
       image.src = src;
     });
 
-  const readFileAsImageElement = (file) =>
+  const readFileAsDataImageElement = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
 
@@ -1004,16 +1004,161 @@
       reader.readAsDataURL(file);
     });
 
-  const decodeImageFile = async (file) => {
+  const readFileAsImageElement = (file) =>
+    new Promise((resolve, reject) => {
+      if (!window.URL || typeof window.URL.createObjectURL !== "function") {
+        readFileAsDataImageElement(file).then(resolve).catch(reject);
+        return;
+      }
+
+      const objectUrl = window.URL.createObjectURL(file);
+
+      loadImageElement(objectUrl)
+        .then(resolve)
+        .catch(() => readFileAsDataImageElement(file).then(resolve).catch(reject))
+        .finally(() => window.URL.revokeObjectURL(objectUrl));
+    });
+
+  const readImageSize = async (file) => {
+    const buffer = await file.slice(0, 524288).arrayBuffer();
+    const view = new DataView(buffer);
+
+    if (
+      view.byteLength >= 24 &&
+      view.getUint32(0) === 0x89504e47 &&
+      view.getUint32(4) === 0x0d0a1a0a
+    ) {
+      return {
+        width: view.getUint32(16),
+        height: view.getUint32(20),
+      };
+    }
+
+    if (
+      view.byteLength >= 12 &&
+      view.getUint32(0, true) === 0x46464952 &&
+      view.getUint32(8, true) === 0x50424557
+    ) {
+      let offset = 12;
+
+      while (offset + 8 <= view.byteLength) {
+        const chunk = view.getUint32(offset, true);
+        const size = view.getUint32(offset + 4, true);
+
+        if (chunk === 0x58385056 && offset + 30 <= view.byteLength) {
+          return {
+            width:
+              1 +
+              view.getUint8(offset + 12) +
+              (view.getUint8(offset + 13) << 8) +
+              (view.getUint8(offset + 14) << 16),
+            height:
+              1 +
+              view.getUint8(offset + 15) +
+              (view.getUint8(offset + 16) << 8) +
+              (view.getUint8(offset + 17) << 16),
+          };
+        }
+
+        if (chunk === 0x20385056 && offset + 30 <= view.byteLength) {
+          return {
+            width: view.getUint16(offset + 26, true) & 0x3fff,
+            height: view.getUint16(offset + 28, true) & 0x3fff,
+          };
+        }
+
+        offset += 8 + size + (size % 2);
+      }
+    }
+
+    if (view.byteLength >= 4 && view.getUint16(0) === 0xffd8) {
+      let offset = 2;
+
+      while (offset + 9 < view.byteLength) {
+        if (view.getUint8(offset) !== 0xff) {
+          offset += 1;
+          continue;
+        }
+
+        const marker = view.getUint8(offset + 1);
+        const size = view.getUint16(offset + 2);
+
+        if (
+          marker >= 0xc0 &&
+          marker <= 0xcf &&
+          ![0xc4, 0xc8, 0xcc].includes(marker)
+        ) {
+          return {
+            width: view.getUint16(offset + 7),
+            height: view.getUint16(offset + 5),
+          };
+        }
+
+        if (!size) {
+          break;
+        }
+
+        offset += 2 + size;
+      }
+    }
+
+    return null;
+  };
+
+  const getResizeOptions = async (file, target) => {
+    const size = await readImageSize(file).catch(() => null);
+
+    if (!size || !size.width || !size.height) {
+      return {};
+    }
+
+    const maxEdge = getOriginalExportLimit(target);
+    const longestEdge = Math.max(size.width, size.height);
+
+    if (longestEdge <= maxEdge) {
+      return {};
+    }
+
+    const scale = maxEdge / longestEdge;
+
+    return {
+      resizeWidth: Math.max(1, Math.round(size.width * scale)),
+      resizeHeight: Math.max(1, Math.round(size.height * scale)),
+      resizeQuality: "high",
+    };
+  };
+
+  const withTimeout = (promise, timeoutMs, message) =>
+    new Promise((resolve, reject) => {
+      const timeout = window.setTimeout(() => {
+        reject(new Error(message));
+      }, timeoutMs);
+
+      promise
+        .then(resolve)
+        .catch(reject)
+        .finally(() => window.clearTimeout(timeout));
+    });
+
+  const decodeImageFile = async (file, target) => {
     if ("createImageBitmap" in window) {
+      const resizeOptions = await getResizeOptions(file, target);
+
       try {
         return await window.createImageBitmap(file, {
           imageOrientation: "from-image",
+          ...resizeOptions,
         });
       } catch (error) {
         try {
-          return await window.createImageBitmap(file);
-        } catch {}
+          return await window.createImageBitmap(file, resizeOptions);
+        } catch (resizeError) {}
+      }
+
+      try {
+        return await window.createImageBitmap(file);
+      } catch (error) {
+        // Falls back to the FileReader path below.
       }
     }
 
@@ -1082,7 +1227,11 @@
 
     try {
       setImageEditorStatus("loading", "Preparando imagem...", null);
-      decodedImage = await decodeImageFile(file);
+      decodedImage = await withTimeout(
+        decodeImageFile(file, target),
+        30000,
+        "Image processing timeout.",
+      );
       setImageEditorStatus("loading", "Otimizando imagem...", null);
       await waitForPaint();
 
