@@ -408,6 +408,52 @@ button {
   border: 1px solid var(--admin-line);
 }
 
+.image-editor-status {
+  display: grid;
+  gap: 8px;
+  color: var(--admin-text);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.image-editor-status[hidden] {
+  display: none;
+}
+
+.image-editor-status.is-error {
+  color: #b42318;
+}
+
+.image-progress {
+  position: relative;
+  height: 6px;
+  overflow: hidden;
+  background: #e4dbce;
+}
+
+.image-progress span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0%;
+  background: var(--admin-accent);
+  transition: width 0.18s ease;
+}
+
+.image-progress.is-indeterminate span {
+  width: 42%;
+  animation: image-progress-slide 1s ease-in-out infinite;
+}
+
+@keyframes image-progress-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(240%);
+  }
+}
+
 .image-choice {
   display: grid;
   gap: 14px;

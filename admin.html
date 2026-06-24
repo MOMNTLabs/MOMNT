@@ -12,7 +12,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/png" href="assets/images/momnt-symbol.png" />
-    <link rel="stylesheet" href="assets/css/admin.css?v=20260624e" />
+    <link rel="stylesheet" href="assets/css/admin.css?v=20260624g" />
   </head>
   <body class="admin-page">
     <section class="admin-lock" id="admin-lock">
@@ -357,11 +357,18 @@
           </button>
         </div>
 
+        <div class="image-editor-status" id="image-editor-status" role="status" aria-live="polite" hidden>
+          <span id="image-editor-status-text">Carregando imagem...</span>
+          <div class="image-progress" id="image-editor-progress-bar" aria-hidden="true">
+            <span id="image-editor-progress"></span>
+          </div>
+        </div>
+
         <div class="image-choice" id="image-choice">
           <img id="image-choice-preview" alt="Preview da imagem" />
           <div class="admin-form-actions">
             <button class="admin-button admin-button-primary" type="button" id="image-use-original">
-              Usar original
+              Sem recorte
             </button>
             <button class="admin-button" type="button" id="image-open-crop">
               Editar recorte
@@ -404,6 +411,6 @@
     </div>
 
     <script src="assets/js/catalog-data.js?v=20260624d"></script>
-    <script src="assets/js/admin.js?v=20260624f"></script>
+    <script src="assets/js/admin.js?v=20260624g"></script>
   </body>
 </html>

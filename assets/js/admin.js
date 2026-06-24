@@ -43,6 +43,10 @@
     imageEditor: document.querySelector("#image-editor"),
     imageEditorTitle: document.querySelector("#image-editor-title"),
     imageEditorClose: document.querySelector("#image-editor-close"),
+    imageEditorStatus: document.querySelector("#image-editor-status"),
+    imageEditorStatusText: document.querySelector("#image-editor-status-text"),
+    imageEditorProgressBar: document.querySelector("#image-editor-progress-bar"),
+    imageEditorProgress: document.querySelector("#image-editor-progress"),
     imageChoice: document.querySelector("#image-choice"),
     imageChoicePreview: document.querySelector("#image-choice-preview"),
     imageUseOriginal: document.querySelector("#image-use-original"),
@@ -754,6 +758,43 @@
       ? elements.cropCanvas
       : null;
 
+  const waitForPaint = () =>
+    new Promise((resolve) => {
+      window.requestAnimationFrame(() => window.requestAnimationFrame(resolve));
+    });
+
+  const setImageEditorStatus = (type = "", message = "", progress = 0) => {
+    if (!elements.imageEditorStatus) {
+      return;
+    }
+
+    elements.imageEditorStatus.hidden = !type;
+    elements.imageEditorStatus.classList.toggle("is-error", type === "error");
+
+    if (elements.imageEditorStatusText) {
+      elements.imageEditorStatusText.textContent = message;
+    }
+
+    if (elements.imageEditorProgressBar instanceof HTMLElement) {
+      elements.imageEditorProgressBar.hidden = type !== "loading";
+      elements.imageEditorProgressBar.classList.toggle(
+        "is-indeterminate",
+        progress === null,
+      );
+    }
+
+    if (elements.imageEditorProgress instanceof HTMLElement) {
+      const nextProgress =
+        typeof progress === "number" ? Math.max(0, Math.min(100, progress)) : 0;
+      elements.imageEditorProgress.style.width = `${nextProgress}%`;
+    }
+  };
+
+  const showImageEditorError = (message) => {
+    setImageEditorStatus("error", message);
+    showToast(message);
+  };
+
   const setEditorMode = (mode) => {
     state.imageEditor.mode = mode;
 
@@ -891,55 +932,152 @@
     renderCrop();
   };
 
+  const getOriginalExportLimit = (target) => {
+    if (target === "home") {
+      return 1920;
+    }
+
+    if (target === "product") {
+      return 1800;
+    }
+
+    return 1600;
+  };
+
+  const canvasToOptimizedDataUrl = (canvas) => {
+    const webpDataUrl = canvas.toDataURL("image/webp", 0.82);
+
+    if (webpDataUrl.startsWith("data:image/webp")) {
+      return webpDataUrl;
+    }
+
+    return canvas.toDataURL("image/jpeg", 0.82);
+  };
+
+  const exportOriginalImage = (image, target) => {
+    const maxEdge = getOriginalExportLimit(target);
+    const longestEdge = Math.max(image.naturalWidth, image.naturalHeight);
+    const scale = longestEdge > maxEdge ? maxEdge / longestEdge : 1;
+    const width = Math.max(1, Math.round(image.naturalWidth * scale));
+    const height = Math.max(1, Math.round(image.naturalHeight * scale));
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+
+    if (!context) {
+      throw new Error("Canvas indisponível.");
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+    context.drawImage(image, 0, 0, width, height);
+    return canvasToOptimizedDataUrl(canvas);
+  };
+
   const openImageEditor = (file, target) => {
     if (!file || !elements.imageEditor) {
       return;
     }
 
+    if (!file.type.startsWith("image/")) {
+      showImageEditorError("Selecione um arquivo de imagem.");
+      return;
+    }
+
+    const preset = getCropPreset(target);
     const reader = new FileReader();
+
+    state.imageEditor = {
+      ...state.imageEditor,
+      fileTarget: String(target ?? ""),
+      image: null,
+      imageDataUrl: "",
+      mode: "loading",
+      scale: 1,
+      minScale: 1,
+      offsetX: 0,
+      offsetY: 0,
+      dragging: false,
+    };
+
+    if (elements.imageEditorTitle) {
+      elements.imageEditorTitle.textContent = `Imagem | ${preset.label}`;
+    }
+
+    if (elements.imageChoicePreview instanceof HTMLImageElement) {
+      elements.imageChoicePreview.removeAttribute("src");
+    }
+
+    elements.imageEditor.hidden = false;
+    setEditorMode("loading");
+    setImageEditorStatus("loading", "Carregando imagem...", 0);
+
+    reader.addEventListener("progress", (event) => {
+      const progress = event.lengthComputable
+        ? Math.min(88, Math.round((event.loaded / event.total) * 88))
+        : null;
+      setImageEditorStatus("loading", "Carregando imagem...", progress);
+    });
+
+    reader.addEventListener("error", () => {
+      setEditorMode("loading");
+      showImageEditorError("Não foi possível carregar a imagem.");
+    });
+
+    reader.addEventListener("abort", () => {
+      setEditorMode("loading");
+      showImageEditorError("Carregamento cancelado.");
+    });
 
     reader.addEventListener("load", () => {
       const dataUrl = String(reader.result ?? "");
 
       if (!dataUrl) {
+        showImageEditorError("Não foi possível carregar a imagem.");
         return;
       }
 
       const image = new Image();
-      const preset = getCropPreset(target);
+      image.decoding = "async";
+
+      setImageEditorStatus("loading", "Preparando imagem...", null);
+
+      image.addEventListener("error", () => {
+        setEditorMode("loading");
+        showImageEditorError("Não foi possível abrir esta imagem.");
+      });
 
       image.addEventListener("load", () => {
-        const canvas = getCropCanvas();
+        try {
+          const canvas = getCropCanvas();
 
-        if (canvas) {
-          canvas.width = preset.width;
-          canvas.height = preset.height;
-          canvas.style.setProperty("--crop-aspect-ratio", preset.aspectRatio);
+          if (canvas) {
+            canvas.width = preset.width;
+            canvas.height = preset.height;
+            canvas.style.setProperty("--crop-aspect-ratio", preset.aspectRatio);
+          }
+
+          state.imageEditor = {
+            ...state.imageEditor,
+            image,
+            imageDataUrl: dataUrl,
+            mode: "choice",
+            scale: 1,
+            minScale: 1,
+            offsetX: 0,
+            offsetY: 0,
+            dragging: false,
+          };
+
+          if (elements.imageChoicePreview instanceof HTMLImageElement) {
+            elements.imageChoicePreview.src = dataUrl;
+          }
+
+          setImageEditorStatus();
+          setEditorMode("choice");
+        } catch (error) {
+          setEditorMode("loading");
+          showImageEditorError("Não foi possível preparar a imagem.");
         }
-
-        state.imageEditor = {
-          ...state.imageEditor,
-          fileTarget: String(target ?? ""),
-          image,
-          imageDataUrl: dataUrl,
-          mode: "choice",
-          scale: 1,
-          minScale: 1,
-          offsetX: 0,
-          offsetY: 0,
-          dragging: false,
-        };
-
-        if (elements.imageEditorTitle) {
-          elements.imageEditorTitle.textContent = `Imagem | ${preset.label}`;
-        }
-
-        if (elements.imageChoicePreview instanceof HTMLImageElement) {
-          elements.imageChoicePreview.src = dataUrl;
-        }
-
-        elements.imageEditor.hidden = false;
-        setEditorMode("choice");
       });
 
       image.src = dataUrl;
@@ -952,6 +1090,7 @@
     state.imageEditor.image = null;
     state.imageEditor.imageDataUrl = "";
     state.imageEditor.mode = "choice";
+    setImageEditorStatus();
 
     if (elements.imageEditor) {
       elements.imageEditor.hidden = true;
@@ -962,7 +1101,7 @@
     }
   };
 
-  const applyEditedImage = () => {
+  const applyEditedImage = async () => {
     const canvas = getCropCanvas();
     const target = state.imageEditor.fileTarget;
 
@@ -970,25 +1109,42 @@
       return;
     }
 
-    const webpDataUrl = canvas.toDataURL("image/webp", 0.82);
-    const dataUrl = webpDataUrl.startsWith("data:image/webp")
-      ? webpDataUrl
-      : canvas.toDataURL("image/jpeg", 0.82);
+    setEditorMode("loading");
+    setImageEditorStatus("loading", "Convertendo imagem...", null);
+    await waitForPaint();
 
-    writeImageToTarget(dataUrl, target);
-    closeImageEditor();
+    try {
+      const dataUrl = canvasToOptimizedDataUrl(canvas);
+
+      writeImageToTarget(dataUrl, target);
+      closeImageEditor();
+    } catch (error) {
+      setEditorMode("crop");
+      showImageEditorError("Não foi possível converter a imagem.");
+    }
   };
 
-  const useOriginalImage = () => {
-    if (!state.imageEditor.imageDataUrl) {
+  const useOriginalImage = async () => {
+    if (!state.imageEditor.image) {
       return;
     }
 
-    writeImageToTarget(
-      state.imageEditor.imageDataUrl,
-      state.imageEditor.fileTarget,
-    );
-    closeImageEditor();
+    setEditorMode("loading");
+    setImageEditorStatus("loading", "Convertendo imagem...", null);
+    await waitForPaint();
+
+    try {
+      const dataUrl = exportOriginalImage(
+        state.imageEditor.image,
+        state.imageEditor.fileTarget,
+      );
+
+      writeImageToTarget(dataUrl, state.imageEditor.fileTarget);
+      closeImageEditor();
+    } catch (error) {
+      setEditorMode("choice");
+      showImageEditorError("Não foi possível converter a imagem.");
+    }
   };
 
   const openCropEditor = () => {
@@ -1263,9 +1419,9 @@
 
     try {
       await navigator.clipboard.writeText(elements.exportOutput?.value ?? "");
-      showToast("Exportação cópiada.");
+      showToast("Exportação copiada.");
     } catch {
-      showToast("Não foi possível cópiar automaticamente.");
+      showToast("Não foi possível copiar automaticamente.");
     }
   });
 
