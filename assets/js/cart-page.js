@@ -13,7 +13,7 @@
       root.innerHTML = `
         <article class="not-found-card reveal is-visible">
           <span class="breadcrumb">Carrinho vazio</span>
-          <h1>Voce ainda nao adicionou nenhum modelo.</h1>
+          <h1>Você ainda não adicionou nenhum modelo.</h1>
           <p>
             Escolha um produto na vitrine, adicione ao carrinho e volte aqui para
             revisar o pedido antes de seguir para o checkout.

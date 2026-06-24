@@ -146,15 +146,15 @@ const applyFilter = (filter) => {
   }
 
   if (filter === "all") {
-    filterSummary.textContent = `${visibleCount} modelos visiveis entre pronta entrega e preview.`;
+    filterSummary.textContent = `${visibleCount} modelos visíveis entre pronta entrega e preview.`;
     return;
   }
 
   const activeButton = filterButtons.find(
     (button) => button.dataset.filter === filter,
   );
-  const activeLabel = activeButton?.textContent?.trim() || "Colecao";
-  const noun = visibleCount === 1 ? "modelo visivel" : "modelos visiveis";
+  const activeLabel = activeButton?.textContent?.trim() || "Coleção";
+  const noun = visibleCount === 1 ? "modelo visivel" : "modelos visíveis";
 
   filterSummary.textContent = `${visibleCount} ${noun} em ${activeLabel}.`;
 };

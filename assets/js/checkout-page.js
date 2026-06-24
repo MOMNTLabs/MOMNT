@@ -23,11 +23,11 @@
       "Cliente:",
       `Nome: ${formValues.name}`,
       `WhatsApp: ${formValues.phone}`,
-      `Email: ${formValues.email || "Nao informado"}`,
+      `Email: ${formValues.email || "Não informado"}`,
       "",
       "Entrega:",
-      `Metodo: ${formValues.fulfillment}`,
-      `Endereco ou observacao: ${formValues.address || "A confirmar"}`,
+      `Método: ${formValues.fulfillment}`,
+      `Endereço ou observacao: ${formValues.address || "A confirmar"}`,
       "",
       "Pagamento:",
       formValues.payment,
@@ -45,11 +45,11 @@
     if (!totals.items.length) {
       root.innerHTML = `
         <article class="not-found-card reveal is-visible">
-          <span class="breadcrumb">Checkout indisponivel</span>
-          <h1>Seu carrinho esta vazio.</h1>
+          <span class="breadcrumb">Checkout indisponível</span>
+          <h1>Seu carrinho está vazio.</h1>
           <p>
             Antes de seguir para o checkout, adicione pelo menos um produto ao
-            carrinho na pagina de produto.
+            carrinho na página de produto.
           </p>
           <div class="catalog-card-actions">
             <a class="shop-button shop-button-primary" href="produtos.html">
@@ -97,7 +97,7 @@
                 <input
                   type="email"
                   name="email"
-                  placeholder="voce@exemplo.com"
+                  placeholder="você@exemplo.com"
                 />
               </label>
 
@@ -105,7 +105,7 @@
                 <span>Forma de pagamento</span>
                 <select name="payment" required>
                   <option value="PIX">PIX</option>
-                  <option value="Cartao">Cartao</option>
+                  <option value="Cartão">Cartão</option>
                   <option value="Dinheiro">Dinheiro</option>
                 </select>
               </label>
@@ -121,11 +121,11 @@
               </label>
 
               <label class="field field-full">
-                <span>Endereco ou observacoes</span>
+                <span>Endereço ou observações</span>
                 <textarea
                   name="address"
                   rows="4"
-                  placeholder="Endereco, ponto de referencia ou observacoes do pedido"
+                  placeholder="Endereço, ponto de referência ou observações do pedido"
                 ></textarea>
               </label>
             </div>

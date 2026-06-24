@@ -41,11 +41,11 @@
   if (!product) {
     root.innerHTML = `
       <article class="not-found-card reveal is-visible">
-        <span class="breadcrumb">Produto nao encontrado</span>
-        <h1>Esta pagina ainda nao existe no catalogo.</h1>
+        <span class="breadcrumb">Produto não encontrado</span>
+        <h1>Esta página ainda não existe no catálogo.</h1>
         <p>
-          O slug informado nao esta cadastrado. Volte para a vitrine e escolha um dos
-          modelos disponiveis ou ajuste o link que gerou esta URL.
+          O slug informado não está cadastrado. Volte para a vitrine e escolha um dos
+          modelos disponíveis ou ajuste o link que gerou esta URL.
         </p>
         <div class="catalog-card-actions">
           <a class="shop-button shop-button-primary" href="produtos.html">Ir para produtos</a>
@@ -53,7 +53,7 @@
         </div>
       </article>
     `;
-    document.title = "MOMNT | Produto nao encontrado";
+    document.title = "MOMNT | Produto não encontrado";
     return;
   }
 
@@ -67,7 +67,7 @@
         <section class="pdp-purchase-box">
           <span class="breadcrumb">Disponibilidade</span>
           <p class="pdp-purchase-copy">
-            Este modelo ainda nao esta pronto para checkout. Deixe seu contato para
+            Este modelo ainda não está pronto para checkout. Deixe seu contato para
             receber aviso ou finalizar com atendimento assistido.
           </p>
           <div class="pdp-actions">
@@ -200,14 +200,14 @@
 
             <div class="pdp-panels">
               <section class="pdp-panel">
-                <span class="breadcrumb">Especificacoes</span>
+                <span class="breadcrumb">Especificações</span>
                 <div class="pdp-spec-list">
                   <div class="pdp-spec-row">
                     <span class="pdp-spec-label">Categoria</span>
                     <span class="pdp-spec-value">${product.categoryLabel}</span>
                   </div>
                   <div class="pdp-spec-row">
-                    <span class="pdp-spec-label">Dimensoes</span>
+                    <span class="pdp-spec-label">Dimensões</span>
                     <span class="pdp-spec-value">${product.dimensions}</span>
                   </div>
                   <div class="pdp-spec-row">

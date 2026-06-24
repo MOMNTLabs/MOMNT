@@ -153,7 +153,7 @@
         description: String(product.description ?? "").trim(),
         materials: String(product.materials ?? "").trim(),
         availability:
-          String(product.availability ?? "").trim() || "Em preparacao",
+          String(product.availability ?? "").trim() || "Em preparação",
         dimensions: String(product.dimensions ?? "").trim(),
         highlights: Array.isArray(product.highlights)
           ? product.highlights.map(String).filter(Boolean)
@@ -191,18 +191,18 @@
       }
 
       if (usedSlugs.has(product.slug)) {
-        return `O slug "${product.slug}" esta duplicado.`;
+        return `O slug "${product.slug}" está duplicado.`;
       }
 
       usedSlugs.add(product.slug);
 
       if (!state.catalog.categoryMeta[product.category]) {
-        return `O produto "${product.name}" usa uma categoria que nao existe.`;
+        return `O produto "${product.name}" usa uma categoria que não existe.`;
       }
     }
 
     if (!state.catalog.categoryMeta.all) {
-      return "A categoria base Todos nao pode ser removida.";
+      return "A categoria base Todos não pode ser removida.";
     }
 
     return "";
@@ -219,11 +219,11 @@
     try {
       window.localStorage.setItem(storageKey, JSON.stringify(state.catalog));
       setDirty(false);
-      showToast("Catalogo salvo.");
+      showToast("Catálogo salvo.");
       return true;
     } catch (error) {
       showToast(
-        "Nao foi possivel salvar. Tente imagens menores ou exporte o catalogo.",
+        "Não foi possível salvar. Tente imagens menores ou exporte o catálogo.",
       );
       return false;
     }
@@ -639,10 +639,10 @@
       price: "Sob consulta",
       badge: "Novo",
       badgeTone: "neutral",
-      shortDescription: "Descricao curta do produto.",
-      description: "Descricao completa do produto.",
+      shortDescription: "Descrição curta do produto.",
+      description: "Descrição completa do produto.",
       materials: "A definir",
-      availability: "Em preparacao",
+      availability: "Em preparação",
       dimensions: "A definir",
       highlights: ["Produto criado no admin"],
       images: ["assets/images/product-placeholder-modern.svg"],
@@ -704,9 +704,9 @@
 
     state.catalog.categoryMeta[nextKey] = {
       label: "Nova categoria",
-      eyebrow: "Colecao MOMNT",
-      title: "Titulo da categoria",
-      description: "Descricao da categoria.",
+      eyebrow: "Coleção MOMNT",
+      title: "Título da categoria",
+      description: "Descrição da categoria.",
       heroImage: "assets/images/collection-placeholder-modern.svg",
     };
     state.activeCategoryKey = nextKey;
@@ -770,7 +770,7 @@
     const filename =
       state.exportMode === "js" ? "catalog-data.js" : "momnt-catalog.json";
     const blob = new Blob([elements.exportOutput.value], {
-      type: state.exportMode === "js" ? "text/javascript" : "application/json",
+      type: state.exportMode === "js" ? "text/jávascript" : "application/json",
     });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -782,7 +782,7 @@
   };
 
   const resetCatalog = () => {
-    if (!window.confirm("Restaurar o catalogo original e apagar edicoes locais?")) {
+    if (!window.confirm("Restaurar o catálogo original e apagar edições salvas?")) {
       return;
     }
 
@@ -792,7 +792,7 @@
     state.activeCategoryKey = "all";
     setDirty(false);
     renderAll();
-    showToast("Catalogo original restaurado.");
+    showToast("Catálogo original restaurado.");
   };
 
   const unlock = () => {
@@ -824,7 +824,7 @@
     if (accessCode !== ACCESS_CODE) {
       if (elements.loginFeedback) {
         elements.loginFeedback.hidden = false;
-        elements.loginFeedback.textContent = "Codigo incorreto.";
+        elements.loginFeedback.textContent = "Código incorreto.";
       }
       return;
     }
@@ -857,9 +857,9 @@
 
     try {
       await navigator.clipboard.writeText(elements.exportOutput?.value ?? "");
-      showToast("Exportacao copiada.");
+      showToast("Exportação copiada.");
     } catch {
-      showToast("Nao foi possivel copiar automaticamente.");
+      showToast("Não foi possível copiar automaticamente.");
     }
   });
 
