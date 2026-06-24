@@ -219,7 +219,7 @@
     try {
       window.localStorage.setItem(storageKey, JSON.stringify(state.catalog));
       setDirty(false);
-      showToast("Catalogo salvo neste navegador.");
+      showToast("Catalogo salvo.");
       return true;
     } catch (error) {
       showToast(
@@ -754,7 +754,7 @@
       state.activeCategoryKey = "all";
       setDirty();
       renderAll();
-      showToast("JSON importado. Salve para aplicar neste navegador.");
+      showToast("JSON importado. Salve para aplicar.");
     } catch {
       showToast("JSON invalido.");
     }
