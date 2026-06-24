@@ -204,6 +204,7 @@ window.MOMNT_CATEGORY_META = {
     description:
       "A linha Modern concentra os modelos mais diretos e comerciais da marca, com linguagem visual mais protagonista.",
     heroImage: "assets/images/lifestyle-02.jpg",
+    highlightInNav: false,
   },
   classic: {
     label: "Classic",
@@ -212,6 +213,7 @@ window.MOMNT_CATEGORY_META = {
     description:
       "A categoria Classic organiza modelos com encaixe versátil, foco em uso diário e visual mais refinado.",
     heroImage: "assets/images/collection-placeholder-classic.svg",
+    highlightInNav: false,
   },
   sport: {
     label: "Sport",
@@ -220,6 +222,7 @@ window.MOMNT_CATEGORY_META = {
     description:
       "A linha Sport agrupa produtos com leitura mais dinâmica, incluindo placeholders preparados para futuras entradas.",
     heroImage: "assets/images/collection-placeholder-sport.svg",
+    highlightInNav: false,
   },
 };
 
@@ -298,6 +301,7 @@ window.MOMNT_SITE_CONTENT = {
       title: String(category.title ?? "").trim(),
       description: String(category.description ?? "").trim(),
       heroImage: String(category.heroImage ?? "").trim(),
+      highlightInNav: Boolean(category.highlightInNav),
     };
   };
 

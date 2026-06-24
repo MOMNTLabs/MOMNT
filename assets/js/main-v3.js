@@ -1,7 +1,47 @@
 const menuToggle = document.querySelector(".menu-toggle");
 const siteNav = document.querySelector(".site-nav");
-const pageLinks = document.querySelectorAll(".site-nav a");
 const revealItems = document.querySelectorAll(".reveal");
+
+const isHomePage =
+  window.location.pathname.endsWith("/") ||
+  window.location.pathname.endsWith("/index.html") ||
+  window.location.pathname.endsWith("index.html");
+
+const escapeHtml = (value) =>
+  String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+const renderSiteNav = () => {
+  if (!siteNav) {
+    return;
+  }
+
+  const categoryMeta = window.MOMNT_CATEGORY_META ?? {};
+  const categories = Object.entries(categoryMeta).filter(
+    ([categoryKey]) => categoryKey !== "all",
+  );
+
+  if (!categories.length) {
+    return;
+  }
+
+  const categoryLinks = categories
+    .map(([categoryKey, category]) => {
+      const highlightClass = category.highlightInNav
+        ? ' class="nav-link-highlight"'
+        : "";
+
+      return `<a${highlightClass} href="produtos.html?categoria=${encodeURIComponent(categoryKey)}">${escapeHtml(category.label)}</a>`;
+    })
+    .join("");
+  const contactHref = isHomePage ? "#contato" : "index.html#contato";
+
+  siteNav.innerHTML = `${categoryLinks}<a href="${contactHref}">Contato</a>`;
+};
 
 const closeNav = () => {
   if (!siteNav || !menuToggle) {
@@ -12,14 +52,18 @@ const closeNav = () => {
   menuToggle.setAttribute("aria-expanded", "false");
 };
 
+renderSiteNav();
+
 if (menuToggle && siteNav) {
   menuToggle.addEventListener("click", () => {
     const isOpen = siteNav.classList.toggle("is-open");
     menuToggle.setAttribute("aria-expanded", String(isOpen));
   });
 
-  pageLinks.forEach((link) => {
-    link.addEventListener("click", closeNav);
+  siteNav.addEventListener("click", (event) => {
+    if (event.target instanceof HTMLAnchorElement) {
+      closeNav();
+    }
   });
 
   document.addEventListener("click", (event) => {

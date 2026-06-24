@@ -507,6 +507,7 @@
     form.elements.title.value = category.title;
     form.elements.description.value = category.description;
     form.elements.heroImage.value = category.heroImage;
+    form.elements.highlightInNav.checked = Boolean(category.highlightInNav);
     renderImagePreview(elements.categoryPreview, [category.heroImage]);
   };
 
@@ -533,6 +534,7 @@
       title: form.elements.title.value.trim(),
       description: form.elements.description.value.trim(),
       heroImage: form.elements.heroImage.value.trim(),
+      highlightInNav: Boolean(form.elements.highlightInNav.checked),
     };
 
     if (previousKey !== nextKey) {
@@ -1000,6 +1002,7 @@
       title: "Título da categoria",
       description: "Descrição da categoria.",
       heroImage: "assets/images/collection-placeholder-modern.svg",
+      highlightInNav: false,
     };
     closeProductEditor({ force: true });
     state.activeCategoryKey = nextKey;
