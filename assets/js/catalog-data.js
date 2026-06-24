@@ -447,16 +447,66 @@ window.MOMNT_SITE_CONTENT = {
     }
   };
 
+  const applyCatalog = (catalog) => {
+    window.MOMNT_PRODUCTS = catalog.products;
+    window.MOMNT_CATEGORY_META = catalog.categoryMeta;
+    window.MOMNT_SITE_CONTENT = catalog.siteContent;
+    applyTheme(window.MOMNT_SITE_CONTENT.theme);
+  };
+
+  const readRemoteCatalog = async () => {
+    const response = await fetch("/api/catalog", {
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+    });
+    const contentType = response.headers.get("content-type") ?? "";
+
+    if (!response.ok || !contentType.includes("application/json")) {
+      return null;
+    }
+
+    return normalizeCatalog(await response.json());
+  };
+
+  const dispatchCatalogReady = () => {
+    window.dispatchEvent(
+      new CustomEvent("momnt:catalog-ready", {
+        detail: {
+          products: window.MOMNT_PRODUCTS,
+          categoryMeta: window.MOMNT_CATEGORY_META,
+          siteContent: window.MOMNT_SITE_CONTENT,
+        },
+      }),
+    );
+  };
+
   window.MOMNT_ADMIN_STORAGE_KEY = STORAGE_KEY;
   window.MOMNT_DEFAULT_CATALOG = clone(defaultCatalog);
 
   const savedCatalog = readSavedCatalog();
 
   if (savedCatalog) {
-    window.MOMNT_PRODUCTS = savedCatalog.products;
-    window.MOMNT_CATEGORY_META = savedCatalog.categoryMeta;
-    window.MOMNT_SITE_CONTENT = savedCatalog.siteContent;
+    applyCatalog(savedCatalog);
+  } else {
+    applyTheme(window.MOMNT_SITE_CONTENT.theme);
   }
 
-  applyTheme(window.MOMNT_SITE_CONTENT.theme);
+  window.MOMNT_CATALOG_READY = readRemoteCatalog()
+    .then((remoteCatalog) => {
+      if (remoteCatalog) {
+        applyCatalog(remoteCatalog);
+      }
+
+      return {
+        products: window.MOMNT_PRODUCTS,
+        categoryMeta: window.MOMNT_CATEGORY_META,
+        siteContent: window.MOMNT_SITE_CONTENT,
+      };
+    })
+    .catch(() => ({
+      products: window.MOMNT_PRODUCTS,
+      categoryMeta: window.MOMNT_CATEGORY_META,
+      siteContent: window.MOMNT_SITE_CONTENT,
+    }))
+    .finally(dispatchCatalogReady);
 })();

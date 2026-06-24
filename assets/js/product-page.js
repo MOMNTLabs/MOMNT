@@ -1,4 +1,5 @@
 (function () {
+  const start = () => {
   const products = Array.isArray(window.MOMNT_PRODUCTS)
     ? window.MOMNT_PRODUCTS
     : [];
@@ -344,4 +345,11 @@
   }
 
   document.title = `MOMNT | ${product.name}`;
+  };
+
+  if (window.MOMNT_CATALOG_READY) {
+    window.MOMNT_CATALOG_READY.finally(start);
+  } else {
+    start();
+  }
 })();

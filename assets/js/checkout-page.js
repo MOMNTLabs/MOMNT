@@ -1,4 +1,5 @@
 (function () {
+  const start = () => {
   const root = document.querySelector("#checkout-page-root");
   const cart = window.MOMNT_CART;
 
@@ -207,4 +208,11 @@
 
   render();
   window.addEventListener("momnt:cart-updated", render);
+  };
+
+  if (window.MOMNT_CATALOG_READY) {
+    window.MOMNT_CATALOG_READY.finally(start);
+  } else {
+    start();
+  }
 })();

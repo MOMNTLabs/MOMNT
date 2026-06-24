@@ -1,4 +1,5 @@
 (function () {
+  const start = () => {
   const products = Array.isArray(window.MOMNT_PRODUCTS)
     ? window.MOMNT_PRODUCTS
     : [];
@@ -246,4 +247,11 @@
   });
 
   render();
+  };
+
+  if (window.MOMNT_CATALOG_READY) {
+    window.MOMNT_CATALOG_READY.finally(start);
+  } else {
+    start();
+  }
 })();

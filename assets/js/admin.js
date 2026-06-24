@@ -1,5 +1,7 @@
 (function () {
+  const start = () => {
   const ACCESS_CODE = "momnt-admin";
+  const ACCESS_CODE_KEY = "momnt-admin-access-code-v1";
   const SESSION_KEY = "momnt-admin-session-v1";
   const HEIC_CONVERTER_SRC =
     "https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js";
@@ -195,6 +197,59 @@
     }, 3200);
   };
 
+  const getAccessCode = () =>
+    window.localStorage.getItem(ACCESS_CODE_KEY) || ACCESS_CODE;
+
+  const apiRequest = async (path, options = {}, accessCode = getAccessCode()) => {
+    const headers = new Headers(options.headers || {});
+    headers.set("Accept", "application/json");
+    headers.set("X-Admin-Code", accessCode);
+
+    if (options.body && !(options.body instanceof FormData)) {
+      headers.set("Content-Type", "application/json");
+    }
+
+    const response = await fetch(path, {
+      ...options,
+      headers,
+    });
+    const contentType = response.headers.get("content-type") || "";
+    const body = contentType.includes("application/json")
+      ? await response.json()
+      : null;
+
+    if (!response.ok) {
+      throw new Error(body?.error || "Erro na API.");
+    }
+
+    return body;
+  };
+
+  const dataUrlToBlob = async (dataUrl) => {
+    const response = await fetch(dataUrl);
+    return response.blob();
+  };
+
+  const uploadImageDataUrl = async (dataUrl, target) => {
+    if (!String(dataUrl).startsWith("data:image/")) {
+      return dataUrl;
+    }
+
+    const blob = await dataUrlToBlob(dataUrl);
+    const formData = new FormData();
+    const fileExtension = blob.type === "image/png" ? "png" : "jpg";
+
+    formData.append("target", target || "product");
+    formData.append("image", blob, `momnt-${Date.now()}.${fileExtension}`);
+
+    const result = await apiRequest("/api/uploads/image", {
+      method: "POST",
+      body: formData,
+    });
+
+    return result.url;
+  };
+
   const setDirty = (dirty = true) => {
     state.dirty = dirty;
   };
@@ -375,12 +430,28 @@
     return "";
   };
 
-  const saveCatalog = () => {
+  const saveCatalog = async () => {
     const error = validateCatalog();
 
     if (error) {
       showToast(error);
       return false;
+    }
+
+    try {
+      const savedCatalog = await apiRequest("/api/catalog", {
+        method: "PUT",
+        body: JSON.stringify(state.catalog),
+      });
+      state.catalog = sanitizeCatalog(savedCatalog);
+      window.localStorage.removeItem(storageKey);
+      setDirty(false);
+      state.productFormDirty = false;
+      renderAll();
+      showToast("Catálogo salvo no Postgres.");
+      return true;
+    } catch (error) {
+      // Fallback keeps the admin usable before Railway variables are configured.
     }
 
     try {
@@ -838,20 +909,22 @@
 
   const getCropPreset = (target) => cropPresets[target] ?? cropPresets.product;
 
-  const writeImageToTarget = (dataUrl, target) => {
+  const writeImageToTarget = async (dataUrl, target) => {
+    const imageUrl = await uploadImageDataUrl(dataUrl, target);
+
     if (target === "product" && elements.productForm) {
       const input = elements.productForm.elements.images;
-      input.value = [input.value.trim(), dataUrl].filter(Boolean).join("\n");
+      input.value = [input.value.trim(), imageUrl].filter(Boolean).join("\n");
       readProductForm();
     }
 
     if (target === "category" && elements.categoryForm) {
-      elements.categoryForm.elements.heroImage.value = dataUrl;
+      elements.categoryForm.elements.heroImage.value = imageUrl;
       readCategoryForm();
     }
 
     if (target === "home" && elements.homeForm) {
-      elements.homeForm.elements.heroImage.value = dataUrl;
+      elements.homeForm.elements.heroImage.value = imageUrl;
       readHomeForm();
     }
   };
@@ -1611,7 +1684,7 @@
     try {
       const dataUrl = canvasToOptimizedDataUrl(canvas);
 
-      writeImageToTarget(dataUrl, target);
+      await writeImageToTarget(dataUrl, target);
       closeImageEditor();
     } catch (error) {
       setEditorMode("crop");
@@ -1634,7 +1707,7 @@
         state.imageEditor.fileTarget,
       );
 
-      writeImageToTarget(dataUrl, state.imageEditor.fileTarget);
+      await writeImageToTarget(dataUrl, state.imageEditor.fileTarget);
       closeImageEditor();
     } catch (error) {
       setEditorMode("choice");
@@ -1872,13 +1945,23 @@
     renderExport();
   };
 
-  elements.loginForm?.addEventListener("submit", (event) => {
+  elements.loginForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const formData = new FormData(elements.loginForm);
     const accessCode = String(formData.get("accessCode") ?? "").trim();
+    let isValid = false;
 
-    if (accessCode !== ACCESS_CODE) {
+    if (accessCode) {
+      try {
+        await apiRequest("/api/admin/verify", { method: "POST" }, accessCode);
+        isValid = true;
+      } catch {
+        isValid = accessCode === ACCESS_CODE;
+      }
+    }
+
+    if (!isValid) {
       if (elements.loginFeedback) {
         elements.loginFeedback.hidden = false;
         elements.loginFeedback.textContent = "Código incorreto.";
@@ -1887,6 +1970,7 @@
     }
 
     window.localStorage.setItem(SESSION_KEY, "ok");
+    window.localStorage.setItem(ACCESS_CODE_KEY, accessCode);
     unlock();
   });
 
@@ -2062,5 +2146,12 @@
 
   if (window.localStorage.getItem(SESSION_KEY) === "ok") {
     unlock();
+  }
+  };
+
+  if (window.MOMNT_CATALOG_READY) {
+    window.MOMNT_CATALOG_READY.finally(start);
+  } else {
+    start();
   }
 })();
