@@ -638,10 +638,10 @@
       aspectRatio: "16 / 9",
     },
     product: {
-      label: "Produto 4:3",
+      label: "Produto 4:5",
       width: 1200,
-      height: 900,
-      aspectRatio: "4 / 3",
+      height: 1500,
+      aspectRatio: "4 / 5",
     },
     category: {
       label: "Categoria 4:3",
