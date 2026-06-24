@@ -24,11 +24,13 @@
     exportTop: document.querySelector("#admin-export-top"),
     productDrawer: document.querySelector("#product-drawer"),
     productClose: document.querySelector("#product-close"),
+    productCloseSecondary: document.querySelector("#product-close-secondary"),
     productList: document.querySelector("#product-list"),
     productForm: document.querySelector("#product-form"),
     productNew: document.querySelector("#product-new"),
     productDuplicate: document.querySelector("#product-duplicate"),
     productRemove: document.querySelector("#product-remove"),
+    productSave: document.querySelector("#product-save"),
     productPreview: document.querySelector("#product-preview"),
     categoryList: document.querySelector("#category-list"),
     categoryForm: document.querySelector("#category-form"),
@@ -182,6 +184,39 @@
 
   const arrayToLines = (value) =>
     Array.isArray(value) ? value.join("\n") : "";
+
+  const priceDigits = (value) => String(value ?? "").replace(/\D/g, "");
+
+  const formatPriceLabel = (value) => {
+    const digits = priceDigits(value);
+
+    if (!digits) {
+      return "";
+    }
+
+    const amount = Number.parseInt(digits, 10) / 100;
+
+    return amount
+      .toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      })
+      .replace(/\u00a0/g, " ");
+  };
+
+  const normalizePriceField = (field) => {
+    if (!(field instanceof HTMLInputElement)) {
+      return "";
+    }
+
+    const formattedPrice = formatPriceLabel(field.value);
+
+    if (field.value !== formattedPrice) {
+      field.value = formattedPrice;
+    }
+
+    return formattedPrice;
+  };
 
   const showToast = (message) => {
     if (!elements.toast) {
@@ -492,18 +527,28 @@
 
     elements.productList.innerHTML =
       products
-        .map(
-          (product) => `
+        .map((product) => {
+          const thumbnail =
+            Array.isArray(product.images) && product.images[0]
+              ? product.images[0]
+              : "assets/images/product-placeholder-modern.svg";
+
+          return `
             <button
               class="${product.slug === state.activeProductSlug ? "is-active" : ""}"
               type="button"
               data-product="${escapeHtml(product.slug)}"
             >
-              <span class="list-title">${escapeHtml(product.name)}</span>
-              <span class="list-meta">${escapeHtml(product.categoryLabel || product.category)} | ${escapeHtml(product.price)}</span>
+              <span class="product-list-thumb" aria-hidden="true">
+                <img src="${escapeHtml(thumbnail)}" alt="" loading="lazy" />
+              </span>
+              <span class="product-list-copy">
+                <span class="list-title">${escapeHtml(product.name)}</span>
+                <span class="list-meta">${escapeHtml(product.categoryLabel || product.category)} | ${escapeHtml(product.price)}</span>
+              </span>
             </button>
-          `,
-        )
+          `;
+        })
         .join("") || '<p class="admin-empty">Nenhum produto.</p>';
 
     elements.productList.querySelectorAll("[data-product]").forEach((button) => {
@@ -546,7 +591,7 @@
     form.elements.slug.value = product.slug;
     form.elements.name.value = product.name;
     form.elements.category.value = product.category;
-    form.elements.price.value = product.price;
+    form.elements.price.value = formatPriceLabel(product.price);
     form.elements.badge.value = product.badge;
     form.elements.badgeTone.value = product.badgeTone;
     form.elements.availability.value = product.availability;
@@ -594,6 +639,7 @@
       return;
     }
 
+    const formattedPrice = normalizePriceField(form.elements.price);
     const nextSlug = normalizeSlug(form.elements.slug.value);
     const nextProduct = {
       slug: nextSlug,
@@ -601,7 +647,7 @@
       category: form.elements.category.value,
       categoryLabel:
         state.catalog.categoryMeta[form.elements.category.value]?.label ?? "",
-      price: form.elements.price.value.trim(),
+      price: formattedPrice || "Sob consulta",
       badge: form.elements.badge.value.trim(),
       badgeTone: form.elements.badgeTone.value,
       availability: form.elements.availability.value.trim(),
@@ -1993,7 +2039,11 @@
   elements.productNew?.addEventListener("click", createProduct);
   elements.productDuplicate?.addEventListener("click", duplicateProduct);
   elements.productRemove?.addEventListener("click", removeProduct);
+  elements.productSave?.addEventListener("click", saveCatalog);
   elements.productClose?.addEventListener("click", () => {
+    closeProductEditor();
+  });
+  elements.productCloseSecondary?.addEventListener("click", () => {
     closeProductEditor();
   });
   elements.categoryNew?.addEventListener("click", createCategory);
@@ -2016,6 +2066,10 @@
   });
 
   elements.productForm?.addEventListener("input", readProductForm);
+  elements.productForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    saveCatalog();
+  });
   elements.categoryForm?.addEventListener("input", readCategoryForm);
   elements.homeForm?.addEventListener("input", readHomeForm);
   elements.themeFields?.addEventListener("input", readThemeForm);

@@ -12,7 +12,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/png" href="assets/images/momnt-symbol.png" />
-    <link rel="stylesheet" href="assets/css/admin.css?v=20260624h" />
+    <link rel="stylesheet" href="assets/css/admin.css?v=20260624i" />
   </head>
   <body class="admin-page">
     <section class="admin-lock" id="admin-lock">
@@ -198,7 +198,7 @@
                     </label>
                     <label class="field">
                       <span>Preço</span>
-                      <input name="price" placeholder="R$ 150,00" />
+                      <input name="price" inputmode="numeric" autocomplete="off" placeholder="R$ 150,00" />
                     </label>
                     <label class="field">
                       <span>Selo</span>
@@ -253,6 +253,15 @@
                   </div>
 
                   <div class="admin-preview" id="product-preview"></div>
+
+                  <div class="admin-form-actions product-form-actions">
+                    <button class="admin-button admin-button-primary" type="button" id="product-save">
+                      Salvar produto
+                    </button>
+                    <button class="admin-button admin-button-ghost" type="button" id="product-close-secondary">
+                      Fechar
+                    </button>
+                  </div>
                 </form>
               </aside>
             </div>
@@ -427,6 +436,6 @@
     </div>
 
     <script src="assets/js/catalog-data.js?v=20260624r2c"></script>
-    <script src="assets/js/admin.js?v=20260624r2b"></script>
+    <script src="assets/js/admin.js?v=20260624r2c"></script>
   </body>
 </html>

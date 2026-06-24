@@ -220,8 +220,14 @@ button {
   display: grid;
   grid-template-columns: minmax(220px, 300px) minmax(260px, 1fr);
   gap: 18px;
-  overflow: hidden;
-  position: relative;
+  align-items: start;
+}
+
+.catalog-workspace:has(.product-drawer.is-open) {
+  grid-template-columns:
+    minmax(220px, 280px)
+    minmax(300px, 1fr)
+    minmax(360px, 620px);
 }
 
 .catalog-column {
@@ -274,15 +280,47 @@ button {
   box-shadow: inset 3px 0 0 var(--admin-accent);
 }
 
+.product-list button {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.product-list-thumb {
+  width: 58px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--admin-line);
+  background: #eee7dd;
+}
+
+.product-list-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-list-copy {
+  min-width: 0;
+}
+
 .list-title {
   display: block;
   font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .list-meta {
   display: block;
   margin-top: 5px;
   color: var(--admin-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .admin-form {
@@ -295,29 +333,28 @@ button {
 }
 
 .product-drawer {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: min(620px, 100%);
+  display: none;
+  max-height: 68vh;
   overflow: auto;
   padding: 18px;
   background: var(--admin-panel);
-  border-left: 1px solid var(--admin-line);
-  box-shadow: -18px 0 48px rgba(25, 23, 20, 0.12);
-  transform: translateX(105%);
-  transition:
-    transform 260ms ease,
-    opacity 260ms ease;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 3;
+  border: 1px solid var(--admin-line);
+  box-shadow: 0 18px 48px rgba(25, 23, 20, 0.08);
 }
 
 .product-drawer.is-open {
-  transform: translateX(0);
-  opacity: 1;
-  pointer-events: auto;
+  display: block;
+}
+
+.product-form-actions {
+  position: sticky;
+  bottom: -18px;
+  z-index: 2;
+  margin: 4px -18px -18px;
+  padding: 14px 18px 18px;
+  background: color-mix(in srgb, var(--admin-panel) 94%, transparent);
+  border-top: 1px solid var(--admin-line);
+  backdrop-filter: blur(10px);
 }
 
 .field-grid {
@@ -628,17 +665,14 @@ button {
   .admin-shell,
   .admin-grid,
   .catalog-workspace,
+  .catalog-workspace:has(.product-drawer.is-open),
   .image-editor-controls,
   .field-grid {
     grid-template-columns: 1fr;
   }
 
   .product-drawer {
-    position: fixed;
-    top: 72px;
-    left: 0;
-    width: 100%;
-    z-index: 8;
+    max-height: none;
   }
 
   .admin-side {
