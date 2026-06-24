@@ -13,7 +13,6 @@
     lock: document.querySelector("#admin-lock"),
     loginForm: document.querySelector("#admin-login-form"),
     loginFeedback: document.querySelector("#admin-login-feedback"),
-    status: document.querySelector("#admin-status"),
     toast: document.querySelector("#admin-toast"),
     tabs: document.querySelectorAll("[data-tab]"),
     panels: document.querySelectorAll("[data-panel]"),
@@ -101,12 +100,6 @@
 
   const setDirty = (dirty = true) => {
     state.dirty = dirty;
-
-    if (elements.status) {
-      elements.status.textContent = dirty
-        ? "Alteracoes nao salvas"
-        : "Alteracoes salvas";
-    }
   };
 
   const getCategoryKeys = () =>

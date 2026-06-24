@@ -71,8 +71,7 @@ button {
 
 .admin-lock-card p,
 .admin-help,
-.admin-empty,
-.admin-status {
+.admin-empty {
   color: var(--admin-muted);
   line-height: 1.6;
 }
@@ -112,11 +111,9 @@ button {
   width: 104px;
 }
 
-.admin-brand span,
 .admin-kicker,
 .field span,
-.list-meta,
-.admin-status {
+.list-meta {
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.08em;
