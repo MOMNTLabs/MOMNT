@@ -40,6 +40,14 @@
     copyExport: document.querySelector("#copy-export"),
     importJson: document.querySelector("#import-json"),
     resetCatalog: document.querySelector("#reset-catalog"),
+    imageEditor: document.querySelector("#image-editor"),
+    imageEditorClose: document.querySelector("#image-editor-close"),
+    cropStage: document.querySelector("#crop-stage"),
+    cropCanvas: document.querySelector("#crop-canvas"),
+    cropZoom: document.querySelector("#crop-zoom"),
+    cropSnap: document.querySelector("#crop-snap"),
+    cropApply: document.querySelector("#crop-apply"),
+    cropReset: document.querySelector("#crop-reset"),
   };
 
   const clone = (value) => JSON.parse(JSON.stringify(value));
@@ -59,6 +67,20 @@
     dirty: false,
     productFormDirty: false,
     exportMode: "json",
+    imageEditor: {
+      fileTarget: "",
+      image: null,
+      imageUrl: "",
+      scale: 1,
+      minScale: 1,
+      offsetX: 0,
+      offsetY: 0,
+      dragging: false,
+      dragX: 0,
+      dragY: 0,
+      startOffsetX: 0,
+      startOffsetY: 0,
+    },
   };
 
   const escapeHtml = (value) =>
@@ -666,38 +688,209 @@
     }
   };
 
-  const appendImageFromFile = (file, target) => {
-    if (!file) {
+  const getCropContext = () => {
+    const canvas = elements.cropCanvas;
+
+    if (!(canvas instanceof HTMLCanvasElement)) {
+      return null;
+    }
+
+    return canvas.getContext("2d");
+  };
+
+  const getCropCanvas = () =>
+    elements.cropCanvas instanceof HTMLCanvasElement
+      ? elements.cropCanvas
+      : null;
+
+  const clampCrop = () => {
+    const canvas = getCropCanvas();
+    const editor = state.imageEditor;
+
+    if (!canvas || !editor.image) {
       return;
     }
 
-    const reader = new FileReader();
+    const imageWidth = editor.image.naturalWidth * editor.scale;
+    const imageHeight = editor.image.naturalHeight * editor.scale;
+    const minX = canvas.width - imageWidth;
+    const minY = canvas.height - imageHeight;
 
-    reader.addEventListener("load", () => {
-      const dataUrl = String(reader.result ?? "");
+    editor.offsetX = Math.min(0, Math.max(minX, editor.offsetX));
+    editor.offsetY = Math.min(0, Math.max(minY, editor.offsetY));
+  };
 
-      if (!dataUrl) {
-        return;
+  const applySmartSnap = () => {
+    const canvas = getCropCanvas();
+    const editor = state.imageEditor;
+    const snapInput = elements.cropSnap;
+
+    if (
+      !canvas ||
+      !editor.image ||
+      !(snapInput instanceof HTMLInputElement) ||
+      !snapInput.checked
+    ) {
+      return;
+    }
+
+    const imageWidth = editor.image.naturalWidth * editor.scale;
+    const imageHeight = editor.image.naturalHeight * editor.scale;
+    const imageCenterX = editor.offsetX + imageWidth / 2;
+    const imageCenterY = editor.offsetY + imageHeight / 2;
+    const snapPointsX = [canvas.width / 3, canvas.width / 2, (canvas.width * 2) / 3];
+    const snapPointsY = [
+      canvas.height / 3,
+      canvas.height / 2,
+      (canvas.height * 2) / 3,
+    ];
+    const threshold = 18;
+
+    snapPointsX.some((point) => {
+      const distance = point - imageCenterX;
+
+      if (Math.abs(distance) > threshold) {
+        return false;
       }
 
-      if (target === "product" && elements.productForm) {
-        const input = elements.productForm.elements.images;
-        input.value = [input.value.trim(), dataUrl].filter(Boolean).join("\n");
-        readProductForm();
-      }
-
-      if (target === "category" && elements.categoryForm) {
-        elements.categoryForm.elements.heroImage.value = dataUrl;
-        readCategoryForm();
-      }
-
-      if (target === "home" && elements.homeForm) {
-        elements.homeForm.elements.heroImage.value = dataUrl;
-        readHomeForm();
-      }
+      editor.offsetX += distance;
+      return true;
     });
 
-    reader.readAsDataURL(file);
+    snapPointsY.some((point) => {
+      const distance = point - imageCenterY;
+
+      if (Math.abs(distance) > threshold) {
+        return false;
+      }
+
+      editor.offsetY += distance;
+      return true;
+    });
+  };
+
+  const renderCrop = () => {
+    const canvas = getCropCanvas();
+    const context = getCropContext();
+    const editor = state.imageEditor;
+
+    if (!canvas || !context || !editor.image) {
+      return;
+    }
+
+    applySmartSnap();
+    clampCrop();
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = "#171512";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(
+      editor.image,
+      editor.offsetX,
+      editor.offsetY,
+      editor.image.naturalWidth * editor.scale,
+      editor.image.naturalHeight * editor.scale,
+    );
+  };
+
+  const centerCropImage = () => {
+    const canvas = getCropCanvas();
+    const editor = state.imageEditor;
+
+    if (!canvas || !editor.image) {
+      return;
+    }
+
+    const fitScale = Math.max(
+      canvas.width / editor.image.naturalWidth,
+      canvas.height / editor.image.naturalHeight,
+    );
+
+    editor.minScale = fitScale;
+    editor.scale = Math.max(editor.scale, fitScale);
+    editor.offsetX = (canvas.width - editor.image.naturalWidth * editor.scale) / 2;
+    editor.offsetY =
+      (canvas.height - editor.image.naturalHeight * editor.scale) / 2;
+
+    if (elements.cropZoom instanceof HTMLInputElement) {
+      elements.cropZoom.min = String(fitScale);
+      elements.cropZoom.max = String(fitScale * 3);
+      elements.cropZoom.value = String(editor.scale);
+    }
+
+    renderCrop();
+  };
+
+  const openImageEditor = (file, target) => {
+    if (!file || !elements.imageEditor) {
+      return;
+    }
+
+    if (state.imageEditor.imageUrl) {
+      URL.revokeObjectURL(state.imageEditor.imageUrl);
+    }
+
+    const image = new Image();
+    const imageUrl = URL.createObjectURL(file);
+
+    image.addEventListener("load", () => {
+      state.imageEditor = {
+        ...state.imageEditor,
+        fileTarget: String(target ?? ""),
+        image,
+        imageUrl,
+        scale: 1,
+        minScale: 1,
+        offsetX: 0,
+        offsetY: 0,
+        dragging: false,
+      };
+      elements.imageEditor.hidden = false;
+      centerCropImage();
+    });
+
+    image.src = imageUrl;
+  };
+
+  const closeImageEditor = () => {
+    if (state.imageEditor.imageUrl) {
+      URL.revokeObjectURL(state.imageEditor.imageUrl);
+    }
+
+    state.imageEditor.image = null;
+    state.imageEditor.imageUrl = "";
+
+    if (elements.imageEditor) {
+      elements.imageEditor.hidden = true;
+    }
+  };
+
+  const applyEditedImage = () => {
+    const canvas = getCropCanvas();
+    const target = state.imageEditor.fileTarget;
+
+    if (!canvas) {
+      return;
+    }
+
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.88);
+
+    if (target === "product" && elements.productForm) {
+      const input = elements.productForm.elements.images;
+      input.value = [input.value.trim(), dataUrl].filter(Boolean).join("\n");
+      readProductForm();
+    }
+
+    if (target === "category" && elements.categoryForm) {
+      elements.categoryForm.elements.heroImage.value = dataUrl;
+      readCategoryForm();
+    }
+
+    if (target === "home" && elements.homeForm) {
+      elements.homeForm.elements.heroImage.value = dataUrl;
+      readHomeForm();
+    }
+
+    closeImageEditor();
   };
 
   const createProduct = () => {
@@ -972,6 +1165,93 @@
   elements.categoryForm?.addEventListener("input", readCategoryForm);
   elements.homeForm?.addEventListener("input", readHomeForm);
 
+  elements.imageEditorClose?.addEventListener("click", closeImageEditor);
+  elements.cropApply?.addEventListener("click", applyEditedImage);
+  elements.cropReset?.addEventListener("click", centerCropImage);
+
+  elements.cropZoom?.addEventListener("input", () => {
+    const zoomInput = elements.cropZoom;
+    const canvas = getCropCanvas();
+    const editor = state.imageEditor;
+
+    if (
+      !(zoomInput instanceof HTMLInputElement) ||
+      !canvas ||
+      !editor.image
+    ) {
+      return;
+    }
+
+    const previousScale = editor.scale;
+    const nextScale = Number.parseFloat(zoomInput.value);
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+
+    editor.scale = Number.isFinite(nextScale)
+      ? Math.max(editor.minScale, nextScale)
+      : editor.scale;
+    editor.offsetX = centerX - ((centerX - editor.offsetX) / previousScale) * editor.scale;
+    editor.offsetY = centerY - ((centerY - editor.offsetY) / previousScale) * editor.scale;
+    renderCrop();
+  });
+
+  elements.cropSnap?.addEventListener("change", renderCrop);
+
+  elements.cropStage?.addEventListener("pointerdown", (event) => {
+    const editor = state.imageEditor;
+
+    if (!editor.image) {
+      return;
+    }
+
+    editor.dragging = true;
+    editor.dragX = event.clientX;
+    editor.dragY = event.clientY;
+    editor.startOffsetX = editor.offsetX;
+    editor.startOffsetY = editor.offsetY;
+    elements.cropStage?.classList.add("is-dragging");
+    elements.cropStage?.setPointerCapture(event.pointerId);
+  });
+
+  elements.cropStage?.addEventListener("pointermove", (event) => {
+    const editor = state.imageEditor;
+
+    if (!editor.dragging) {
+      return;
+    }
+
+    const canvas = getCropCanvas();
+    const stage = elements.cropStage;
+
+    if (!canvas || !(stage instanceof HTMLElement)) {
+      return;
+    }
+
+    const rect = stage.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    editor.offsetX = editor.startOffsetX + (event.clientX - editor.dragX) * scaleX;
+    editor.offsetY = editor.startOffsetY + (event.clientY - editor.dragY) * scaleY;
+    renderCrop();
+  });
+
+  const stopCropDrag = (event) => {
+    const editor = state.imageEditor;
+
+    if (!editor.dragging) {
+      return;
+    }
+
+    editor.dragging = false;
+    elements.cropStage?.classList.remove("is-dragging");
+    elements.cropStage?.releasePointerCapture(event.pointerId);
+    renderCrop();
+  };
+
+  elements.cropStage?.addEventListener("pointerup", stopCropDrag);
+  elements.cropStage?.addEventListener("pointercancel", stopCropDrag);
+
   document.addEventListener("click", (event) => {
     const target = event.target;
 
@@ -1001,7 +1281,7 @@
         return;
       }
 
-      appendImageFromFile(input.files?.[0], input.dataset.imagePicker);
+      openImageEditor(input.files?.[0], input.dataset.imagePicker);
       input.value = "";
     });
   });

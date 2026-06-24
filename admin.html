@@ -342,6 +342,51 @@
 
     <div class="admin-toast" id="admin-toast" hidden></div>
 
+    <div class="image-editor" id="image-editor" hidden>
+      <div class="image-editor-panel" role="dialog" aria-modal="true" aria-label="Editar imagem">
+        <div class="drawer-head">
+          <p class="admin-kicker">Editar imagem</p>
+          <button class="admin-icon-button" type="button" id="image-editor-close" aria-label="Fechar editor" title="Fechar">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="crop-stage" id="crop-stage">
+          <canvas id="crop-canvas" width="960" height="720"></canvas>
+          <div class="crop-guides" aria-hidden="true">
+            <span class="guide guide-v"></span>
+            <span class="guide guide-h"></span>
+            <span class="guide guide-third-v guide-third-v-a"></span>
+            <span class="guide guide-third-v guide-third-v-b"></span>
+            <span class="guide guide-third-h guide-third-h-a"></span>
+            <span class="guide guide-third-h guide-third-h-b"></span>
+          </div>
+        </div>
+
+        <div class="image-editor-controls">
+          <label class="field">
+            <span>Zoom</span>
+            <input id="crop-zoom" type="range" min="1" max="3" step="0.01" value="1" />
+          </label>
+          <label class="toggle-field">
+            <input id="crop-snap" type="checkbox" checked />
+            <span>Snap inteligente</span>
+          </label>
+        </div>
+
+        <div class="admin-form-actions">
+          <button class="admin-button admin-button-primary" type="button" id="crop-apply">
+            Aplicar
+          </button>
+          <button class="admin-button" type="button" id="crop-reset">
+            Centralizar
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="assets/js/catalog-data.js?v=20260624a"></script>
     <script src="assets/js/admin.js?v=20260624a"></script>
   </body>

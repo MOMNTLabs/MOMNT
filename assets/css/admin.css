@@ -383,6 +383,115 @@ button {
   background: #ede6dc;
 }
 
+.image-editor {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(25, 23, 20, 0.62);
+}
+
+.image-editor[hidden] {
+  display: none;
+}
+
+.image-editor-panel {
+  display: grid;
+  width: min(980px, 100%);
+  max-height: calc(100vh - 36px);
+  gap: 14px;
+  overflow: auto;
+  padding: 18px;
+  background: var(--admin-panel);
+  border: 1px solid var(--admin-line);
+}
+
+.crop-stage {
+  position: relative;
+  overflow: hidden;
+  background: #171512;
+  cursor: grab;
+  touch-action: none;
+}
+
+.crop-stage.is-dragging {
+  cursor: grabbing;
+}
+
+.crop-stage canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+.crop-guides {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.guide {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.guide-v,
+.guide-third-v {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+}
+
+.guide-h,
+.guide-third-h {
+  left: 0;
+  right: 0;
+  height: 1px;
+}
+
+.guide-v {
+  left: 50%;
+}
+
+.guide-h {
+  top: 50%;
+}
+
+.guide-third-v-a {
+  left: 33.333%;
+}
+
+.guide-third-v-b {
+  left: 66.666%;
+}
+
+.guide-third-h-a {
+  top: 33.333%;
+}
+
+.guide-third-h-b {
+  top: 66.666%;
+}
+
+.image-editor-controls {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+}
+
+.toggle-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--admin-line);
+  background: #fffdf8;
+}
+
 .admin-toast {
   position: fixed;
   right: 18px;
@@ -409,6 +518,7 @@ button {
   .admin-shell,
   .admin-grid,
   .catalog-workspace,
+  .image-editor-controls,
   .field-grid {
     grid-template-columns: 1fr;
   }
