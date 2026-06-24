@@ -488,7 +488,7 @@ window.MOMNT_SITE_CONTENT = {
 
   if (savedCatalog) {
     applyCatalog(savedCatalog);
-  } else {
+  } else if (!document.querySelector("#momnt-theme-vars")) {
     applyTheme(window.MOMNT_SITE_CONTENT.theme);
   }
 
