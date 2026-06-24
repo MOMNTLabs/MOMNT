@@ -1,6 +1,8 @@
 (function () {
   const ACCESS_CODE = "momnt-admin";
   const SESSION_KEY = "momnt-admin-session-v1";
+  const HEIC_CONVERTER_SRC =
+    "https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js";
   const storageKey = window.MOMNT_ADMIN_STORAGE_KEY ?? "momnt-admin-catalog-v1";
   const defaultCatalog = window.MOMNT_DEFAULT_CATALOG ?? {
     products: window.MOMNT_PRODUCTS ?? [],
@@ -959,6 +961,74 @@
     height: image.naturalHeight || image.height,
   });
 
+  const isHeicFile = (file) =>
+    /image\/hei[cf]/i.test(file.type) || /\.(hei[cf])$/i.test(file.name);
+
+  const isImageFile = (file) =>
+    file.type.startsWith("image/") ||
+    /\.(avif|gif|hei[cf]|jpe?g|png|webp)$/i.test(file.name);
+
+  let heicConverterPromise = null;
+
+  const loadHeicConverter = () => {
+    if (typeof window.heic2any === "function") {
+      return Promise.resolve(window.heic2any);
+    }
+
+    if (heicConverterPromise) {
+      return heicConverterPromise;
+    }
+
+    heicConverterPromise = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.async = true;
+      script.src = HEIC_CONVERTER_SRC;
+
+      script.addEventListener(
+        "load",
+        () => {
+          if (typeof window.heic2any === "function") {
+            resolve(window.heic2any);
+            return;
+          }
+
+          reject(new Error("HEIC converter unavailable."));
+        },
+        { once: true },
+      );
+
+      script.addEventListener(
+        "error",
+        () => reject(new Error("HEIC converter failed to load.")),
+        { once: true },
+      );
+
+      document.head.append(script);
+    });
+
+    return heicConverterPromise;
+  };
+
+  const convertHeicFile = async (file) => {
+    const heic2any = await loadHeicConverter();
+    const output = await heic2any({
+      blob: file,
+      toType: "image/jpeg",
+      quality: 0.86,
+    });
+    const blob = Array.isArray(output) ? output[0] : output;
+
+    if (!(blob instanceof Blob)) {
+      throw new Error("HEIC conversion failed.");
+    }
+
+    return new File(
+      [blob],
+      file.name.replace(/\.(hei[cf])$/i, ".jpg") || "imagem-convertida.jpg",
+      { type: "image/jpeg" },
+    );
+  };
+
   const loadImageElement = (src) =>
     new Promise((resolve, reject) => {
       const image = new Image();
@@ -1190,11 +1260,12 @@
       return;
     }
 
-    if (!file.type.startsWith("image/")) {
+    if (!isImageFile(file)) {
       showImageEditorError("Selecione um arquivo de imagem.");
       return;
     }
 
+    const shouldConvertHeic = isHeicFile(file);
     const preset = getCropPreset(target);
 
     state.imageEditor = {
@@ -1226,9 +1297,20 @@
     let decodedImage = null;
 
     try {
+      let imageFile = file;
+
+      if (shouldConvertHeic) {
+        setImageEditorStatus("loading", "Convertendo HEIC...", null);
+        imageFile = await withTimeout(
+          convertHeicFile(file),
+          60000,
+          "HEIC conversion timeout.",
+        );
+      }
+
       setImageEditorStatus("loading", "Preparando imagem...", null);
       decodedImage = await withTimeout(
-        decodeImageFile(file, target),
+        decodeImageFile(imageFile, target),
         30000,
         "Image processing timeout.",
       );
@@ -1265,7 +1347,11 @@
       setEditorMode("choice");
     } catch (error) {
       setEditorMode("loading");
-      showImageEditorError("Não foi possível abrir esta imagem.");
+      showImageEditorError(
+        shouldConvertHeic
+          ? "Não foi possível converter este HEIC. Tente exportar como JPG ou PNG."
+          : "Não foi possível abrir esta imagem.",
+      );
     } finally {
       if (decodedImage && typeof decodedImage.close === "function") {
         decodedImage.close();
