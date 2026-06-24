@@ -60,17 +60,9 @@ body.checkout-page {
   align-items: end;
 }
 
-.catalog-page .compact-page-intro {
-  padding-inline: clamp(0.85rem, 1.6vw, 1.5rem);
-}
-
 .compact-page-intro-copy {
   display: grid;
   gap: 0.7rem;
-}
-
-.catalog-page .compact-page-intro-copy {
-  padding-inline-start: clamp(1.35rem, 2.4vw, 2.4rem);
 }
 
 .catalog-page .hero-kicker,
@@ -86,10 +78,6 @@ body.checkout-page {
   line-height: 0.86;
 }
 
-.catalog-page .page-hero-title {
-  margin-inline-start: clamp(0.35rem, 0.8vw, 0.7rem);
-}
-
 .catalog-page .hero-text,
 .cart-page .hero-text,
 .checkout-page .hero-text {
@@ -98,10 +86,6 @@ body.checkout-page {
   font-size: 0.92rem;
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.78);
-}
-
-.catalog-page .hero-text {
-  padding-inline-start: clamp(0.35rem, 0.8vw, 0.7rem);
 }
 
 .compact-page-intro-actions {
@@ -1123,20 +1107,6 @@ body.checkout-page {
   .compact-page-intro-actions {
     width: 100%;
     gap: 0.55rem;
-  }
-
-  .catalog-page .compact-page-intro {
-    padding-inline: 0.65rem;
-  }
-
-  .catalog-page .compact-page-intro-copy {
-    padding-inline-start: 0.95rem;
-  }
-
-  .catalog-page .page-hero-title,
-  .catalog-page .hero-text {
-    margin-inline-start: 0.15rem;
-    padding-inline-start: 0.15rem;
   }
 
   .pdp-purchase-top,
