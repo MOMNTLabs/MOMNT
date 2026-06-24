@@ -6,12 +6,6 @@
   const categoryMeta = window.MOMNT_CATEGORY_META ?? {};
 
   const heroImage = document.querySelector("#catalog-hero-image");
-  const heroEyebrow = document.querySelector("#catalog-eyebrow");
-  const heroTitle = document.querySelector("#catalog-title");
-  const heroDescription = document.querySelector("#catalog-description");
-  const activeCategory = document.querySelector("#catalog-active-category");
-  const visibleCount = document.querySelector("#catalog-visible-count");
-  const previewCount = document.querySelector("#catalog-preview-count");
   const filtersRoot = document.querySelector("#catalog-filters");
   const summaryText = document.querySelector("#catalog-summary-text");
   const gridRoot = document.querySelector("#catalog-grid");
@@ -21,12 +15,6 @@
 
   if (
     !heroImage ||
-    !heroEyebrow ||
-    !heroTitle ||
-    !heroDescription ||
-    !activeCategory ||
-    !visibleCount ||
-    !previewCount ||
     !filtersRoot ||
     !summaryText ||
     !gridRoot ||
@@ -131,20 +119,11 @@
     });
   };
 
-  const renderHero = (filteredProducts) => {
+  const renderHero = () => {
     const meta = categoryMeta[state.category] ?? categoryMeta.all;
-    const previewItems = filteredProducts.filter(
-      (product) => product.availability !== "Pronta entrega",
-    );
 
     heroImage.src = meta.heroImage;
     heroImage.alt = `${meta.label} MOMNT`;
-    heroEyebrow.textContent = meta.eyebrow;
-    heroTitle.textContent = meta.title;
-    heroDescription.textContent = meta.description;
-    activeCategory.textContent = meta.label;
-    visibleCount.textContent = `${filteredProducts.length} modelos`;
-    previewCount.textContent = `${previewItems.length} slots editáveis`;
     document.title = `MOMNT | ${
       meta.label === "Todos" ? "Produtos" : meta.label
     }`;
