@@ -954,12 +954,79 @@
     return canvas.toDataURL("image/jpeg", 0.82);
   };
 
+  const getSourceSize = (image) => ({
+    width: image.naturalWidth || image.width,
+    height: image.naturalHeight || image.height,
+  });
+
+  const loadImageElement = (src) =>
+    new Promise((resolve, reject) => {
+      const image = new Image();
+      image.decoding = "async";
+
+      image.addEventListener("load", () => resolve(image), { once: true });
+      image.addEventListener(
+        "error",
+        () => reject(new Error("Image load failed.")),
+        { once: true },
+      );
+
+      image.src = src;
+    });
+
+  const readFileAsImageElement = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.addEventListener("error", () => {
+        reject(new Error("File read failed."));
+      });
+
+      reader.addEventListener("abort", () => {
+        reject(new Error("File read aborted."));
+      });
+
+      reader.addEventListener("load", async () => {
+        try {
+          const dataUrl = String(reader.result ?? "");
+
+          if (!dataUrl) {
+            reject(new Error("Empty image data."));
+            return;
+          }
+
+          resolve(await loadImageElement(dataUrl));
+        } catch (error) {
+          reject(error);
+        }
+      });
+
+      reader.readAsDataURL(file);
+    });
+
+  const decodeImageFile = async (file) => {
+    if ("createImageBitmap" in window) {
+      try {
+        return await window.createImageBitmap(file, {
+          imageOrientation: "from-image",
+        });
+      } catch (error) {
+        try {
+          return await window.createImageBitmap(file);
+        } catch {}
+      }
+    }
+
+    return readFileAsImageElement(file);
+  };
+
   const exportOriginalImage = (image, target) => {
     const maxEdge = getOriginalExportLimit(target);
-    const longestEdge = Math.max(image.naturalWidth, image.naturalHeight);
+    const { width: sourceWidth, height: sourceHeight } = getSourceSize(image);
+    const longestEdge = Math.max(sourceWidth, sourceHeight);
     const scale = longestEdge > maxEdge ? maxEdge / longestEdge : 1;
-    const width = Math.max(1, Math.round(image.naturalWidth * scale));
-    const height = Math.max(1, Math.round(image.naturalHeight * scale));
+    const width = Math.max(1, Math.round(sourceWidth * scale));
+    const height = Math.max(1, Math.round(sourceHeight * scale));
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
 
@@ -973,7 +1040,7 @@
     return canvasToOptimizedDataUrl(canvas);
   };
 
-  const openImageEditor = (file, target) => {
+  const openImageEditor = async (file, target) => {
     if (!file || !elements.imageEditor) {
       return;
     }
@@ -984,7 +1051,6 @@
     }
 
     const preset = getCropPreset(target);
-    const reader = new FileReader();
 
     state.imageEditor = {
       ...state.imageEditor,
@@ -1010,80 +1076,52 @@
     elements.imageEditor.hidden = false;
     setEditorMode("loading");
     setImageEditorStatus("loading", "Carregando imagem...", 0);
+    await waitForPaint();
 
-    reader.addEventListener("progress", (event) => {
-      const progress = event.lengthComputable
-        ? Math.min(88, Math.round((event.loaded / event.total) * 88))
-        : null;
-      setImageEditorStatus("loading", "Carregando imagem...", progress);
-    });
+    let decodedImage = null;
 
-    reader.addEventListener("error", () => {
-      setEditorMode("loading");
-      showImageEditorError("Não foi possível carregar a imagem.");
-    });
+    try {
+      setImageEditorStatus("loading", "Preparando imagem...", null);
+      decodedImage = await decodeImageFile(file);
+      setImageEditorStatus("loading", "Otimizando imagem...", null);
+      await waitForPaint();
 
-    reader.addEventListener("abort", () => {
-      setEditorMode("loading");
-      showImageEditorError("Carregamento cancelado.");
-    });
+      const dataUrl = exportOriginalImage(decodedImage, target);
+      const image = await loadImageElement(dataUrl);
+      const canvas = getCropCanvas();
 
-    reader.addEventListener("load", () => {
-      const dataUrl = String(reader.result ?? "");
-
-      if (!dataUrl) {
-        showImageEditorError("Não foi possível carregar a imagem.");
-        return;
+      if (canvas) {
+        canvas.width = preset.width;
+        canvas.height = preset.height;
+        canvas.style.setProperty("--crop-aspect-ratio", preset.aspectRatio);
       }
 
-      const image = new Image();
-      image.decoding = "async";
+      state.imageEditor = {
+        ...state.imageEditor,
+        image,
+        imageDataUrl: dataUrl,
+        mode: "choice",
+        scale: 1,
+        minScale: 1,
+        offsetX: 0,
+        offsetY: 0,
+        dragging: false,
+      };
 
-      setImageEditorStatus("loading", "Preparando imagem...", null);
+      if (elements.imageChoicePreview instanceof HTMLImageElement) {
+        elements.imageChoicePreview.src = dataUrl;
+      }
 
-      image.addEventListener("error", () => {
-        setEditorMode("loading");
-        showImageEditorError("Não foi possível abrir esta imagem.");
-      });
-
-      image.addEventListener("load", () => {
-        try {
-          const canvas = getCropCanvas();
-
-          if (canvas) {
-            canvas.width = preset.width;
-            canvas.height = preset.height;
-            canvas.style.setProperty("--crop-aspect-ratio", preset.aspectRatio);
-          }
-
-          state.imageEditor = {
-            ...state.imageEditor,
-            image,
-            imageDataUrl: dataUrl,
-            mode: "choice",
-            scale: 1,
-            minScale: 1,
-            offsetX: 0,
-            offsetY: 0,
-            dragging: false,
-          };
-
-          if (elements.imageChoicePreview instanceof HTMLImageElement) {
-            elements.imageChoicePreview.src = dataUrl;
-          }
-
-          setImageEditorStatus();
-          setEditorMode("choice");
-        } catch (error) {
-          setEditorMode("loading");
-          showImageEditorError("Não foi possível preparar a imagem.");
-        }
-      });
-
-      image.src = dataUrl;
-    });
-
-    reader.readAsDataURL(file);
+      setImageEditorStatus();
+      setEditorMode("choice");
+    } catch (error) {
+      setEditorMode("loading");
+      showImageEditorError("Não foi possível abrir esta imagem.");
+    } finally {
+      if (decodedImage && typeof decodedImage.close === "function") {
+        decodedImage.close();
+      }
+    }
   };
 
   const closeImageEditor = () => {
