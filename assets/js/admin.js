@@ -872,7 +872,10 @@
       return;
     }
 
-    const dataUrl = canvas.toDataURL("image/jpeg", 0.88);
+    const webpDataUrl = canvas.toDataURL("image/webp", 0.82);
+    const dataUrl = webpDataUrl.startsWith("data:image/webp")
+      ? webpDataUrl
+      : canvas.toDataURL("image/jpeg", 0.82);
 
     if (target === "product" && elements.productForm) {
       const input = elements.productForm.elements.images;
