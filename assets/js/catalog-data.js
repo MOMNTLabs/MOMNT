@@ -34,7 +34,7 @@ window.MOMNT_PRODUCTS = [
     price: "R$ 150,00",
     badge: "Novo drop",
     badgeTone: "green",
-    shortDescription: "Volume mais limpo para dominar a vitrine com presenca.",
+    shortDescription: "Volume mais limpo para dominar a vitrine com presença.",
     description:
       "Groove combina frente marcante e encaixe versátil para puxar a categoria Modern para um visual mais atual, direto e comercial.",
     materials: "Acetato polido com lente UV400",
@@ -95,7 +95,7 @@ window.MOMNT_PRODUCTS = [
     dimensions: "Lente 50mm | Ponte 21mm | Haste 143mm",
     highlights: [
       "Categoria Classic com encaixe versátil",
-      "Presenca premium sem exagero visual",
+      "Presença premium sem exagero visual",
       "Boa opção para uso recorrente",
     ],
     images: [
@@ -218,7 +218,7 @@ window.MOMNT_CATEGORY_META = {
     eyebrow: "Coleção Sport",
     title: "Energia urbana, contraste visual e espaço para novos drops",
     description:
-      "A linha Sport agrupa produtos com leitura mais dinamica, incluindo placeholders preparados para futuras entradas.",
+      "A linha Sport agrupa produtos com leitura mais dinâmica, incluindo placeholders preparados para futuras entradas.",
     heroImage: "assets/images/collection-placeholder-sport.svg",
   },
 };

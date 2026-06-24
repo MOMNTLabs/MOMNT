@@ -157,6 +157,26 @@ button {
   text-align: left;
 }
 
+.admin-icon-button {
+  display: inline-grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid var(--admin-line);
+  background: #fffdf8;
+  color: var(--admin-ink);
+}
+
+.admin-icon-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
 .admin-tab.is-active,
 .admin-button-primary {
   background: var(--admin-accent);
@@ -164,7 +184,8 @@ button {
   color: #fff;
 }
 
-.admin-button-danger {
+.admin-button-danger,
+.admin-icon-button-danger {
   border-color: rgba(154, 63, 36, 0.28);
   color: var(--admin-warn);
 }
@@ -195,6 +216,33 @@ button {
   font-size: 46px;
 }
 
+.catalog-workspace {
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) minmax(260px, 1fr);
+  gap: 18px;
+  overflow: hidden;
+  position: relative;
+}
+
+.catalog-column {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-width: 0;
+}
+
+.catalog-column-head,
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.products-column {
+  min-height: 520px;
+}
+
 .admin-grid {
   display: grid;
   grid-template-columns: minmax(220px, 330px) minmax(0, 1fr);
@@ -216,6 +264,11 @@ button {
   text-align: left;
 }
 
+.category-list button,
+.product-list button {
+  width: 100%;
+}
+
 .admin-list button.is-active {
   border-color: var(--admin-accent);
   box-shadow: inset 3px 0 0 var(--admin-accent);
@@ -234,6 +287,37 @@ button {
 
 .admin-form {
   align-content: start;
+}
+
+.compact-form {
+  border-top: 1px solid var(--admin-line);
+  padding-top: 14px;
+}
+
+.product-drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(620px, 100%);
+  overflow: auto;
+  padding: 18px;
+  background: var(--admin-panel);
+  border-left: 1px solid var(--admin-line);
+  box-shadow: -18px 0 48px rgba(25, 23, 20, 0.12);
+  transform: translateX(105%);
+  transition:
+    transform 260ms ease,
+    opacity 260ms ease;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.product-drawer.is-open {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .field-grid {
@@ -324,8 +408,17 @@ button {
 
   .admin-shell,
   .admin-grid,
+  .catalog-workspace,
   .field-grid {
     grid-template-columns: 1fr;
+  }
+
+  .product-drawer {
+    position: fixed;
+    top: 72px;
+    left: 0;
+    width: 100%;
+    z-index: 8;
   }
 
   .admin-side {

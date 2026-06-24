@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
     <title>MOMNT | Admin</title>
-    <link rel="preçonnect" href="https://fonts.googleapis.com" />
-    <link rel="preçonnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -64,12 +64,9 @@
 
       <div class="admin-shell">
         <aside class="admin-side">
-          <nav class="admin-tabs" aria-label="Secoes do admin">
-            <button class="admin-tab is-active" type="button" data-tab="products">
-              Produtos
-            </button>
-            <button class="admin-tab" type="button" data-tab="categories">
-              Categorias
+          <nav class="admin-tabs" aria-label="Seções do admin">
+            <button class="admin-tab is-active" type="button" data-tab="catalog">
+              Catálogo
             </button>
             <button class="admin-tab" type="button" data-tab="home">
               Home e banners
@@ -81,166 +78,176 @@
         </aside>
 
         <main class="admin-main">
-          <section class="admin-panel" data-panel="products">
+          <section class="admin-panel" data-panel="catalog">
             <div class="admin-panel-header">
               <div>
-                <p class="admin-kicker">Catálogo</p>
-                <h2>Produtos</h2>
-                <p class="admin-help">
-                  Edite nome, preço, categoria, imagens, descrições e status de venda.
-                </p>
+                <h2>Catálogo</h2>
               </div>
               <div class="admin-panel-actions">
-                <button class="admin-button" type="button" id="product-new">
-                  Novo produto
+                <button class="admin-icon-button" type="button" id="category-new" aria-label="Nova categoria" title="Nova categoria">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 5v14M5 12h14"></path>
+                  </svg>
                 </button>
-                <button class="admin-button" type="button" id="product-duplicate">
-                  Duplicar
-                </button>
-                <button class="admin-button admin-button-danger" type="button" id="product-remove">
-                  Remover
+                <button class="admin-icon-button admin-icon-button-danger" type="button" id="category-remove" aria-label="Remover categoria" title="Remover categoria">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"></path>
+                  </svg>
                 </button>
               </div>
             </div>
 
-            <div class="admin-grid">
-              <div class="admin-list" id="product-list"></div>
+            <div class="catalog-workspace">
+              <section class="catalog-column">
+                <div class="catalog-column-head">
+                  <p class="admin-kicker">Categorias</p>
+                </div>
+                <div class="admin-list category-list" id="category-list"></div>
 
-              <form class="admin-form" id="product-form">
-                <div class="field-grid">
-                  <label class="field">
-                    <span>Slug</span>
-                    <input name="slug" required placeholder="wave-2" />
-                  </label>
-                  <label class="field">
-                    <span>Nome</span>
-                    <input name="name" required placeholder="Wave 2.0" />
-                  </label>
-                  <label class="field">
-                    <span>Categoria</span>
-                    <select name="category" required></select>
-                  </label>
-                  <label class="field">
-                    <span>Preço</span>
-                    <input name="price" placeholder="R$ 150,00" />
-                  </label>
-                  <label class="field">
-                    <span>Selo</span>
-                    <input name="badge" placeholder="Novo drop" />
-                  </label>
-                  <label class="field">
-                    <span>Tom do selo</span>
-                    <select name="badgeTone">
-                      <option value="green">Verde</option>
-                      <option value="soft">Suave</option>
-                      <option value="neutral">Neutro</option>
-                    </select>
-                  </label>
-                  <label class="field">
-                    <span>Disponibilidade</span>
-                    <input name="availability" placeholder="Pronta entrega" />
-                  </label>
-                  <label class="field">
-                    <span>Materiais</span>
-                    <input name="materials" placeholder="Acetato leve com lente UV400" />
-                  </label>
-                  <label class="field field-full">
-                    <span>Descrição curta</span>
-                    <input name="shortDescription" />
-                  </label>
-                  <label class="field field-full">
-                    <span>Descrição completa</span>
-                    <textarea name="description" rows="4"></textarea>
-                  </label>
-                  <label class="field">
-                    <span>Dimensões</span>
-                    <input name="dimensions" placeholder="Lente 53mm | Ponte 20mm" />
-                  </label>
-                  <label class="field">
-                    <span>WhatsApp</span>
-                    <input name="whatsappText" />
-                  </label>
-                  <label class="field field-full">
-                    <span>Imagens, uma por linha</span>
-                    <textarea name="images" rows="5"></textarea>
-                  </label>
-                  <div class="field field-full">
-                    <span>Adicionar imagem do computador ao produto</span>
-                    <div class="image-tools">
-                      <input type="file" accept="image/*" data-image-picker="product" />
-                      <span class="admin-help">Use imagens leves para manter o painel rápido.</span>
+                <form class="admin-form compact-form" id="category-form" hidden>
+                  <div class="field-grid">
+                    <label class="field">
+                      <span>Chave</span>
+                      <input name="key" required placeholder="modern" />
+                    </label>
+                    <label class="field">
+                      <span>Nome</span>
+                      <input name="label" required placeholder="Modern" />
+                    </label>
+                    <label class="field field-full">
+                      <span>Eyebrow</span>
+                      <input name="eyebrow" />
+                    </label>
+                    <label class="field field-full">
+                      <span>Título</span>
+                      <input name="title" />
+                    </label>
+                    <label class="field field-full">
+                      <span>Descrição</span>
+                      <textarea name="description" rows="3"></textarea>
+                    </label>
+                    <label class="field field-full">
+                      <span>Imagem</span>
+                      <input name="heroImage" />
+                    </label>
+                    <div class="field field-full">
+                      <span>Imagem do computador</span>
+                      <div class="image-tools">
+                        <input type="file" accept="image/*" data-image-picker="category" />
+                      </div>
                     </div>
                   </div>
-                  <label class="field field-full">
-                    <span>Destaques, um por linha</span>
-                    <textarea name="highlights" rows="5"></textarea>
-                  </label>
-                </div>
+                  <div class="admin-preview" id="category-preview"></div>
+                </form>
+              </section>
 
-                <div class="admin-preview" id="product-preview"></div>
-              </form>
-            </div>
-          </section>
-
-          <section class="admin-panel" data-panel="categories" hidden>
-            <div class="admin-panel-header">
-              <div>
-                <p class="admin-kicker">Colecoes</p>
-                <h2>Categorias</h2>
-                <p class="admin-help">
-                  Controle filtros, textos de categoria e imagens principais.
-                </p>
-              </div>
-              <div class="admin-panel-actions">
-                <button class="admin-button" type="button" id="category-new">
-                  Nova categoria
-                </button>
-                <button class="admin-button admin-button-danger" type="button" id="category-remove">
-                  Remover
-                </button>
-              </div>
-            </div>
-
-            <div class="admin-grid">
-              <div class="admin-list" id="category-list"></div>
-
-              <form class="admin-form" id="category-form">
-                <div class="field-grid">
-                  <label class="field">
-                    <span>Chave</span>
-                    <input name="key" required placeholder="modern" />
-                  </label>
-                  <label class="field">
-                    <span>Nome público</span>
-                    <input name="label" required placeholder="Modern" />
-                  </label>
-                  <label class="field field-full">
-                    <span>Eyebrow</span>
-                    <input name="eyebrow" />
-                  </label>
-                  <label class="field field-full">
-                    <span>Título</span>
-                    <input name="title" />
-                  </label>
-                  <label class="field field-full">
-                    <span>Descrição</span>
-                    <textarea name="description" rows="4"></textarea>
-                  </label>
-                  <label class="field field-full">
-                    <span>Imagem da categoria</span>
-                    <input name="heroImage" />
-                  </label>
-                  <div class="field field-full">
-                    <span>Adicionar imagem do computador à categoria</span>
-                    <div class="image-tools">
-                      <input type="file" accept="image/*" data-image-picker="category" />
-                      <span class="admin-help">Tambem aceita caminho como assets/images/category-modern.png.</span>
-                    </div>
+              <section class="catalog-column products-column">
+                <div class="catalog-column-head">
+                  <p class="admin-kicker">Produtos</p>
+                  <div class="admin-panel-actions">
+                    <button class="admin-icon-button" type="button" id="product-new" aria-label="Novo produto" title="Novo produto">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 5v14M5 12h14"></path>
+                      </svg>
+                    </button>
+                    <button class="admin-icon-button" type="button" id="product-duplicate" aria-label="Duplicar produto" title="Duplicar produto">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M8 8h10v12H8zM6 16H4V4h10v2"></path>
+                      </svg>
+                    </button>
+                    <button class="admin-icon-button admin-icon-button-danger" type="button" id="product-remove" aria-label="Remover produto" title="Remover produto">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"></path>
+                      </svg>
+                    </button>
                   </div>
                 </div>
+                <div class="admin-list product-list" id="product-list"></div>
+              </section>
 
-                <div class="admin-preview" id="category-preview"></div>
-              </form>
+              <aside class="product-drawer" id="product-drawer" aria-hidden="true">
+                <form class="admin-form" id="product-form">
+                  <div class="drawer-head">
+                    <p class="admin-kicker">Produto</p>
+                    <button class="admin-icon-button" type="button" id="product-close" aria-label="Fechar editor" title="Fechar">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 6l12 12M18 6L6 18"></path>
+                      </svg>
+                    </button>
+                  </div>
+
+                  <div class="field-grid">
+                    <label class="field">
+                      <span>Slug</span>
+                      <input name="slug" required placeholder="wave-2" />
+                    </label>
+                    <label class="field">
+                      <span>Nome</span>
+                      <input name="name" required placeholder="Wave 2.0" />
+                    </label>
+                    <label class="field">
+                      <span>Categoria</span>
+                      <select name="category" required></select>
+                    </label>
+                    <label class="field">
+                      <span>Preço</span>
+                      <input name="price" placeholder="R$ 150,00" />
+                    </label>
+                    <label class="field">
+                      <span>Selo</span>
+                      <input name="badge" placeholder="Novo drop" />
+                    </label>
+                    <label class="field">
+                      <span>Tom</span>
+                      <select name="badgeTone">
+                        <option value="green">Verde</option>
+                        <option value="soft">Suave</option>
+                        <option value="neutral">Neutro</option>
+                      </select>
+                    </label>
+                    <label class="field">
+                      <span>Status</span>
+                      <input name="availability" placeholder="Pronta entrega" />
+                    </label>
+                    <label class="field">
+                      <span>Materiais</span>
+                      <input name="materials" placeholder="Acetato leve com lente UV400" />
+                    </label>
+                    <label class="field field-full">
+                      <span>Descrição curta</span>
+                      <input name="shortDescription" />
+                    </label>
+                    <label class="field field-full">
+                      <span>Descrição completa</span>
+                      <textarea name="description" rows="4"></textarea>
+                    </label>
+                    <label class="field">
+                      <span>Dimensões</span>
+                      <input name="dimensions" placeholder="Lente 53mm | Ponte 20mm" />
+                    </label>
+                    <label class="field">
+                      <span>WhatsApp</span>
+                      <input name="whatsappText" />
+                    </label>
+                    <label class="field field-full">
+                      <span>Imagens</span>
+                      <textarea name="images" rows="5"></textarea>
+                    </label>
+                    <div class="field field-full">
+                      <span>Imagem do computador</span>
+                      <div class="image-tools">
+                        <input type="file" accept="image/*" data-image-picker="product" />
+                      </div>
+                    </div>
+                    <label class="field field-full">
+                      <span>Destaques</span>
+                      <textarea name="highlights" rows="5"></textarea>
+                    </label>
+                  </div>
+
+                  <div class="admin-preview" id="product-preview"></div>
+                </form>
+              </aside>
             </div>
           </section>
 
@@ -318,7 +325,7 @@
               <textarea class="admin-export-box" id="export-output" spellcheck="false"></textarea>
               <div class="admin-form-actions">
                 <button class="admin-button" type="button" id="copy-export">
-                  Copiar
+                  Cópiar
                 </button>
                 <button class="admin-button" type="button" id="import-json">
                   Importar JSON acima

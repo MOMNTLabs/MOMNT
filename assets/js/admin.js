@@ -18,6 +18,8 @@
     panels: document.querySelectorAll("[data-panel]"),
     save: document.querySelector("#admin-save"),
     exportTop: document.querySelector("#admin-export-top"),
+    productDrawer: document.querySelector("#product-drawer"),
+    productClose: document.querySelector("#product-close"),
     productList: document.querySelector("#product-list"),
     productForm: document.querySelector("#product-form"),
     productNew: document.querySelector("#product-new"),
@@ -52,9 +54,10 @@
         window.MOMNT_SITE_CONTENT ?? defaultCatalog.siteContent ?? {},
       ),
     },
-    activeProductSlug: window.MOMNT_PRODUCTS?.[0]?.slug ?? "",
-    activeCategoryKey: "all",
+    activeProductSlug: "",
+    activeCategoryKey: "",
     dirty: false,
+    productFormDirty: false,
     exportMode: "json",
   };
 
@@ -102,8 +105,28 @@
     state.dirty = dirty;
   };
 
+  const openProductEditor = (slug) => {
+    state.activeProductSlug = slug;
+    state.productFormDirty = false;
+    elements.productDrawer?.classList.add("is-open");
+    elements.productDrawer?.setAttribute("aria-hidden", "false");
+  };
+
+  const closeProductEditor = (options = {}) => {
+    if (state.productFormDirty && !options.force) {
+      return false;
+    }
+
+    state.activeProductSlug = "";
+    state.productFormDirty = false;
+    elements.productDrawer?.classList.remove("is-open");
+    elements.productDrawer?.setAttribute("aria-hidden", "true");
+    renderProductList();
+    return true;
+  };
+
   const getCategoryKeys = () =>
-    Object.keys(state.catalog.categoryMeta).filter(Boolean);
+    Object.keys(state.catalog.categoryMeta).filter((key) => key !== "all");
 
   const getProduct = () =>
     state.catalog.products.find(
@@ -112,6 +135,13 @@
 
   const getCategory = () =>
     state.catalog.categoryMeta[state.activeCategoryKey] ?? null;
+
+  const getCategoryProducts = () =>
+    state.activeCategoryKey
+      ? state.catalog.products.filter(
+          (product) => product.category === state.activeCategoryKey,
+        )
+      : [];
 
   const syncCategoryLabels = () => {
     state.catalog.products = state.catalog.products.map((product) => ({
@@ -219,6 +249,7 @@
     try {
       window.localStorage.setItem(storageKey, JSON.stringify(state.catalog));
       setDirty(false);
+      state.productFormDirty = false;
       showToast("Catálogo salvo.");
       return true;
     } catch (error) {
@@ -234,8 +265,17 @@
       return;
     }
 
+    const category = getCategory();
+    const products = getCategoryProducts();
+
+    if (!category) {
+      elements.productList.innerHTML =
+        '<p class="admin-empty">Selecione uma categoria.</p>';
+      return;
+    }
+
     elements.productList.innerHTML =
-      state.catalog.products
+      products
         .map(
           (product) => `
             <button
@@ -248,11 +288,12 @@
             </button>
           `,
         )
-        .join("") || '<p class="admin-empty">Nenhum produto cadastrado.</p>';
+        .join("") || '<p class="admin-empty">Nenhum produto.</p>';
 
     elements.productList.querySelectorAll("[data-product]").forEach((button) => {
-      button.addEventListener("click", () => {
-        state.activeProductSlug = button.getAttribute("data-product") ?? "";
+      button.addEventListener("click", (event) => {
+        event.stopPropagation();
+        openProductEditor(button.getAttribute("data-product") ?? "");
         renderProducts();
       });
     });
@@ -266,7 +307,6 @@
     }
 
     select.innerHTML = getCategoryKeys()
-      .filter((key) => key !== "all")
       .map(
         (key) => `
           <option value="${escapeHtml(key)}">
@@ -282,6 +322,8 @@
     const form = elements.productForm;
 
     if (!form || !product) {
+      elements.productDrawer?.classList.remove("is-open");
+      elements.productDrawer?.setAttribute("aria-hidden", "true");
       return;
     }
 
@@ -301,6 +343,31 @@
     form.elements.highlights.value = arrayToLines(product.highlights);
 
     renderImagePreview(elements.productPreview, product.images);
+  };
+
+  const syncCatalogButtons = () => {
+    const hasCategory = Boolean(getCategory());
+    const hasProduct = Boolean(getProduct());
+
+    if (elements.categoryRemove instanceof HTMLButtonElement) {
+      elements.categoryRemove.disabled = !hasCategory;
+      elements.categoryRemove.hidden = !hasCategory;
+    }
+
+    if (elements.productNew instanceof HTMLButtonElement) {
+      elements.productNew.disabled = !hasCategory;
+      elements.productNew.hidden = !hasCategory;
+    }
+
+    if (elements.productDuplicate instanceof HTMLButtonElement) {
+      elements.productDuplicate.disabled = !hasProduct;
+      elements.productDuplicate.hidden = !hasProduct;
+    }
+
+    if (elements.productRemove instanceof HTMLButtonElement) {
+      elements.productRemove.disabled = !hasProduct;
+      elements.productRemove.hidden = !hasProduct;
+    }
   };
 
   const readProductForm = () => {
@@ -340,6 +407,7 @@
     }
 
     state.activeProductSlug = nextSlug;
+    state.productFormDirty = true;
     setDirty();
     renderProductList();
     renderImagePreview(elements.productPreview, nextProduct.images);
@@ -349,12 +417,9 @@
     syncCategoryLabels();
     updateCategorySelect();
 
-    if (!getProduct() && state.catalog.products[0]) {
-      state.activeProductSlug = state.catalog.products[0].slug;
-    }
-
     renderProductList();
     fillProductForm();
+    syncCatalogButtons();
   };
 
   const renderCategoryList = () => {
@@ -383,8 +448,20 @@
       .querySelectorAll("[data-category]")
       .forEach((button) => {
         button.addEventListener("click", () => {
-          state.activeCategoryKey = button.getAttribute("data-category") ?? "all";
+          const nextCategoryKey = button.getAttribute("data-category") ?? "";
+
+          if (
+            nextCategoryKey !== state.activeCategoryKey &&
+            !closeProductEditor()
+          ) {
+            showToast("Salve as alterações antes de trocar de categoria.");
+            return;
+          }
+
+          state.activeCategoryKey = nextCategoryKey;
+          state.activeProductSlug = "";
           renderCategories();
+          renderProducts();
         });
       });
   };
@@ -394,11 +471,15 @@
     const category = getCategory();
 
     if (!form || !category) {
+      if (form) {
+        form.hidden = true;
+      }
       return;
     }
 
+    form.hidden = false;
     form.elements.key.value = state.activeCategoryKey;
-    form.elements.key.disabled = state.activeCategoryKey === "all";
+    form.elements.key.disabled = false;
     form.elements.label.value = category.label;
     form.elements.eyebrow.value = category.eyebrow;
     form.elements.title.value = category.title;
@@ -451,6 +532,7 @@
   const renderCategories = () => {
     renderCategoryList();
     fillCategoryForm();
+    syncCatalogButtons();
   };
 
   const fillHomeForm = () => {
@@ -619,6 +701,11 @@
   };
 
   const createProduct = () => {
+    if (!getCategory()) {
+      showToast("Selecione uma categoria.");
+      return;
+    }
+
     const baseSlug = normalizeSlug("novo-produto");
     let nextSlug = baseSlug;
     let count = 2;
@@ -628,7 +715,7 @@
       count += 1;
     }
 
-    const categoryKey = getCategoryKeys().find((key) => key !== "all") ?? "modern";
+    const categoryKey = state.activeCategoryKey;
     const category = state.catalog.categoryMeta[categoryKey];
 
     state.catalog.products.push({
@@ -650,6 +737,9 @@
     });
 
     state.activeProductSlug = nextSlug;
+    state.productFormDirty = false;
+    elements.productDrawer?.classList.add("is-open");
+    elements.productDrawer?.setAttribute("aria-hidden", "false");
     setDirty();
     renderProducts();
   };
@@ -662,18 +752,21 @@
     }
 
     const copy = clone(product);
-    let nextSlug = `${copy.slug}-copia`;
+    let nextSlug = `${copy.slug}-cópia`;
     let count = 2;
 
     while (state.catalog.products.some((item) => item.slug === nextSlug)) {
-      nextSlug = `${copy.slug}-copia-${count}`;
+      nextSlug = `${copy.slug}-cópia-${count}`;
       count += 1;
     }
 
     copy.slug = nextSlug;
-    copy.name = `${copy.name} copia`;
+    copy.name = `${copy.name} cópia`;
     state.catalog.products.push(copy);
     state.activeProductSlug = nextSlug;
+    state.productFormDirty = false;
+    elements.productDrawer?.classList.add("is-open");
+    elements.productDrawer?.setAttribute("aria-hidden", "false");
     setDirty();
     renderProducts();
   };
@@ -688,7 +781,7 @@
     state.catalog.products = state.catalog.products.filter(
       (item) => item.slug !== product.slug,
     );
-    state.activeProductSlug = state.catalog.products[0]?.slug ?? "";
+    closeProductEditor({ force: true });
     setDirty();
     renderProducts();
   };
@@ -709,6 +802,7 @@
       description: "Descrição da categoria.",
       heroImage: "assets/images/collection-placeholder-modern.svg",
     };
+    closeProductEditor({ force: true });
     state.activeCategoryKey = nextKey;
     setDirty();
     renderCategories();
@@ -720,16 +814,17 @@
 
     if (
       !category ||
-      state.activeCategoryKey === "all" ||
+      getCategoryKeys().length <= 1 ||
       !window.confirm(`Remover a categoria ${category.label}?`)
     ) {
+      if (category && getCategoryKeys().length <= 1) {
+        showToast("Mantenha ao menos uma categoria.");
+      }
       return;
     }
 
     const fallbackKey =
-      getCategoryKeys().find(
-        (key) => key !== "all" && key !== state.activeCategoryKey,
-      ) ?? "all";
+      getCategoryKeys().find((key) => key !== state.activeCategoryKey) ?? "";
 
     delete state.catalog.categoryMeta[state.activeCategoryKey];
     state.catalog.products = state.catalog.products.map((product) =>
@@ -737,6 +832,7 @@
         ? { ...product, category: fallbackKey }
         : product,
     );
+    closeProductEditor({ force: true });
     state.activeCategoryKey = fallbackKey;
     setDirty();
     renderCategories();
@@ -750,13 +846,16 @@
 
     try {
       state.catalog = sanitizeCatalog(JSON.parse(elements.exportOutput.value));
-      state.activeProductSlug = state.catalog.products[0]?.slug ?? "";
-      state.activeCategoryKey = "all";
+      state.activeProductSlug = "";
+      state.activeCategoryKey = "";
+      state.productFormDirty = false;
+      elements.productDrawer?.classList.remove("is-open");
+      elements.productDrawer?.setAttribute("aria-hidden", "true");
       setDirty();
       renderAll();
       showToast("JSON importado. Salve para aplicar.");
     } catch {
-      showToast("JSON invalido.");
+      showToast("JSON inválido.");
     }
   };
 
@@ -770,7 +869,7 @@
     const filename =
       state.exportMode === "js" ? "catalog-data.js" : "momnt-catalog.json";
     const blob = new Blob([elements.exportOutput.value], {
-      type: state.exportMode === "js" ? "text/jávascript" : "application/json",
+      type: state.exportMode === "js" ? "text/javascript" : "application/json",
     });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -788,8 +887,11 @@
 
     window.localStorage.removeItem(storageKey);
     state.catalog = sanitizeCatalog(clone(defaultCatalog));
-    state.activeProductSlug = state.catalog.products[0]?.slug ?? "";
-    state.activeCategoryKey = "all";
+    state.activeProductSlug = "";
+    state.activeCategoryKey = "";
+    state.productFormDirty = false;
+    elements.productDrawer?.classList.remove("is-open");
+    elements.productDrawer?.setAttribute("aria-hidden", "true");
     setDirty(false);
     renderAll();
     showToast("Catálogo original restaurado.");
@@ -844,6 +946,9 @@
   elements.productNew?.addEventListener("click", createProduct);
   elements.productDuplicate?.addEventListener("click", duplicateProduct);
   elements.productRemove?.addEventListener("click", removeProduct);
+  elements.productClose?.addEventListener("click", () => {
+    closeProductEditor();
+  });
   elements.categoryNew?.addEventListener("click", createCategory);
   elements.categoryRemove?.addEventListener("click", removeCategory);
   elements.exportJson?.addEventListener("click", () => renderExport("json"));
@@ -857,15 +962,38 @@
 
     try {
       await navigator.clipboard.writeText(elements.exportOutput?.value ?? "");
-      showToast("Exportação copiada.");
+      showToast("Exportação cópiada.");
     } catch {
-      showToast("Não foi possível copiar automaticamente.");
+      showToast("Não foi possível cópiar automaticamente.");
     }
   });
 
   elements.productForm?.addEventListener("input", readProductForm);
   elements.categoryForm?.addEventListener("input", readCategoryForm);
   elements.homeForm?.addEventListener("input", readHomeForm);
+
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+
+    if (
+      !(target instanceof Node) ||
+      !elements.productDrawer?.classList.contains("is-open")
+    ) {
+      return;
+    }
+
+    if (
+      elements.productDrawer.contains(target) ||
+      elements.productList?.contains(target) ||
+      elements.productNew?.contains(target) ||
+      elements.productDuplicate?.contains(target) ||
+      elements.productRemove?.contains(target)
+    ) {
+      return;
+    }
+
+    closeProductEditor();
+  });
 
   document.querySelectorAll("[data-image-picker]").forEach((input) => {
     input.addEventListener("change", () => {

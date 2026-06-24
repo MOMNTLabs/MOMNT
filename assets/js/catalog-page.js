@@ -143,7 +143,7 @@
     heroDescription.textContent = meta.description;
     activeCategory.textContent = meta.label;
     visibleCount.textContent = `${filteredProducts.length} modelos`;
-    previewCount.textContent = `${previewItems.length} slots editaveis`;
+    previewCount.textContent = `${previewItems.length} slots editáveis`;
     document.title = `MOMNT | ${
       meta.label === "Todos" ? "Produtos" : meta.label
     }`;
