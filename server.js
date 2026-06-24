@@ -77,6 +77,142 @@ const getDefaultCatalog = () => {
   return defaultCatalogPromise;
 };
 
+const defaultTheme = {
+  background: "#ffffff",
+  surface: "#ffffff",
+  surfaceSoft: "#f5efe7",
+  ink: "#121212",
+  textLight: "#f7f2eb",
+  muted: "#5f564f",
+  line: "#ece6dd",
+  accent: "#d2ad7b",
+  success: "#10b86b",
+  danger: "#d72b38",
+  dark: "#080808",
+};
+
+const cssVariableMap = {
+  "--black": "dark",
+  "--ink": "ink",
+  "--text": "textLight",
+  "--muted": "muted",
+  "--line": "line",
+  "--surface": "surface",
+  "--surface-soft": "surfaceSoft",
+  "--gold": "accent",
+  "--green": "success",
+  "--red": "danger",
+  "--shop-bg": "background",
+  "--shop-surface": "surface",
+  "--shop-surface-soft": "surfaceSoft",
+  "--shop-line": "line",
+  "--shop-muted": "muted",
+  "--shop-dark": "dark",
+  "--shop-accent": "accent",
+  "--shop-green": "success",
+  "--shop-red": "danger",
+};
+
+const normalizeTheme = (theme = {}) =>
+  Object.fromEntries(
+    Object.entries(defaultTheme).map(([key, fallback]) => {
+      const value = String(theme?.[key] ?? "").trim();
+      return [key, value || fallback];
+    }),
+  );
+
+const escapeCssValue = (value) =>
+  String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "")
+    .replace(/[{}]/g, "");
+
+const buildThemeStyle = (theme = {}) => {
+  const normalizedTheme = normalizeTheme(theme);
+  const declarations = Object.entries(cssVariableMap)
+    .map(([variable, themeKey]) => {
+      return `${variable}:${escapeCssValue(normalizedTheme[themeKey])}`;
+    })
+    .join(";");
+
+  return `<style id="momnt-theme-vars">:root{${declarations}}</style>`;
+};
+
+const readThemeForHtml = async () => {
+  try {
+    if (pool) {
+      await ensureSchema();
+      const result = await pool.query(
+        "SELECT payload->'theme' AS theme FROM site_content WHERE id = TRUE LIMIT 1",
+      );
+      return normalizeTheme(result.rows[0]?.theme || {});
+    }
+
+    const defaultCatalog = await getDefaultCatalog();
+    return normalizeTheme(defaultCatalog.siteContent?.theme || {});
+  } catch (error) {
+    console.error(error);
+    return normalizeTheme();
+  }
+};
+
+const injectThemeStyle = (html, theme) => {
+  const style = buildThemeStyle(theme);
+
+  if (html.includes('id="momnt-theme-vars"')) {
+    return html;
+  }
+
+  if (html.includes("</head>")) {
+    return html.replace("</head>", `    ${style}\n  </head>`);
+  }
+
+  return `${style}${html}`;
+};
+
+const resolveHtmlPath = (requestPath) => {
+  const cleanPath = requestPath.replace(/^\/+/, "");
+  const htmlPath = cleanPath
+    ? path.extname(cleanPath)
+      ? cleanPath
+      : `${cleanPath}.html`
+    : "index.html";
+  const resolvedPath = path.resolve(__dirname, htmlPath);
+
+  if (!resolvedPath.startsWith(__dirname) || path.extname(resolvedPath) !== ".html") {
+    return null;
+  }
+
+  return resolvedPath;
+};
+
+const sendThemedHtml = async (request, response, next) => {
+  if (request.method !== "GET") {
+    next();
+    return;
+  }
+
+  const htmlPath = resolveHtmlPath(request.path);
+
+  if (!htmlPath) {
+    next();
+    return;
+  }
+
+  try {
+    const [html, theme] = await Promise.all([
+      fs.readFile(htmlPath, "utf8"),
+      readThemeForHtml(),
+    ]);
+
+    response.set("Content-Type", "text/html; charset=utf-8");
+    response.set("Cache-Control", "no-store");
+    response.send(injectThemeStyle(html, theme));
+  } catch (error) {
+    next();
+  }
+};
+
 const sendError = (response, status, message) => {
   response.status(status).json({ error: message });
 };
@@ -447,6 +583,8 @@ app.post(
   },
 );
 
+app.use(sendThemedHtml);
+
 app.use(
   express.static(__dirname, {
     etag: true,
@@ -460,13 +598,7 @@ app.use(
 );
 
 app.get("*", (request, response) => {
-  const cleanPath = request.path.replace(/^\/+/, "");
-  const htmlPath = cleanPath ? `${cleanPath}.html` : "index.html";
-  response.sendFile(path.join(__dirname, htmlPath), (error) => {
-    if (error) {
-      response.sendFile(path.join(__dirname, "index.html"));
-    }
-  });
+  response.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.listen(port, () => {
