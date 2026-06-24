@@ -222,3 +222,155 @@ window.MOMNT_CATEGORY_META = {
     heroImage: "assets/images/collection-placeholder-sport.svg",
   },
 };
+
+window.MOMNT_SITE_CONTENT = {
+  home: {
+    heroImage: "assets/images/lifestyle-04.jpg",
+    heroKicker: "Inverno 26",
+    heroTitle: "nova colecao",
+    heroText:
+      "Shapes autorais, leitura premium e uma jornada mais curta entre desejo, produto e compra.",
+    featuredProductSlugs: ["wave-2", "groove", "phase", "loop"],
+    featuredCategoryKeys: ["modern", "classic", "sport"],
+  },
+};
+
+(function () {
+  const STORAGE_KEY = "momnt-admin-catalog-v1";
+  const defaultCatalog = {
+    products: window.MOMNT_PRODUCTS,
+    categoryMeta: window.MOMNT_CATEGORY_META,
+    siteContent: window.MOMNT_SITE_CONTENT,
+  };
+
+  const clone = (value) => JSON.parse(JSON.stringify(value));
+
+  const isPlainObject = (value) =>
+    Boolean(value) &&
+    typeof value === "object" &&
+    !Array.isArray(value);
+
+  const normalizeStringList = (value) =>
+    Array.isArray(value)
+      ? value.map((item) => String(item ?? "").trim()).filter(Boolean)
+      : [];
+
+  const normalizeProduct = (product) => {
+    if (!isPlainObject(product)) {
+      return null;
+    }
+
+    const slug = String(product.slug ?? "").trim();
+    const name = String(product.name ?? "").trim();
+
+    if (!slug || !name) {
+      return null;
+    }
+
+    return {
+      slug,
+      name,
+      category: String(product.category ?? "modern").trim() || "modern",
+      categoryLabel: String(product.categoryLabel ?? "").trim(),
+      price: String(product.price ?? "").trim() || "Sob consulta",
+      badge: String(product.badge ?? "").trim() || "Novo",
+      badgeTone: String(product.badgeTone ?? "neutral").trim() || "neutral",
+      shortDescription: String(product.shortDescription ?? "").trim(),
+      description: String(product.description ?? "").trim(),
+      materials: String(product.materials ?? "").trim(),
+      availability:
+        String(product.availability ?? "").trim() || "Em preparacao",
+      dimensions: String(product.dimensions ?? "").trim(),
+      highlights: normalizeStringList(product.highlights),
+      images: normalizeStringList(product.images),
+      whatsappText: String(product.whatsappText ?? "").trim(),
+    };
+  };
+
+  const normalizeCategory = (category, fallbackLabel) => {
+    if (!isPlainObject(category)) {
+      return null;
+    }
+
+    return {
+      label: String(category.label ?? fallbackLabel ?? "").trim(),
+      eyebrow: String(category.eyebrow ?? "").trim(),
+      title: String(category.title ?? "").trim(),
+      description: String(category.description ?? "").trim(),
+      heroImage: String(category.heroImage ?? "").trim(),
+    };
+  };
+
+  const normalizeCatalog = (catalog) => {
+    if (!isPlainObject(catalog)) {
+      return null;
+    }
+
+    const products = Array.isArray(catalog.products)
+      ? catalog.products.map(normalizeProduct).filter(Boolean)
+      : null;
+    const categoryMeta = isPlainObject(catalog.categoryMeta)
+      ? Object.fromEntries(
+          Object.entries(catalog.categoryMeta)
+            .map(([key, category]) => [
+              String(key).trim(),
+              normalizeCategory(category, key),
+            ])
+            .filter(([key, category]) => key && category),
+        )
+      : null;
+
+    if (!products || !categoryMeta || !categoryMeta.all) {
+      return null;
+    }
+
+    products.forEach((product) => {
+      const category = categoryMeta[product.category];
+      product.categoryLabel = category?.label || product.categoryLabel;
+      product.images = product.images.length
+        ? product.images
+        : ["assets/images/product-placeholder-modern.svg"];
+      product.highlights = product.highlights.length
+        ? product.highlights
+        : ["Produto pronto para edicao no admin"];
+      product.whatsappText =
+        product.whatsappText ||
+        `Oi, quero saber mais detalhes do ${product.name} da MOMNT.`;
+    });
+
+    return {
+      products,
+      categoryMeta,
+      siteContent: {
+        ...clone(defaultCatalog.siteContent),
+        ...(isPlainObject(catalog.siteContent) ? catalog.siteContent : {}),
+        home: {
+          ...clone(defaultCatalog.siteContent.home),
+          ...(isPlainObject(catalog.siteContent?.home)
+            ? catalog.siteContent.home
+            : {}),
+        },
+      },
+    };
+  };
+
+  const readSavedCatalog = () => {
+    try {
+      const rawValue = window.localStorage.getItem(STORAGE_KEY);
+      return normalizeCatalog(JSON.parse(rawValue ?? "null"));
+    } catch {
+      return null;
+    }
+  };
+
+  window.MOMNT_ADMIN_STORAGE_KEY = STORAGE_KEY;
+  window.MOMNT_DEFAULT_CATALOG = clone(defaultCatalog);
+
+  const savedCatalog = readSavedCatalog();
+
+  if (savedCatalog) {
+    window.MOMNT_PRODUCTS = savedCatalog.products;
+    window.MOMNT_CATEGORY_META = savedCatalog.categoryMeta;
+    window.MOMNT_SITE_CONTENT = savedCatalog.siteContent;
+  }
+})();

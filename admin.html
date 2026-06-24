@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>MOMNT | Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/png" href="assets/images/momnt-symbol.png" />
+    <link rel="stylesheet" href="assets/css/admin.css?v=20260624a" />
+  </head>
+  <body class="admin-page">
+    <section class="admin-lock" id="admin-lock">
+      <article class="admin-lock-card">
+        <img src="assets/images/momnt-logo.png" alt="MOMNT" />
+        <p class="admin-kicker">Area exclusiva</p>
+        <h1>admin MOMNT</h1>
+        <p>
+          Painel local para editar produtos, categorias, banners e imagens sem
+          exibir link no site publico.
+        </p>
+        <form id="admin-login-form">
+          <label class="field">
+            <span>Codigo de acesso</span>
+            <input
+              type="password"
+              name="accessCode"
+              autocomplete="current-password"
+              placeholder="Digite o codigo"
+              required
+            />
+          </label>
+          <button class="admin-button admin-button-primary" type="submit">
+            Entrar
+          </button>
+          <p class="admin-help" id="admin-login-feedback" hidden></p>
+        </form>
+      </article>
+    </section>
+
+    <div class="admin-app" id="admin-app" hidden>
+      <header class="admin-header">
+        <div class="admin-brand">
+          <img src="assets/images/momnt-logo.png" alt="MOMNT" />
+          <div>
+            <span>ERP leve</span>
+            <p class="admin-status" id="admin-status">Sem alteracoes</p>
+          </div>
+        </div>
+
+        <div class="admin-actions">
+          <a class="admin-button admin-button-ghost" href="index.html">
+            Ver site
+          </a>
+          <button class="admin-button" type="button" id="admin-export-top">
+            Exportar
+          </button>
+          <button class="admin-button admin-button-primary" type="button" id="admin-save">
+            Salvar local
+          </button>
+        </div>
+      </header>
+
+      <div class="admin-shell">
+        <aside class="admin-side">
+          <nav class="admin-tabs" aria-label="Secoes do admin">
+            <button class="admin-tab is-active" type="button" data-tab="products">
+              Produtos
+            </button>
+            <button class="admin-tab" type="button" data-tab="categories">
+              Categorias
+            </button>
+            <button class="admin-tab" type="button" data-tab="home">
+              Home e banners
+            </button>
+            <button class="admin-tab" type="button" data-tab="export">
+              Importar e exportar
+            </button>
+          </nav>
+          <p class="admin-help">
+            Esta pagina nao aparece no menu publico. Em site estatico, o codigo
+            esconde o painel, mas seguranca real depende de servidor.
+          </p>
+        </aside>
+
+        <main class="admin-main">
+          <section class="admin-panel" data-panel="products">
+            <div class="admin-panel-header">
+              <div>
+                <p class="admin-kicker">Catalogo</p>
+                <h2>Produtos</h2>
+                <p class="admin-help">
+                  Edite nome, preco, categoria, imagens, descricoes e status de venda.
+                </p>
+              </div>
+              <div class="admin-panel-actions">
+                <button class="admin-button" type="button" id="product-new">
+                  Novo produto
+                </button>
+                <button class="admin-button" type="button" id="product-duplicate">
+                  Duplicar
+                </button>
+                <button class="admin-button admin-button-danger" type="button" id="product-remove">
+                  Remover
+                </button>
+              </div>
+            </div>
+
+            <div class="admin-grid">
+              <div class="admin-list" id="product-list"></div>
+
+              <form class="admin-form" id="product-form">
+                <div class="field-grid">
+                  <label class="field">
+                    <span>Slug</span>
+                    <input name="slug" required placeholder="wave-2" />
+                  </label>
+                  <label class="field">
+                    <span>Nome</span>
+                    <input name="name" required placeholder="Wave 2.0" />
+                  </label>
+                  <label class="field">
+                    <span>Categoria</span>
+                    <select name="category" required></select>
+                  </label>
+                  <label class="field">
+                    <span>Preco</span>
+                    <input name="price" placeholder="R$ 150,00" />
+                  </label>
+                  <label class="field">
+                    <span>Selo</span>
+                    <input name="badge" placeholder="Novo drop" />
+                  </label>
+                  <label class="field">
+                    <span>Tom do selo</span>
+                    <select name="badgeTone">
+                      <option value="green">Verde</option>
+                      <option value="soft">Suave</option>
+                      <option value="neutral">Neutro</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span>Disponibilidade</span>
+                    <input name="availability" placeholder="Pronta entrega" />
+                  </label>
+                  <label class="field">
+                    <span>Materiais</span>
+                    <input name="materials" placeholder="Acetato leve com lente UV400" />
+                  </label>
+                  <label class="field field-full">
+                    <span>Descricao curta</span>
+                    <input name="shortDescription" />
+                  </label>
+                  <label class="field field-full">
+                    <span>Descricao completa</span>
+                    <textarea name="description" rows="4"></textarea>
+                  </label>
+                  <label class="field">
+                    <span>Dimensoes</span>
+                    <input name="dimensions" placeholder="Lente 53mm | Ponte 20mm" />
+                  </label>
+                  <label class="field">
+                    <span>WhatsApp</span>
+                    <input name="whatsappText" />
+                  </label>
+                  <label class="field field-full">
+                    <span>Imagens, uma por linha</span>
+                    <textarea name="images" rows="5"></textarea>
+                  </label>
+                  <div class="field field-full">
+                    <span>Adicionar imagem local ao produto</span>
+                    <div class="image-tools">
+                      <input type="file" accept="image/*" data-image-picker="product" />
+                      <span class="admin-help">Use imagens leves para evitar limite do navegador.</span>
+                    </div>
+                  </div>
+                  <label class="field field-full">
+                    <span>Destaques, um por linha</span>
+                    <textarea name="highlights" rows="5"></textarea>
+                  </label>
+                </div>
+
+                <div class="admin-preview" id="product-preview"></div>
+              </form>
+            </div>
+          </section>
+
+          <section class="admin-panel" data-panel="categories" hidden>
+            <div class="admin-panel-header">
+              <div>
+                <p class="admin-kicker">Colecoes</p>
+                <h2>Categorias</h2>
+                <p class="admin-help">
+                  Controle filtros, textos de categoria e imagens principais.
+                </p>
+              </div>
+              <div class="admin-panel-actions">
+                <button class="admin-button" type="button" id="category-new">
+                  Nova categoria
+                </button>
+                <button class="admin-button admin-button-danger" type="button" id="category-remove">
+                  Remover
+                </button>
+              </div>
+            </div>
+
+            <div class="admin-grid">
+              <div class="admin-list" id="category-list"></div>
+
+              <form class="admin-form" id="category-form">
+                <div class="field-grid">
+                  <label class="field">
+                    <span>Chave</span>
+                    <input name="key" required placeholder="modern" />
+                  </label>
+                  <label class="field">
+                    <span>Nome publico</span>
+                    <input name="label" required placeholder="Modern" />
+                  </label>
+                  <label class="field field-full">
+                    <span>Eyebrow</span>
+                    <input name="eyebrow" />
+                  </label>
+                  <label class="field field-full">
+                    <span>Titulo</span>
+                    <input name="title" />
+                  </label>
+                  <label class="field field-full">
+                    <span>Descricao</span>
+                    <textarea name="description" rows="4"></textarea>
+                  </label>
+                  <label class="field field-full">
+                    <span>Imagem da categoria</span>
+                    <input name="heroImage" />
+                  </label>
+                  <div class="field field-full">
+                    <span>Adicionar imagem local a categoria</span>
+                    <div class="image-tools">
+                      <input type="file" accept="image/*" data-image-picker="category" />
+                      <span class="admin-help">Tambem aceita caminho como assets/images/category-modern.png.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="admin-preview" id="category-preview"></div>
+              </form>
+            </div>
+          </section>
+
+          <section class="admin-panel" data-panel="home" hidden>
+            <div class="admin-panel-header">
+              <div>
+                <p class="admin-kicker">Vitrine</p>
+                <h2>Home e banners</h2>
+                <p class="admin-help">
+                  Ajuste banner inicial, texto principal, produtos recomendados e categorias em destaque.
+                </p>
+              </div>
+            </div>
+
+            <form class="admin-form" id="home-form">
+              <div class="field-grid">
+                <label class="field field-full">
+                  <span>Imagem do banner principal</span>
+                  <input name="heroImage" />
+                </label>
+                <div class="field field-full">
+                  <span>Adicionar imagem local ao banner</span>
+                  <div class="image-tools">
+                    <input type="file" accept="image/*" data-image-picker="home" />
+                  </div>
+                </div>
+                <label class="field">
+                  <span>Kicker</span>
+                  <input name="heroKicker" />
+                </label>
+                <label class="field">
+                  <span>Titulo</span>
+                  <input name="heroTitle" />
+                </label>
+                <label class="field field-full">
+                  <span>Texto</span>
+                  <textarea name="heroText" rows="3"></textarea>
+                </label>
+                <label class="field field-full">
+                  <span>Produtos recomendados, slugs por linha</span>
+                  <textarea name="featuredProductSlugs" rows="4"></textarea>
+                </label>
+                <label class="field field-full">
+                  <span>Categorias em destaque, chaves por linha</span>
+                  <textarea name="featuredCategoryKeys" rows="4"></textarea>
+                </label>
+              </div>
+              <div class="admin-preview" id="home-preview"></div>
+            </form>
+          </section>
+
+          <section class="admin-panel" data-panel="export" hidden>
+            <div class="admin-panel-header">
+              <div>
+                <p class="admin-kicker">Publicacao</p>
+                <h2>Importar e exportar</h2>
+                <p class="admin-help">
+                  O salvamento local altera este navegador. Para publicar, exporte o catalogo e atualize os arquivos do projeto.
+                </p>
+              </div>
+              <div class="admin-panel-actions">
+                <button class="admin-button" type="button" id="export-json">
+                  Gerar JSON
+                </button>
+                <button class="admin-button" type="button" id="export-js">
+                  Gerar catalog-data.js
+                </button>
+                <button class="admin-button" type="button" id="download-export">
+                  Baixar
+                </button>
+              </div>
+            </div>
+
+            <div class="admin-stack">
+              <textarea class="admin-export-box" id="export-output" spellcheck="false"></textarea>
+              <div class="admin-form-actions">
+                <button class="admin-button" type="button" id="copy-export">
+                  Copiar
+                </button>
+                <button class="admin-button" type="button" id="import-json">
+                  Importar JSON acima
+                </button>
+                <button class="admin-button admin-button-danger" type="button" id="reset-catalog">
+                  Restaurar original
+                </button>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <div class="admin-toast" id="admin-toast" hidden></div>
+
+    <script src="assets/js/catalog-data.js?v=20260624a"></script>
+    <script src="assets/js/admin.js?v=20260624a"></script>
+  </body>
+</html>
