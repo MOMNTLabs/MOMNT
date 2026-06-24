@@ -200,6 +200,11 @@
   const getAccessCode = () =>
     window.localStorage.getItem(ACCESS_CODE_KEY) || ACCESS_CODE;
 
+  const canUseLocalFallback =
+    window.location.protocol === "file:" ||
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
+
   const apiRequest = async (path, options = {}, accessCode = getAccessCode()) => {
     const headers = new Headers(options.headers || {});
     headers.set("Accept", "application/json");
@@ -451,7 +456,10 @@
       showToast("Catálogo salvo no Postgres.");
       return true;
     } catch (error) {
-      // Fallback keeps the admin usable before Railway variables are configured.
+      if (!canUseLocalFallback) {
+        showToast(`Não salvou no Postgres: ${error.message}`);
+        return false;
+      }
     }
 
     try {
@@ -2144,8 +2152,13 @@
     event.returnValue = "";
   });
 
-  if (window.localStorage.getItem(SESSION_KEY) === "ok") {
+  const hasSession = window.localStorage.getItem(SESSION_KEY) === "ok";
+  const hasStoredAccessCode = Boolean(window.localStorage.getItem(ACCESS_CODE_KEY));
+
+  if (hasSession && (hasStoredAccessCode || canUseLocalFallback)) {
     unlock();
+  } else if (hasSession) {
+    window.localStorage.removeItem(SESSION_KEY);
   }
   };
 

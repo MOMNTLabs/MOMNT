@@ -483,7 +483,8 @@ window.MOMNT_SITE_CONTENT = {
   window.MOMNT_ADMIN_STORAGE_KEY = STORAGE_KEY;
   window.MOMNT_DEFAULT_CATALOG = clone(defaultCatalog);
 
-  const savedCatalog = readSavedCatalog();
+  const isAdminPage = document.body?.classList.contains("admin-page");
+  const savedCatalog = isAdminPage ? readSavedCatalog() : null;
 
   if (savedCatalog) {
     applyCatalog(savedCatalog);
