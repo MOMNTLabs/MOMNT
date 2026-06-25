@@ -12,7 +12,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/png" href="assets/images/momnt-symbol.png" />
-    <link rel="stylesheet" href="assets/css/admin.css?v=20260624m" />
+    <link rel="stylesheet" href="assets/css/admin.css?v=20260625a" />
   </head>
   <body class="admin-page">
     <section class="admin-lock" id="admin-lock">
@@ -272,6 +272,7 @@
                     <input type="file" accept="image/*" data-image-picker="home" />
                   </div>
                 </label>
+                <div class="admin-preview home-hero-preview-list" id="home-preview"></div>
                 <label class="field">
                   <span>Kicker</span>
                   <input name="heroKicker" />
@@ -285,15 +286,16 @@
                   <textarea name="heroText" rows="3"></textarea>
                 </label>
                 <label class="field field-full">
-                  <span>Produtos recomendados, slugs por linha</span>
-                  <textarea name="featuredProductSlugs" rows="4"></textarea>
+                  <span>Produtos recomendados</span>
+                  <textarea class="product-images-data" name="featuredProductSlugs" rows="4" tabindex="-1" aria-hidden="true"></textarea>
+                  <div class="admin-multi-select" id="featured-products-select"></div>
                 </label>
                 <label class="field field-full">
-                  <span>Categorias em destaque, chaves por linha</span>
-                  <textarea name="featuredCategoryKeys" rows="4"></textarea>
+                  <span>Categorias em destaque</span>
+                  <textarea class="product-images-data" name="featuredCategoryKeys" rows="4" tabindex="-1" aria-hidden="true"></textarea>
+                  <div class="admin-multi-select" id="featured-categories-select"></div>
                 </label>
               </div>
-              <div class="admin-preview product-image-list" id="home-preview"></div>
             </form>
           </section>
 
@@ -418,6 +420,6 @@
     </div>
 
     <script src="assets/js/catalog-data.js?v=20260624r2e"></script>
-    <script src="assets/js/admin.js?v=20260624r2h"></script>
+    <script src="assets/js/admin.js?v=20260625a"></script>
   </body>
 </html>

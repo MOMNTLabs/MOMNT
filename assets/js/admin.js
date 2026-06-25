@@ -39,6 +39,8 @@
     categoryPreview: document.querySelector("#category-preview"),
     homeForm: document.querySelector("#home-form"),
     homePreview: document.querySelector("#home-preview"),
+    featuredProductsSelect: document.querySelector("#featured-products-select"),
+    featuredCategoriesSelect: document.querySelector("#featured-categories-select"),
     themeForm: document.querySelector("#theme-form"),
     themeFields: document.querySelector("#theme-fields"),
     exportOutput: document.querySelector("#export-output"),
@@ -893,6 +895,122 @@
     syncCatalogButtons();
   };
 
+  const getHomeFieldValues = () => {
+    const form = elements.homeForm;
+    const fallbackHome = state.catalog.siteContent.home ?? {};
+
+    if (!form) {
+      return fallbackHome;
+    }
+
+    return {
+      ...fallbackHome,
+      heroKicker: form.elements.heroKicker.value.trim(),
+      heroTitle: form.elements.heroTitle.value.trim(),
+      heroText: form.elements.heroText.value.trim(),
+      featuredProductSlugs: linesToArray(form.elements.featuredProductSlugs.value),
+      featuredCategoryKeys: linesToArray(form.elements.featuredCategoryKeys.value),
+    };
+  };
+
+  const renderMultiSelect = (
+    root,
+    { emptyLabel, options, placeholder, selected, type },
+  ) => {
+    if (!root) {
+      return;
+    }
+
+    const selectedSet = new Set(selected);
+    const selectedOptions = options.filter((option) =>
+      selectedSet.has(option.value),
+    );
+    const summary =
+      selectedOptions.length > 0
+        ? selectedOptions.map((option) => option.label).join(", ")
+        : placeholder;
+
+    root.innerHTML = `
+      <details>
+        <summary><span>${escapeHtml(summary)}</span></summary>
+        <div class="admin-multi-panel">
+          ${
+            options.length
+              ? options
+                  .map(
+                    (option) => `
+                      <label class="admin-multi-option">
+                        <input
+                          type="checkbox"
+                          value="${escapeHtml(option.value)}"
+                          data-multi-select="${escapeHtml(type)}"
+                          ${selectedSet.has(option.value) ? "checked" : ""}
+                        />
+                        <span>
+                          ${escapeHtml(option.label)}
+                          <small>${escapeHtml(option.meta)}</small>
+                        </span>
+                      </label>
+                    `,
+                  )
+                  .join("")
+              : `<div class="admin-multi-empty">${escapeHtml(emptyLabel)}</div>`
+          }
+        </div>
+      </details>
+    `;
+  };
+
+  const renderHomeMultiSelects = () => {
+    const home = getHomeFieldValues();
+    const productOptions = state.catalog.products.map((product) => ({
+      value: product.slug,
+      label: product.name,
+      meta: `${product.slug} | ${product.categoryLabel || product.category || "Sem categoria"}`,
+    }));
+    const categoryOptions = getCategoryKeys().map((key) => ({
+      value: key,
+      label: state.catalog.categoryMeta[key]?.label || key,
+      meta: key,
+    }));
+
+    renderMultiSelect(elements.featuredProductsSelect, {
+      emptyLabel: "Nenhum produto cadastrado.",
+      options: productOptions,
+      placeholder: "Selecione os produtos recomendados",
+      selected: home.featuredProductSlugs ?? [],
+      type: "products",
+    });
+    renderMultiSelect(elements.featuredCategoriesSelect, {
+      emptyLabel: "Nenhuma categoria cadastrada.",
+      options: categoryOptions,
+      placeholder: "Selecione as categorias em destaque",
+      selected: home.featuredCategoryKeys ?? [],
+      type: "categories",
+    });
+  };
+
+  const updateHomeSelection = (fieldName, root) => {
+    const form = elements.homeForm;
+
+    if (!form || !root) {
+      return;
+    }
+
+    const keepOpen = Boolean(root.querySelector("details")?.open);
+    const values = Array.from(root.querySelectorAll("input:checked")).map(
+      (input) => input.value,
+    );
+
+    form.elements[fieldName].value = arrayToLines(values);
+    readHomeForm();
+    renderHomeMultiSelects();
+
+    if (keepOpen) {
+      root.querySelector("details")?.setAttribute("open", "");
+    }
+  };
+
   const fillHomeForm = () => {
     const form = elements.homeForm;
     const home = state.catalog.siteContent.home ?? {};
@@ -913,6 +1031,7 @@
       home.featuredCategoryKeys,
     );
     renderHomeHeroImageList(heroImages);
+    renderHomeMultiSelects();
   };
 
   const readHomeForm = () => {
@@ -1132,6 +1251,7 @@
       return;
     }
 
+    const home = getHomeFieldValues();
     const visibleImages = (Array.isArray(images) ? images : [])
       .map((image) => String(image ?? "").trim())
       .filter(Boolean);
@@ -1144,8 +1264,21 @@
             data-home-image-index="${index}"
             draggable="true"
           >
-            <div class="product-image-media">
+            <div class="product-image-media home-hero-preview">
               <img src="${escapeHtml(image)}" alt="Banner ${index + 1} do hero" loading="lazy" />
+              <div class="home-hero-preview-ui" aria-hidden="true">
+                <span class="home-hero-preview-logo">MOMNT</span>
+                <span class="home-hero-preview-nav">
+                  <span>Modern</span>
+                  <span>Classic</span>
+                  <span>Sport</span>
+                </span>
+              </div>
+              <div class="home-hero-preview-copy">
+                <span class="home-hero-preview-kicker">${escapeHtml(home.heroKicker || "MOMNT")}</span>
+                <strong>${escapeHtml(home.heroTitle || "nova colecao")}</strong>
+                <p>${escapeHtml(home.heroText || "")}</p>
+              </div>
               <span class="product-image-drag" aria-label="Arraste para ordenar" title="Arraste para ordenar">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01"></path>
@@ -2456,6 +2589,31 @@
     const [image] = images.splice(fromIndex, 1);
     images.splice(toIndex, 0, image);
     setHomeFormHeroImages(images);
+  });
+  elements.featuredProductsSelect?.addEventListener("change", (event) => {
+    if (!(event.target instanceof HTMLInputElement)) {
+      return;
+    }
+
+    if (event.target.dataset.multiSelect !== "products") {
+      return;
+    }
+
+    updateHomeSelection("featuredProductSlugs", elements.featuredProductsSelect);
+  });
+  elements.featuredCategoriesSelect?.addEventListener("change", (event) => {
+    if (!(event.target instanceof HTMLInputElement)) {
+      return;
+    }
+
+    if (event.target.dataset.multiSelect !== "categories") {
+      return;
+    }
+
+    updateHomeSelection(
+      "featuredCategoryKeys",
+      elements.featuredCategoriesSelect,
+    );
   });
   elements.productClose?.addEventListener("click", () => {
     closeProductEditor();

@@ -482,12 +482,102 @@ button {
   background: #ede6dc;
 }
 
+.admin-multi-select {
+  position: relative;
+}
+
+.admin-multi-select details {
+  position: relative;
+}
+
+.admin-multi-select summary {
+  display: flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 12px;
+  border: 1px solid var(--admin-line);
+  background: #fffdf8;
+  cursor: pointer;
+  list-style: none;
+}
+
+.admin-multi-select summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-multi-select summary::after {
+  width: 8px;
+  height: 8px;
+  content: "";
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  color: var(--admin-muted);
+  transform: rotate(45deg);
+  transition: transform 0.16s ease;
+}
+
+.admin-multi-select details[open] summary::after {
+  transform: rotate(225deg) translate(-2px, -2px);
+}
+
+.admin-multi-panel {
+  position: absolute;
+  z-index: 6;
+  top: calc(100% + 6px);
+  left: 0;
+  display: grid;
+  width: min(100%, 520px);
+  max-height: 260px;
+  overflow: auto;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid var(--admin-line);
+  background: var(--admin-panel);
+  box-shadow: 0 18px 36px rgba(25, 23, 20, 0.14);
+}
+
+.admin-multi-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 8px;
+  background: #fffdf8;
+}
+
+.admin-multi-option input {
+  width: 16px;
+  height: 16px;
+}
+
+.admin-multi-option span {
+  display: grid;
+  gap: 2px;
+  font-size: 0.9rem;
+}
+
+.admin-multi-option small {
+  color: var(--admin-muted);
+  font-size: 0.72rem;
+}
+
+.admin-multi-empty {
+  color: var(--admin-muted);
+  padding: 10px;
+}
+
 .product-image-list {
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
 }
 
-#home-preview.product-image-list {
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+.home-hero-preview-list {
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 420px));
+}
+
+.home-hero-preview-list .product-image-card {
+  padding: 6px;
 }
 
 .product-image-card {
@@ -534,6 +624,91 @@ button {
 
 #home-preview .product-image-media img {
   aspect-ratio: 16 / 9;
+}
+
+.home-hero-preview {
+  position: relative;
+  min-height: 158px;
+  overflow: hidden;
+  background: #111;
+  color: #fff;
+}
+
+.home-hero-preview img {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  opacity: 1;
+}
+
+.home-hero-preview::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.58)),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.56));
+}
+
+.home-hero-preview-ui,
+.home-hero-preview-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.home-hero-preview-ui {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px 0;
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
+.home-hero-preview-logo {
+  letter-spacing: 0.02em;
+}
+
+.home-hero-preview-nav {
+  display: flex;
+  gap: 10px;
+  opacity: 0.9;
+}
+
+.home-hero-preview-copy {
+  display: grid;
+  place-items: center;
+  min-height: 126px;
+  padding: 18px 26px 22px;
+  text-align: center;
+}
+
+.home-hero-preview-kicker {
+  color: var(--admin-accent);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.home-hero-preview-copy strong {
+  display: block;
+  max-width: 11ch;
+  margin-top: 4px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(2rem, 6vw, 3.1rem);
+  font-style: italic;
+  font-weight: 600;
+  line-height: 0.86;
+}
+
+.home-hero-preview-copy p {
+  max-width: 34ch;
+  margin: 10px 0 0;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.72rem;
+  line-height: 1.45;
 }
 
 .product-image-drag,
