@@ -896,12 +896,13 @@
   const fillHomeForm = () => {
     const form = elements.homeForm;
     const home = state.catalog.siteContent.home ?? {};
+    const heroImages = getHomeHeroImages(home);
 
     if (!form) {
       return;
     }
 
-    form.elements.heroImage.value = home.heroImage ?? "";
+    form.elements.heroImages.value = arrayToLines(heroImages);
     form.elements.heroKicker.value = home.heroKicker ?? "";
     form.elements.heroTitle.value = home.heroTitle ?? "";
     form.elements.heroText.value = home.heroText ?? "";
@@ -911,7 +912,7 @@
     form.elements.featuredCategoryKeys.value = arrayToLines(
       home.featuredCategoryKeys,
     );
-    renderImagePreview(elements.homePreview, [home.heroImage]);
+    renderHomeHeroImageList(heroImages);
   };
 
   const readHomeForm = () => {
@@ -921,9 +922,12 @@
       return;
     }
 
+    const heroImages = linesToArray(form.elements.heroImages.value);
+
     state.catalog.siteContent.home = {
       ...(state.catalog.siteContent.home ?? {}),
-      heroImage: form.elements.heroImage.value.trim(),
+      heroImage: heroImages[0] ?? "",
+      heroImages,
       heroKicker: form.elements.heroKicker.value.trim(),
       heroTitle: form.elements.heroTitle.value.trim(),
       heroText: form.elements.heroText.value.trim(),
@@ -932,9 +936,7 @@
     };
 
     setDirty();
-    renderImagePreview(elements.homePreview, [
-      state.catalog.siteContent.home.heroImage,
-    ]);
+    renderHomeHeroImageList(heroImages);
   };
 
   const getTheme = () =>
@@ -1095,6 +1097,81 @@
     readProductForm();
   };
 
+  const getHomeHeroImages = (home = {}) => {
+    const heroImages = Array.isArray(home.heroImages)
+      ? home.heroImages
+      : linesToArray(home.heroImages);
+    const fallbackImage = String(home.heroImage ?? "").trim();
+
+    return [...heroImages, fallbackImage]
+      .map((image) => String(image ?? "").trim())
+      .filter(Boolean)
+      .filter((image, index, images) => images.indexOf(image) === index);
+  };
+
+  const getHomeFormHeroImages = () =>
+    elements.homeForm
+      ? linesToArray(elements.homeForm.elements.heroImages.value)
+      : [];
+
+  const setHomeFormHeroImages = (images) => {
+    if (!elements.homeForm) {
+      return;
+    }
+
+    const cleanImages = (Array.isArray(images) ? images : [])
+      .map((image) => String(image ?? "").trim())
+      .filter(Boolean);
+
+    elements.homeForm.elements.heroImages.value = arrayToLines(cleanImages);
+    readHomeForm();
+  };
+
+  const renderHomeHeroImageList = (images) => {
+    if (!elements.homePreview) {
+      return;
+    }
+
+    const visibleImages = (Array.isArray(images) ? images : [])
+      .map((image) => String(image ?? "").trim())
+      .filter(Boolean);
+
+    elements.homePreview.innerHTML = visibleImages
+      .map(
+        (image, index) => `
+          <article
+            class="product-image-card${index === 0 ? " is-main" : ""}"
+            data-home-image-index="${index}"
+            draggable="true"
+          >
+            <div class="product-image-media">
+              <img src="${escapeHtml(image)}" alt="Banner ${index + 1} do hero" loading="lazy" />
+              <span class="product-image-drag" aria-label="Arraste para ordenar" title="Arraste para ordenar">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01"></path>
+                </svg>
+              </span>
+              ${
+                index === 0
+                  ? `<span class="product-image-main" aria-label="Banner principal" title="Banner principal">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2 7.5 14 3 9.6l6.2-.9L12 3Z"></path>
+                      </svg>
+                    </span>`
+                  : ""
+              }
+              <button class="product-image-remove" type="button" data-home-image-action="remove" aria-label="Remover banner" title="Remover banner">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"></path>
+                </svg>
+              </button>
+            </div>
+          </article>
+        `,
+      )
+      .join("");
+  };
+
   const cropPresets = {
     home: {
       label: "Banner 16:9",
@@ -1131,8 +1208,7 @@
     }
 
     if (target === "home" && elements.homeForm) {
-      elements.homeForm.elements.heroImage.value = imageUrl;
-      readHomeForm();
+      setHomeFormHeroImages([...getHomeFormHeroImages(), imageUrl]);
     }
   };
 
@@ -2287,6 +2363,99 @@
     const [image] = images.splice(fromIndex, 1);
     images.splice(toIndex, 0, image);
     setProductFormImages(images);
+  });
+  elements.homePreview?.addEventListener("click", (event) => {
+    const actionButton = event.target?.closest?.("[data-home-image-action]");
+
+    if (!(actionButton instanceof HTMLButtonElement)) {
+      return;
+    }
+
+    const card = actionButton.closest("[data-home-image-index]");
+    const action = actionButton.getAttribute("data-home-image-action");
+    const index = Number.parseInt(
+      card?.getAttribute("data-home-image-index") ?? "",
+      10,
+    );
+    const images = getHomeFormHeroImages();
+
+    if (!Number.isFinite(index) || !images[index]) {
+      return;
+    }
+
+    if (action === "remove") {
+      images.splice(index, 1);
+      setHomeFormHeroImages(images);
+    }
+  });
+  elements.homePreview?.addEventListener("dragstart", (event) => {
+    const card = event.target?.closest?.("[data-home-image-index]");
+
+    if (!(card instanceof HTMLElement)) {
+      return;
+    }
+
+    card.classList.add("is-dragging");
+    event.dataTransfer?.setData(
+      "text/plain",
+      card.getAttribute("data-home-image-index") ?? "",
+    );
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = "move";
+    }
+  });
+  elements.homePreview?.addEventListener("dragend", () => {
+    elements.homePreview
+      ?.querySelectorAll(".product-image-card")
+      .forEach((card) => card.classList.remove("is-dragging", "is-drop-target"));
+  });
+  elements.homePreview?.addEventListener("dragover", (event) => {
+    const card = event.target?.closest?.("[data-home-image-index]");
+
+    if (!(card instanceof HTMLElement)) {
+      return;
+    }
+
+    event.preventDefault();
+    elements.homePreview
+      ?.querySelectorAll(".product-image-card")
+      .forEach((item) => item.classList.toggle("is-drop-target", item === card));
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = "move";
+    }
+  });
+  elements.homePreview?.addEventListener("drop", (event) => {
+    const targetCard = event.target?.closest?.("[data-home-image-index]");
+
+    if (!(targetCard instanceof HTMLElement)) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const fromIndex = Number.parseInt(
+      event.dataTransfer?.getData("text/plain") ?? "",
+      10,
+    );
+    const toIndex = Number.parseInt(
+      targetCard.getAttribute("data-home-image-index") ?? "",
+      10,
+    );
+    const images = getHomeFormHeroImages();
+
+    if (
+      !Number.isFinite(fromIndex) ||
+      !Number.isFinite(toIndex) ||
+      fromIndex === toIndex ||
+      !images[fromIndex] ||
+      !images[toIndex]
+    ) {
+      return;
+    }
+
+    const [image] = images.splice(fromIndex, 1);
+    images.splice(toIndex, 0, image);
+    setHomeFormHeroImages(images);
   });
   elements.productClose?.addEventListener("click", () => {
     closeProductEditor();

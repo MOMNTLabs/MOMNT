@@ -229,6 +229,7 @@ window.MOMNT_CATEGORY_META = {
 window.MOMNT_SITE_CONTENT = {
   home: {
     heroImage: "assets/images/lifestyle-04.jpg",
+    heroImages: ["assets/images/lifestyle-04.jpg"],
     heroKicker: "Inverno 26",
     heroTitle: "nova coleção",
     heroText:

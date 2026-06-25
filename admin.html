@@ -12,7 +12,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/png" href="assets/images/momnt-symbol.png" />
-    <link rel="stylesheet" href="assets/css/admin.css?v=20260624l" />
+    <link rel="stylesheet" href="assets/css/admin.css?v=20260624m" />
   </head>
   <body class="admin-page">
     <section class="admin-lock" id="admin-lock">
@@ -265,16 +265,13 @@
 
             <form class="admin-form" id="home-form">
               <div class="field-grid">
-                <label class="field field-full">
-                  <span>Imagem do banner principal</span>
-                  <input name="heroImage" />
-                </label>
-                <div class="field field-full">
-                  <span>Adicionar imagem do computador ao banner</span>
+                <label class="field field-full home-hero-images-field">
+                  <span>Banners do hero</span>
+                  <textarea class="product-images-data" name="heroImages" rows="4" tabindex="-1" aria-hidden="true"></textarea>
                   <div class="image-tools">
                     <input type="file" accept="image/*" data-image-picker="home" />
                   </div>
-                </div>
+                </label>
                 <label class="field">
                   <span>Kicker</span>
                   <input name="heroKicker" />
@@ -296,7 +293,7 @@
                   <textarea name="featuredCategoryKeys" rows="4"></textarea>
                 </label>
               </div>
-              <div class="admin-preview" id="home-preview"></div>
+              <div class="admin-preview product-image-list" id="home-preview"></div>
             </form>
           </section>
 
@@ -420,7 +417,7 @@
       </div>
     </div>
 
-    <script src="assets/js/catalog-data.js?v=20260624r2d"></script>
-    <script src="assets/js/admin.js?v=20260624r2g"></script>
+    <script src="assets/js/catalog-data.js?v=20260624r2e"></script>
+    <script src="assets/js/admin.js?v=20260624r2h"></script>
   </body>
 </html>

@@ -6,6 +6,7 @@
   const categoryMeta = window.MOMNT_CATEGORY_META ?? {};
   const homeContent = window.MOMNT_SITE_CONTENT?.home ?? {};
 
+  const heroMedia = document.querySelector(".hero-media");
   const heroImage = document.querySelector(".hero-media img");
   const heroKicker = document.querySelector(".hero-kicker");
   const heroTitle = document.querySelector(".hero-content h1");
@@ -45,11 +46,62 @@
     return Number.isFinite(quantity) && quantity > 0;
   };
 
-  const updateHero = () => {
-    if (heroImage && homeContent.heroImage) {
-      heroImage.src = homeContent.heroImage;
-      heroImage.alt = "Campanha MOMNT em destaque";
+  const getHeroImages = () => {
+    const heroImages = Array.isArray(homeContent.heroImages)
+      ? homeContent.heroImages
+      : [];
+    const fallbackImage = String(homeContent.heroImage ?? "").trim();
+
+    return [...heroImages, fallbackImage]
+      .map((image) => String(image ?? "").trim())
+      .filter(Boolean)
+      .filter((image, index, images) => images.indexOf(image) === index);
+  };
+
+  const updateHeroImages = () => {
+    const heroImages = getHeroImages();
+
+    if (!heroMedia || !heroImage || !heroImages.length) {
+      return;
     }
+
+    heroMedia
+      .querySelectorAll("img")
+      .forEach((image, index) => {
+        if (index > 0) {
+          image.remove();
+        }
+      });
+
+    heroImages.forEach((image, index) => {
+      const imageElement = index === 0 ? heroImage : document.createElement("img");
+
+      imageElement.src = image;
+      imageElement.alt = "Campanha MOMNT em destaque";
+      imageElement.classList.toggle("is-active", index === 0);
+
+      if (index > 0) {
+        imageElement.loading = "lazy";
+        heroMedia.insertBefore(imageElement, heroMedia.querySelector(".hero-overlay"));
+      }
+    });
+
+    if (heroImages.length < 2) {
+      return;
+    }
+
+    let activeIndex = 0;
+    const imageElements = [...heroMedia.querySelectorAll("img")];
+
+    window.setInterval(() => {
+      imageElements[activeIndex]?.classList.remove("is-active");
+      activeIndex = (activeIndex + 1) % imageElements.length;
+      imageElements[activeIndex]?.classList.add("is-active");
+    }, 5200);
+  };
+
+  const updateHero = () => {
+    updateHeroImages();
 
     if (heroKicker && homeContent.heroKicker) {
       heroKicker.textContent = homeContent.heroKicker;
