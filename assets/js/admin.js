@@ -1048,13 +1048,32 @@
     elements.productPreview.innerHTML = visibleImages
       .map(
         (image, index) => `
-          <article class="product-image-card${index === 0 ? " is-main" : ""}" data-image-index="${index}">
-            <img src="${escapeHtml(image)}" alt="Imagem ${index + 1} do produto" loading="lazy" />
-            <div class="product-image-card-actions">
-              <button type="button" data-image-action="main" ${index === 0 ? "disabled" : ""}>Principal</button>
-              <button type="button" data-image-action="up" ${index === 0 ? "disabled" : ""}>Subir</button>
-              <button type="button" data-image-action="down" ${index === visibleImages.length - 1 ? "disabled" : ""}>Descer</button>
-              <button type="button" data-image-action="remove">Remover</button>
+          <article
+            class="product-image-card${index === 0 ? " is-main" : ""}"
+            data-image-index="${index}"
+            draggable="true"
+          >
+            <div class="product-image-media">
+              <img src="${escapeHtml(image)}" alt="Imagem ${index + 1} do produto" loading="lazy" />
+              <span class="product-image-drag" aria-label="Arraste para ordenar" title="Arraste para ordenar">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01"></path>
+                </svg>
+              </span>
+              ${
+                index === 0
+                  ? `<span class="product-image-main" aria-label="Imagem principal" title="Imagem principal">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2 7.5 14 3 9.6l6.2-.9L12 3Z"></path>
+                      </svg>
+                    </span>`
+                  : ""
+              }
+              <button class="product-image-remove" type="button" data-image-action="remove" aria-label="Remover imagem" title="Remover imagem">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3"></path>
+                </svg>
+              </button>
             </div>
           </article>
         `,
@@ -2227,19 +2246,75 @@
       images.splice(index, 1);
     }
 
-    if (action === "main") {
-      const [image] = images.splice(index, 1);
-      images.unshift(image);
+    setProductFormImages(images);
+  });
+  elements.productPreview?.addEventListener("dragstart", (event) => {
+    const card = event.target?.closest?.("[data-image-index]");
+
+    if (!(card instanceof HTMLElement)) {
+      return;
     }
 
-    if (action === "up" && index > 0) {
-      [images[index - 1], images[index]] = [images[index], images[index - 1]];
+    card.classList.add("is-dragging");
+    event.dataTransfer?.setData(
+      "text/plain",
+      card.getAttribute("data-image-index") ?? "",
+    );
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = "move";
+    }
+  });
+  elements.productPreview?.addEventListener("dragend", () => {
+    elements.productPreview
+      ?.querySelectorAll(".product-image-card")
+      .forEach((card) => card.classList.remove("is-dragging", "is-drop-target"));
+  });
+  elements.productPreview?.addEventListener("dragover", (event) => {
+    const card = event.target?.closest?.("[data-image-index]");
+
+    if (!(card instanceof HTMLElement)) {
+      return;
     }
 
-    if (action === "down" && index < images.length - 1) {
-      [images[index], images[index + 1]] = [images[index + 1], images[index]];
+    event.preventDefault();
+    elements.productPreview
+      ?.querySelectorAll(".product-image-card")
+      .forEach((item) => item.classList.toggle("is-drop-target", item === card));
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = "move";
+    }
+  });
+  elements.productPreview?.addEventListener("drop", (event) => {
+    const targetCard = event.target?.closest?.("[data-image-index]");
+
+    if (!(targetCard instanceof HTMLElement)) {
+      return;
     }
 
+    event.preventDefault();
+
+    const fromIndex = Number.parseInt(
+      event.dataTransfer?.getData("text/plain") ?? "",
+      10,
+    );
+    const toIndex = Number.parseInt(
+      targetCard.getAttribute("data-image-index") ?? "",
+      10,
+    );
+    const images = getProductFormImages();
+
+    if (
+      !Number.isFinite(fromIndex) ||
+      !Number.isFinite(toIndex) ||
+      fromIndex === toIndex ||
+      !images[fromIndex] ||
+      !images[toIndex]
+    ) {
+      return;
+    }
+
+    const [image] = images.splice(fromIndex, 1);
+    images.splice(toIndex, 0, image);
     setProductFormImages(images);
   });
   elements.productClose?.addEventListener("click", () => {

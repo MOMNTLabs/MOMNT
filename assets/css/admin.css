@@ -482,15 +482,26 @@ button {
 }
 
 .product-image-card {
-  display: grid;
-  gap: 8px;
   padding: 8px;
   border: 1px solid var(--admin-line);
   background: #fffdf8;
+  cursor: grab;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    opacity 0.18s ease,
+    transform 0.18s ease;
 }
 
-.product-image-card img {
-  aspect-ratio: 4 / 3;
+.product-image-card.is-dragging {
+  cursor: grabbing;
+  opacity: 0.48;
+  transform: scale(0.98);
+}
+
+.product-image-card.is-drop-target {
+  border-color: var(--admin-accent);
+  box-shadow: 0 0 0 3px rgba(23, 107, 85, 0.14);
 }
 
 .product-image-card.is-main {
@@ -498,24 +509,69 @@ button {
   box-shadow: inset 0 0 0 2px rgba(23, 107, 85, 0.12);
 }
 
-.product-image-card-actions {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 6px;
+.product-image-media {
+  position: relative;
+  overflow: hidden;
+  background: #ede6dc;
 }
 
-.product-image-card-actions button {
-  min-height: 34px;
+.product-image-media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
   border: 1px solid var(--admin-line);
-  background: #fffaf2;
-  color: var(--admin-ink);
-  font-size: 0.72rem;
-  font-weight: 800;
 }
 
-.product-image-card-actions button:disabled {
-  cursor: default;
-  opacity: 0.4;
+.product-image-drag,
+.product-image-main,
+.product-image-remove {
+  position: absolute;
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(25, 23, 20, 0.16);
+  background: rgba(255, 253, 248, 0.92);
+  color: var(--admin-ink);
+  backdrop-filter: blur(8px);
+}
+
+.product-image-drag svg,
+.product-image-main svg,
+.product-image-remove svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.product-image-drag {
+  top: 8px;
+  left: 8px;
+  cursor: grab;
+}
+
+.product-image-main {
+  bottom: 8px;
+  left: 8px;
+  color: var(--admin-accent);
+}
+
+.product-image-remove {
+  top: 8px;
+  right: 8px;
+  color: var(--admin-warn);
+  cursor: pointer;
+}
+
+.product-image-remove:hover,
+.product-image-remove:focus-visible {
+  border-color: rgba(154, 63, 36, 0.4);
+  background: #fff7f0;
 }
 
 .image-editor {
