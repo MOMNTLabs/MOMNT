@@ -271,6 +271,63 @@ window.MOMNT_SITE_CONTENT = {
       ? value.map((item) => String(item ?? "").trim()).filter(Boolean)
       : [];
 
+  const parseStockQuantity = (value) => {
+    const digits = String(value ?? "").replace(/\D/g, "");
+
+    if (!digits) {
+      return "";
+    }
+
+    return Math.max(0, Number.parseInt(digits, 10));
+  };
+
+  const getStockLabel = (stockQuantity) => {
+    const quantity = parseStockQuantity(stockQuantity);
+
+    if (quantity === "") {
+      return "";
+    }
+
+    if (quantity === 0) {
+      return "Esgotado";
+    }
+
+    return quantity === 1
+      ? "1 unidade disponível"
+      : `${quantity} unidades disponíveis`;
+  };
+
+  const inferBadgeTone = (product = {}) => {
+    const label = `${product.badge ?? ""} ${product.availability ?? ""}`
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+    if (label.includes("esgotado") || label.includes("preview")) {
+      return "neutral";
+    }
+
+    if (
+      label.includes("ultima") ||
+      label.includes("off") ||
+      label.includes("promo")
+    ) {
+      return "soft";
+    }
+
+    return "green";
+  };
+
+  const buildProductHighlights = (product = {}) =>
+    [
+      getStockLabel(product.stockQuantity),
+      product.availability,
+      product.materials,
+      product.dimensions,
+    ]
+      .map((item) => String(item ?? "").trim())
+      .filter(Boolean);
+
   const defaultTheme = {
     background: "#ffffff",
     surface: "#ffffff",
@@ -355,6 +412,7 @@ window.MOMNT_SITE_CONTENT = {
       availability:
         String(product.availability ?? "").trim() || "Em preparação",
       dimensions: String(product.dimensions ?? "").trim(),
+      stockQuantity: parseStockQuantity(product.stockQuantity),
       highlights: normalizeStringList(product.highlights),
       images: normalizeStringList(product.images),
       whatsappText: String(product.whatsappText ?? "").trim(),
@@ -405,9 +463,10 @@ window.MOMNT_SITE_CONTENT = {
       product.images = product.images.length
         ? product.images
         : ["assets/images/product-placeholder-modern.svg"];
+      product.badgeTone = inferBadgeTone(product);
       product.highlights = product.highlights.length
         ? product.highlights
-        : ["Produto pronto para edição no admin"];
+        : buildProductHighlights(product);
       product.whatsappText =
         product.whatsappText ||
         `Oi, quero saber mais detalhes do ${product.name} da MOMNT.`;

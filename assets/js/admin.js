@@ -218,6 +218,81 @@
     return formattedPrice;
   };
 
+  const parseStockQuantity = (value) => {
+    const digits = String(value ?? "").replace(/\D/g, "");
+
+    if (!digits) {
+      return "";
+    }
+
+    return Math.max(0, Number.parseInt(digits, 10));
+  };
+
+  const normalizeStockField = (field) => {
+    if (!(field instanceof HTMLInputElement)) {
+      return "";
+    }
+
+    const quantity = parseStockQuantity(field.value);
+    const nextValue = quantity === "" ? "" : String(quantity);
+
+    if (field.value !== nextValue) {
+      field.value = nextValue;
+    }
+
+    return quantity;
+  };
+
+  const getStockLabel = (stockQuantity) => {
+    const quantity = parseStockQuantity(stockQuantity);
+
+    if (quantity === "") {
+      return "";
+    }
+
+    if (quantity === 0) {
+      return "Esgotado";
+    }
+
+    return quantity === 1
+      ? "1 unidade disponível"
+      : `${quantity} unidades disponíveis`;
+  };
+
+  const inferBadgeTone = (product = {}) => {
+    const label = `${product.badge ?? ""} ${product.availability ?? ""}`
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+    if (label.includes("esgotado") || label.includes("preview")) {
+      return "neutral";
+    }
+
+    if (
+      label.includes("ultima") ||
+      label.includes("off") ||
+      label.includes("promo")
+    ) {
+      return "soft";
+    }
+
+    return "green";
+  };
+
+  const buildWhatsappText = (product = {}) =>
+    `Oi, quero saber mais detalhes do ${product.name || "produto"} da MOMNT.`;
+
+  const buildProductHighlights = (product = {}) =>
+    [
+      getStockLabel(product.stockQuantity),
+      product.availability,
+      product.materials,
+      product.dimensions,
+    ]
+      .map((item) => String(item ?? "").trim())
+      .filter(Boolean);
+
   const showToast = (message) => {
     if (!elements.toast) {
       return;
@@ -412,6 +487,7 @@
         availability:
           String(product.availability ?? "").trim() || "Em preparação",
         dimensions: String(product.dimensions ?? "").trim(),
+        stockQuantity: parseStockQuantity(product.stockQuantity),
         highlights: Array.isArray(product.highlights)
           ? product.highlights.map(String).filter(Boolean)
           : [],
@@ -420,6 +496,12 @@
             ? product.images.map(String).filter(Boolean)
             : ["assets/images/product-placeholder-modern.svg"],
         whatsappText: String(product.whatsappText ?? "").trim(),
+      }))
+      .map((product) => ({
+        ...product,
+        badgeTone: inferBadgeTone(product),
+        highlights: buildProductHighlights(product),
+        whatsappText: buildWhatsappText(product),
       }))
       .filter((product, index, products) => {
         if (!product.slug || !product.name) {
@@ -532,6 +614,14 @@
             Array.isArray(product.images) && product.images[0]
               ? product.images[0]
               : "assets/images/product-placeholder-modern.svg";
+          const stockLabel = getStockLabel(product.stockQuantity);
+          const meta = [
+            product.categoryLabel || product.category,
+            product.price,
+            stockLabel,
+          ]
+            .filter(Boolean)
+            .join(" | ");
 
           return `
             <button
@@ -544,7 +634,7 @@
               </span>
               <span class="product-list-copy">
                 <span class="list-title">${escapeHtml(product.name)}</span>
-                <span class="list-meta">${escapeHtml(product.categoryLabel || product.category)} | ${escapeHtml(product.price)}</span>
+                <span class="list-meta">${escapeHtml(meta)}</span>
               </span>
             </button>
           `;
@@ -592,16 +682,17 @@
     form.elements.name.value = product.name;
     form.elements.category.value = product.category;
     form.elements.price.value = formatPriceLabel(product.price);
+    form.elements.stockQuantity.value =
+      product.stockQuantity === "" || product.stockQuantity === undefined
+        ? ""
+        : String(product.stockQuantity);
     form.elements.badge.value = product.badge;
-    form.elements.badgeTone.value = product.badgeTone;
     form.elements.availability.value = product.availability;
     form.elements.materials.value = product.materials;
     form.elements.shortDescription.value = product.shortDescription;
     form.elements.description.value = product.description;
     form.elements.dimensions.value = product.dimensions;
-    form.elements.whatsappText.value = product.whatsappText;
     form.elements.images.value = arrayToLines(product.images);
-    form.elements.highlights.value = arrayToLines(product.highlights);
 
     renderImagePreview(elements.productPreview, product.images);
   };
@@ -640,6 +731,7 @@
     }
 
     const formattedPrice = normalizePriceField(form.elements.price);
+    const stockQuantity = normalizeStockField(form.elements.stockQuantity);
     const nextSlug = normalizeSlug(form.elements.slug.value);
     const nextProduct = {
       slug: nextSlug,
@@ -649,16 +741,18 @@
         state.catalog.categoryMeta[form.elements.category.value]?.label ?? "",
       price: formattedPrice || "Sob consulta",
       badge: form.elements.badge.value.trim(),
-      badgeTone: form.elements.badgeTone.value,
       availability: form.elements.availability.value.trim(),
       materials: form.elements.materials.value.trim(),
       shortDescription: form.elements.shortDescription.value.trim(),
       description: form.elements.description.value.trim(),
       dimensions: form.elements.dimensions.value.trim(),
-      whatsappText: form.elements.whatsappText.value.trim(),
+      stockQuantity,
       images: linesToArray(form.elements.images.value),
-      highlights: linesToArray(form.elements.highlights.value),
     };
+
+    nextProduct.badgeTone = inferBadgeTone(nextProduct);
+    nextProduct.whatsappText = buildWhatsappText(nextProduct);
+    nextProduct.highlights = buildProductHighlights(nextProduct);
 
     const index = state.catalog.products.findIndex(
       (product) => product.slug === currentSlug,
@@ -1802,16 +1896,17 @@
       category: categoryKey,
       categoryLabel: category?.label ?? categoryKey,
       price: "Sob consulta",
-      badge: "Novo",
-      badgeTone: "neutral",
+      badge: "Última unidade",
+      badgeTone: "soft",
       shortDescription: "Descrição curta do produto.",
       description: "Descrição completa do produto.",
       materials: "A definir",
       availability: "Em preparação",
       dimensions: "A definir",
-      highlights: ["Produto criado no admin"],
+      stockQuantity: 1,
+      highlights: ["1 unidade disponível", "Em preparação"],
       images: ["assets/images/product-placeholder-modern.svg"],
-      whatsappText: "Oi, quero saber mais detalhes deste produto da MOMNT.",
+      whatsappText: "Oi, quero saber mais detalhes do Novo produto da MOMNT.",
     });
 
     state.activeProductSlug = nextSlug;
@@ -1840,6 +1935,9 @@
 
     copy.slug = nextSlug;
     copy.name = `${copy.name} cópia`;
+    copy.badgeTone = inferBadgeTone(copy);
+    copy.whatsappText = buildWhatsappText(copy);
+    copy.highlights = buildProductHighlights(copy);
     state.catalog.products.push(copy);
     state.activeProductSlug = nextSlug;
     state.productFormDirty = false;

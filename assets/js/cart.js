@@ -24,10 +24,23 @@
       currency: "BRL",
     }).format(value);
 
+  const hasAvailableStock = (product) => {
+    const rawQuantity = product?.stockQuantity;
+
+    if (rawQuantity === "" || rawQuantity === null || rawQuantity === undefined) {
+      return true;
+    }
+
+    const quantity = Number.parseInt(String(rawQuantity).replace(/\D/g, ""), 10);
+
+    return Number.isFinite(quantity) && quantity > 0;
+  };
+
   const canSellProduct = (product) =>
     Boolean(
       product &&
       product.availability === "Pronta entrega" &&
+      hasAvailableStock(product) &&
       parsePrice(product.price) !== null,
     );
 

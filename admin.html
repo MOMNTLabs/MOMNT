@@ -201,23 +201,19 @@
                       <input name="price" inputmode="numeric" autocomplete="off" placeholder="R$ 150,00" />
                     </label>
                     <label class="field">
-                      <span>Selo</span>
-                      <input name="badge" placeholder="Novo drop" />
-                    </label>
-                    <label class="field">
-                      <span>Tom</span>
-                      <select name="badgeTone">
-                        <option value="green">Verde</option>
-                        <option value="soft">Suave</option>
-                        <option value="neutral">Neutro</option>
-                      </select>
+                      <span>Estoque</span>
+                      <input name="stockQuantity" inputmode="numeric" autocomplete="off" placeholder="1" />
                     </label>
                     <label class="field">
                       <span>Status</span>
                       <input name="availability" placeholder="Pronta entrega" />
                     </label>
                     <label class="field">
-                      <span>Materiais</span>
+                      <span>Etiqueta</span>
+                      <input name="badge" placeholder="Última unidade" />
+                    </label>
+                    <label class="field">
+                      <span>Material</span>
                       <input name="materials" placeholder="Acetato leve com lente UV400" />
                     </label>
                     <label class="field field-full">
@@ -229,12 +225,8 @@
                       <textarea name="description" rows="4"></textarea>
                     </label>
                     <label class="field">
-                      <span>Dimensões</span>
+                      <span>Medidas</span>
                       <input name="dimensions" placeholder="Lente 53mm | Ponte 20mm" />
-                    </label>
-                    <label class="field">
-                      <span>WhatsApp</span>
-                      <input name="whatsappText" />
                     </label>
                     <label class="field field-full">
                       <span>Imagens</span>
@@ -246,10 +238,6 @@
                         <input type="file" accept="image/*" data-image-picker="product" />
                       </div>
                     </div>
-                    <label class="field field-full">
-                      <span>Destaques</span>
-                      <textarea name="highlights" rows="5"></textarea>
-                    </label>
                   </div>
 
                   <div class="admin-preview" id="product-preview"></div>
@@ -435,7 +423,7 @@
       </div>
     </div>
 
-    <script src="assets/js/catalog-data.js?v=20260624r2c"></script>
-    <script src="assets/js/admin.js?v=20260624r2c"></script>
+    <script src="assets/js/catalog-data.js?v=20260624r2d"></script>
+    <script src="assets/js/admin.js?v=20260624r2d"></script>
   </body>
 </html>

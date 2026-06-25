@@ -33,6 +33,18 @@
     return "";
   };
 
+  const hasAvailableStock = (product) => {
+    const rawQuantity = product?.stockQuantity;
+
+    if (rawQuantity === "" || rawQuantity === null || rawQuantity === undefined) {
+      return true;
+    }
+
+    const quantity = Number.parseInt(String(rawQuantity).replace(/\D/g, ""), 10);
+
+    return Number.isFinite(quantity) && quantity > 0;
+  };
+
   const updateHero = () => {
     if (heroImage && homeContent.heroImage) {
       heroImage.src = homeContent.heroImage;
@@ -66,6 +78,7 @@
     const fallbackProducts = products.filter(
       (product) =>
         product.availability === "Pronta entrega" &&
+        hasAvailableStock(product) &&
         !featuredProducts.some((featured) => featured.slug === product.slug),
     );
     const visibleProducts = [...featuredProducts, ...fallbackProducts].slice(

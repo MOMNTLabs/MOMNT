@@ -22,9 +22,13 @@ CREATE TABLE IF NOT EXISTS products (
   materials TEXT NOT NULL DEFAULT '',
   availability TEXT NOT NULL DEFAULT 'Em preparação',
   dimensions TEXT NOT NULL DEFAULT '',
+  stock_quantity INTEGER,
   whatsapp_text TEXT NOT NULL DEFAULT '',
   sort_order INTEGER NOT NULL DEFAULT 0
 );
+
+ALTER TABLE products
+  ADD COLUMN IF NOT EXISTS stock_quantity INTEGER;
 
 CREATE TABLE IF NOT EXISTS product_images (
   product_slug TEXT NOT NULL REFERENCES products(slug) ON DELETE CASCADE,

@@ -24,6 +24,24 @@
   const buildWhatsappUrl = (text) =>
     `https://wa.me/5511963238610?text=${encodeURIComponent(text)}`;
 
+  const getStockLabel = (stockQuantity) => {
+    const digits = String(stockQuantity ?? "").replace(/\D/g, "");
+
+    if (!digits) {
+      return "";
+    }
+
+    const quantity = Math.max(0, Number.parseInt(digits, 10));
+
+    if (quantity === 0) {
+      return "Esgotado";
+    }
+
+    return quantity === 1
+      ? "1 unidade disponível"
+      : `${quantity} unidades disponíveis`;
+  };
+
   const buildRelatedProducts = (currentProduct) => {
     const sameCategory = products.filter(
       (item) =>
@@ -61,6 +79,7 @@
   const category = categoryMeta[product.category] ?? categoryMeta.all;
   const relatedProducts = buildRelatedProducts(product);
   const isPurchasable = Boolean(cart?.canSellProduct(product));
+  const stockLabel = getStockLabel(product.stockQuantity);
 
   const renderPurchaseBlock = () => {
     if (!isPurchasable) {
@@ -208,17 +227,25 @@
                     <span class="pdp-spec-value">${product.categoryLabel}</span>
                   </div>
                   <div class="pdp-spec-row">
-                    <span class="pdp-spec-label">Dimensões</span>
+                    <span class="pdp-spec-label">Medidas</span>
                     <span class="pdp-spec-value">${product.dimensions}</span>
                   </div>
                   <div class="pdp-spec-row">
-                    <span class="pdp-spec-label">Materiais</span>
+                    <span class="pdp-spec-label">Material</span>
                     <span class="pdp-spec-value">${product.materials}</span>
                   </div>
                   <div class="pdp-spec-row">
                     <span class="pdp-spec-label">Disponibilidade</span>
                     <span class="pdp-spec-value">${product.availability}</span>
                   </div>
+                  ${
+                    stockLabel
+                      ? `<div class="pdp-spec-row">
+                          <span class="pdp-spec-label">Estoque</span>
+                          <span class="pdp-spec-value">${stockLabel}</span>
+                        </div>`
+                      : ""
+                  }
                 </div>
               </section>
 

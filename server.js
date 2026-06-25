@@ -258,6 +258,66 @@ const normalizeStringList = (value) =>
     ? value.map((item) => String(item ?? "").trim()).filter(Boolean)
     : [];
 
+const parseStockQuantity = (value) => {
+  const digits = String(value ?? "").replace(/\D/g, "");
+
+  if (!digits) {
+    return null;
+  }
+
+  return Math.max(0, Number.parseInt(digits, 10));
+};
+
+const getStockLabel = (stockQuantity) => {
+  const quantity = parseStockQuantity(stockQuantity);
+
+  if (quantity === null) {
+    return "";
+  }
+
+  if (quantity === 0) {
+    return "Esgotado";
+  }
+
+  return quantity === 1
+    ? "1 unidade disponível"
+    : `${quantity} unidades disponíveis`;
+};
+
+const inferBadgeTone = (product = {}) => {
+  const label = `${product.badge ?? ""} ${product.availability ?? ""}`
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
+  if (label.includes("esgotado") || label.includes("preview")) {
+    return "neutral";
+  }
+
+  if (
+    label.includes("ultima") ||
+    label.includes("off") ||
+    label.includes("promo")
+  ) {
+    return "soft";
+  }
+
+  return "green";
+};
+
+const buildProductHighlights = (product = {}) =>
+  [
+    getStockLabel(product.stockQuantity),
+    product.availability,
+    product.materials,
+    product.dimensions,
+  ]
+    .map((item) => String(item ?? "").trim())
+    .filter(Boolean);
+
+const buildWhatsappText = (product = {}) =>
+  `Oi, quero saber mais detalhes do ${product.name || "produto"} da MOMNT.`;
+
 const normalizeCatalog = (catalog) => {
   const products = Array.isArray(catalog?.products) ? catalog.products : [];
   const categoryMeta =
@@ -291,9 +351,18 @@ const normalizeCatalog = (catalog) => {
         availability:
           String(product?.availability ?? "").trim() || "Em preparação",
         dimensions: String(product?.dimensions ?? "").trim(),
+        stockQuantity: parseStockQuantity(product?.stockQuantity),
         highlights: normalizeStringList(product?.highlights),
         images: normalizeStringList(product?.images),
         whatsappText: String(product?.whatsappText ?? "").trim(),
+      }))
+      .map((product) => ({
+        ...product,
+        badgeTone: inferBadgeTone(product),
+        highlights: product.highlights.length
+          ? product.highlights
+          : buildProductHighlights(product),
+        whatsappText: product.whatsappText || buildWhatsappText(product),
       }))
       .filter((product) => product.slug && product.name),
     categoryMeta: Object.fromEntries(
@@ -382,6 +451,7 @@ const readCatalogFromDatabase = async () => {
       materials: product.materials,
       availability: product.availability,
       dimensions: product.dimensions,
+      stockQuantity: product.stock_quantity,
       whatsappText: product.whatsapp_text,
       images: imagesByProduct.get(product.slug) || [],
       highlights: highlightsByProduct.get(product.slug) || [],
@@ -432,8 +502,8 @@ const writeCatalogToDatabase = async (catalog) => {
         `INSERT INTO products
           (slug, name, category, category_label, price, badge, badge_tone,
            short_description, description, materials, availability, dimensions,
-           whatsapp_text, sort_order)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
+           stock_quantity, whatsapp_text, sort_order)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
         [
           product.slug,
           product.name,
@@ -447,6 +517,7 @@ const writeCatalogToDatabase = async (catalog) => {
           product.materials,
           product.availability,
           product.dimensions,
+          product.stockQuantity,
           product.whatsappText,
           index,
         ],

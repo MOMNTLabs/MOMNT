@@ -48,6 +48,18 @@
   const buildWhatsappUrl = (text) =>
     `https://wa.me/5511963238610?text=${encodeURIComponent(text)}`;
 
+  const hasAvailableStock = (product) => {
+    const rawQuantity = product?.stockQuantity;
+
+    if (rawQuantity === "" || rawQuantity === null || rawQuantity === undefined) {
+      return true;
+    }
+
+    const quantity = Number.parseInt(String(rawQuantity).replace(/\D/g, ""), 10);
+
+    return Number.isFinite(quantity) && quantity > 0;
+  };
+
   const getFilteredProducts = () => {
     const normalizedSearch = normalizeText(state.search);
 
@@ -162,7 +174,7 @@
     gridRoot.innerHTML = filteredProducts
       .map((product) => {
         const secondaryLabel =
-          product.availability === "Pronta entrega"
+          product.availability === "Pronta entrega" && hasAvailableStock(product)
             ? "Comprar no WhatsApp"
             : "Receber aviso";
 
