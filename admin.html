@@ -12,7 +12,7 @@
       rel="stylesheet"
     />
     <link rel="icon" type="image/png" href="assets/images/momnt-symbol.png" />
-    <link rel="stylesheet" href="assets/css/admin.css?v=20260624i" />
+    <link rel="stylesheet" href="assets/css/admin.css?v=20260624j" />
   </head>
   <body class="admin-page">
     <section class="admin-lock" id="admin-lock">
@@ -228,19 +228,22 @@
                       <span>Medidas</span>
                       <input name="dimensions" placeholder="Lente 53mm | Ponte 20mm" />
                     </label>
-                    <label class="field field-full">
+                    <label class="field field-full product-images-field">
                       <span>Imagens</span>
-                      <textarea name="images" rows="5"></textarea>
-                    </label>
-                    <div class="field field-full">
-                      <span>Imagem do computador</span>
+                      <textarea class="product-images-data" name="images" rows="4" tabindex="-1" aria-hidden="true"></textarea>
                       <div class="image-tools">
                         <input type="file" accept="image/*" data-image-picker="product" />
+                        <div class="product-image-url-row">
+                          <input id="product-image-url" type="url" placeholder="https://..." />
+                          <button class="admin-button" type="button" id="product-image-add">
+                            Adicionar URL
+                          </button>
+                        </div>
                       </div>
-                    </div>
+                    </label>
                   </div>
 
-                  <div class="admin-preview" id="product-preview"></div>
+                  <div class="admin-preview product-image-list" id="product-preview"></div>
 
                   <div class="admin-form-actions product-form-actions">
                     <button class="admin-button admin-button-primary" type="button" id="product-save">
@@ -424,6 +427,6 @@
     </div>
 
     <script src="assets/js/catalog-data.js?v=20260624r2d"></script>
-    <script src="assets/js/admin.js?v=20260624r2d"></script>
+    <script src="assets/js/admin.js?v=20260624r2e"></script>
   </body>
 </html>

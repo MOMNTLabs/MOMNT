@@ -31,6 +31,8 @@
     productDuplicate: document.querySelector("#product-duplicate"),
     productRemove: document.querySelector("#product-remove"),
     productSave: document.querySelector("#product-save"),
+    productImageUrl: document.querySelector("#product-image-url"),
+    productImageAdd: document.querySelector("#product-image-add"),
     productPreview: document.querySelector("#product-preview"),
     categoryList: document.querySelector("#category-list"),
     categoryForm: document.querySelector("#category-form"),
@@ -694,7 +696,7 @@
     form.elements.dimensions.value = product.dimensions;
     form.elements.images.value = arrayToLines(product.images);
 
-    renderImagePreview(elements.productPreview, product.images);
+    renderProductImageList(product.images);
   };
 
   const syncCatalogButtons = () => {
@@ -766,7 +768,7 @@
     state.productFormDirty = true;
     setDirty();
     renderProductList();
-    renderImagePreview(elements.productPreview, nextProduct.images);
+    renderProductImageList(nextProduct.images);
   };
 
   const renderProducts = () => {
@@ -1034,6 +1036,48 @@
       .join("");
   };
 
+  const renderProductImageList = (images) => {
+    if (!elements.productPreview) {
+      return;
+    }
+
+    const visibleImages = (Array.isArray(images) ? images : [])
+      .map((image) => String(image ?? "").trim())
+      .filter(Boolean);
+
+    elements.productPreview.innerHTML = visibleImages
+      .map(
+        (image, index) => `
+          <article class="product-image-card${index === 0 ? " is-main" : ""}" data-image-index="${index}">
+            <img src="${escapeHtml(image)}" alt="Imagem ${index + 1} do produto" loading="lazy" />
+            <div class="product-image-card-actions">
+              <button type="button" data-image-action="main" ${index === 0 ? "disabled" : ""}>Principal</button>
+              <button type="button" data-image-action="up" ${index === 0 ? "disabled" : ""}>Subir</button>
+              <button type="button" data-image-action="down" ${index === visibleImages.length - 1 ? "disabled" : ""}>Descer</button>
+              <button type="button" data-image-action="remove">Remover</button>
+            </div>
+          </article>
+        `,
+      )
+      .join("");
+  };
+
+  const getProductFormImages = () =>
+    elements.productForm ? linesToArray(elements.productForm.elements.images.value) : [];
+
+  const setProductFormImages = (images) => {
+    if (!elements.productForm) {
+      return;
+    }
+
+    const cleanImages = (Array.isArray(images) ? images : [])
+      .map((image) => String(image ?? "").trim())
+      .filter(Boolean);
+
+    elements.productForm.elements.images.value = arrayToLines(cleanImages);
+    readProductForm();
+  };
+
   const cropPresets = {
     home: {
       label: "Banner 16:9",
@@ -1061,9 +1105,7 @@
     const imageUrl = await uploadImageDataUrl(dataUrl, target);
 
     if (target === "product" && elements.productForm) {
-      const input = elements.productForm.elements.images;
-      input.value = [input.value.trim(), imageUrl].filter(Boolean).join("\n");
-      readProductForm();
+      setProductFormImages([...getProductFormImages(), imageUrl]);
     }
 
     if (target === "category" && elements.categoryForm) {
@@ -2138,6 +2180,68 @@
   elements.productDuplicate?.addEventListener("click", duplicateProduct);
   elements.productRemove?.addEventListener("click", removeProduct);
   elements.productSave?.addEventListener("click", saveCatalog);
+  elements.productImageAdd?.addEventListener("click", () => {
+    if (!(elements.productImageUrl instanceof HTMLInputElement)) {
+      return;
+    }
+
+    const imageUrl = elements.productImageUrl.value.trim();
+
+    if (!imageUrl) {
+      return;
+    }
+
+    const images = getProductFormImages();
+
+    if (!images.includes(imageUrl)) {
+      setProductFormImages([...images, imageUrl]);
+    }
+
+    elements.productImageUrl.value = "";
+  });
+  elements.productImageUrl?.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") {
+      return;
+    }
+
+    event.preventDefault();
+    elements.productImageAdd?.click();
+  });
+  elements.productPreview?.addEventListener("click", (event) => {
+    const actionButton = event.target?.closest?.("[data-image-action]");
+
+    if (!(actionButton instanceof HTMLButtonElement)) {
+      return;
+    }
+
+    const card = actionButton.closest("[data-image-index]");
+    const action = actionButton.getAttribute("data-image-action");
+    const index = Number.parseInt(card?.getAttribute("data-image-index") ?? "", 10);
+    const images = getProductFormImages();
+
+    if (!Number.isFinite(index) || !images[index]) {
+      return;
+    }
+
+    if (action === "remove") {
+      images.splice(index, 1);
+    }
+
+    if (action === "main") {
+      const [image] = images.splice(index, 1);
+      images.unshift(image);
+    }
+
+    if (action === "up" && index > 0) {
+      [images[index - 1], images[index]] = [images[index], images[index - 1]];
+    }
+
+    if (action === "down" && index < images.length - 1) {
+      [images[index], images[index + 1]] = [images[index + 1], images[index]];
+    }
+
+    setProductFormImages(images);
+  });
   elements.productClose?.addEventListener("click", () => {
     closeProductEditor();
   });

@@ -447,6 +447,22 @@ button {
   max-width: 260px;
 }
 
+.product-images-field {
+  position: relative;
+  gap: 12px;
+}
+
+.product-images-data {
+  display: none !important;
+}
+
+.product-image-url-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto;
+  gap: 8px;
+  min-width: min(100%, 420px);
+}
+
 .admin-preview {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -459,6 +475,47 @@ button {
   object-fit: cover;
   border: 1px solid var(--admin-line);
   background: #ede6dc;
+}
+
+.product-image-list {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.product-image-card {
+  display: grid;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--admin-line);
+  background: #fffdf8;
+}
+
+.product-image-card img {
+  aspect-ratio: 4 / 3;
+}
+
+.product-image-card.is-main {
+  border-color: var(--admin-accent);
+  box-shadow: inset 0 0 0 2px rgba(23, 107, 85, 0.12);
+}
+
+.product-image-card-actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.product-image-card-actions button {
+  min-height: 34px;
+  border: 1px solid var(--admin-line);
+  background: #fffaf2;
+  color: var(--admin-ink);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.product-image-card-actions button:disabled {
+  cursor: default;
+  opacity: 0.4;
 }
 
 .image-editor {
