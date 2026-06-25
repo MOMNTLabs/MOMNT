@@ -127,6 +127,13 @@ const escapeCssValue = (value) =>
     .replace(/;/g, "")
     .replace(/[{}]/g, "");
 
+const escapeHtmlAttribute = (value) =>
+  String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
 const buildThemeStyle = (theme = {}) => {
   const normalizedTheme = normalizeTheme(theme);
   const declarations = Object.entries(cssVariableMap)
@@ -138,21 +145,32 @@ const buildThemeStyle = (theme = {}) => {
   return `<style id="momnt-theme-vars">:root{${declarations}}</style>`;
 };
 
-const readThemeForHtml = async () => {
+const readSiteContentForHtml = async () => {
   try {
     if (pool) {
       await ensureSchema();
       const result = await pool.query(
-        "SELECT payload->'theme' AS theme FROM site_content WHERE id = TRUE LIMIT 1",
+        "SELECT payload FROM site_content WHERE id = TRUE LIMIT 1",
       );
-      return normalizeTheme(result.rows[0]?.theme || {});
+      const siteContent = result.rows[0]?.payload || {};
+
+      return {
+        theme: normalizeTheme(siteContent.theme || {}),
+        home: siteContent.home || {},
+      };
     }
 
     const defaultCatalog = await getDefaultCatalog();
-    return normalizeTheme(defaultCatalog.siteContent?.theme || {});
+    return {
+      theme: normalizeTheme(defaultCatalog.siteContent?.theme || {}),
+      home: defaultCatalog.siteContent?.home || {},
+    };
   } catch (error) {
     console.error(error);
-    return normalizeTheme();
+    return {
+      theme: normalizeTheme(),
+      home: {},
+    };
   }
 };
 
@@ -168,6 +186,38 @@ const injectThemeStyle = (html, theme) => {
   }
 
   return `${style}${html}`;
+};
+
+const getPrimaryHeroImage = (home = {}) => {
+  const heroImages = Array.isArray(home.heroImages) ? home.heroImages : [];
+  const fallbackImage = String(home.heroImage ?? "").trim();
+
+  return [...heroImages, fallbackImage]
+    .map((image) => String(image ?? "").trim())
+    .find(Boolean);
+};
+
+const injectHomeHeroImage = (html, home = {}) => {
+  const primaryHeroImage = getPrimaryHeroImage(home);
+
+  if (!primaryHeroImage || !html.includes('class="hero-media"')) {
+    return html;
+  }
+
+  return html.replace(
+    /(<div class="hero-media">[\s\S]*?<img\b[\s\S]*?\bsrc=")[^"]*(")/,
+    `$1${escapeHtmlAttribute(primaryHeroImage)}$2`,
+  );
+};
+
+const injectHtmlData = (html, htmlPath, siteContent) => {
+  const themedHtml = injectThemeStyle(html, siteContent.theme);
+
+  if (path.basename(htmlPath) !== "index.html") {
+    return themedHtml;
+  }
+
+  return injectHomeHeroImage(themedHtml, siteContent.home);
 };
 
 const resolveHtmlPath = (requestPath) => {
@@ -200,14 +250,14 @@ const sendThemedHtml = async (request, response, next) => {
   }
 
   try {
-    const [html, theme] = await Promise.all([
+    const [html, siteContent] = await Promise.all([
       fs.readFile(htmlPath, "utf8"),
-      readThemeForHtml(),
+      readSiteContentForHtml(),
     ]);
 
     response.set("Content-Type", "text/html; charset=utf-8");
     response.set("Cache-Control", "no-store");
-    response.send(injectThemeStyle(html, theme));
+    response.send(injectHtmlData(html, htmlPath, siteContent));
   } catch (error) {
     next();
   }
