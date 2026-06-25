@@ -905,9 +905,6 @@
 
     return {
       ...fallbackHome,
-      heroKicker: form.elements.heroKicker.value.trim(),
-      heroTitle: form.elements.heroTitle.value.trim(),
-      heroText: form.elements.heroText.value.trim(),
       featuredProductSlugs: linesToArray(form.elements.featuredProductSlugs.value),
       featuredCategoryKeys: linesToArray(form.elements.featuredCategoryKeys.value),
     };
@@ -1021,9 +1018,6 @@
     }
 
     form.elements.heroImages.value = arrayToLines(heroImages);
-    form.elements.heroKicker.value = home.heroKicker ?? "";
-    form.elements.heroTitle.value = home.heroTitle ?? "";
-    form.elements.heroText.value = home.heroText ?? "";
     form.elements.featuredProductSlugs.value = arrayToLines(
       home.featuredProductSlugs,
     );
@@ -1042,14 +1036,13 @@
     }
 
     const heroImages = linesToArray(form.elements.heroImages.value);
+    const { heroKicker, heroTitle, heroText, ...existingHome } =
+      state.catalog.siteContent.home ?? {};
 
     state.catalog.siteContent.home = {
-      ...(state.catalog.siteContent.home ?? {}),
+      ...existingHome,
       heroImage: heroImages[0] ?? "",
       heroImages,
-      heroKicker: form.elements.heroKicker.value.trim(),
-      heroTitle: form.elements.heroTitle.value.trim(),
-      heroText: form.elements.heroText.value.trim(),
       featuredProductSlugs: linesToArray(form.elements.featuredProductSlugs.value),
       featuredCategoryKeys: linesToArray(form.elements.featuredCategoryKeys.value),
     };
@@ -1251,7 +1244,6 @@
       return;
     }
 
-    const home = getHomeFieldValues();
     const visibleImages = (Array.isArray(images) ? images : [])
       .map((image) => String(image ?? "").trim())
       .filter(Boolean);
@@ -1264,21 +1256,8 @@
             data-home-image-index="${index}"
             draggable="true"
           >
-            <div class="product-image-media home-hero-preview">
+            <div class="product-image-media">
               <img src="${escapeHtml(image)}" alt="Banner ${index + 1} do hero" loading="lazy" />
-              <div class="home-hero-preview-ui" aria-hidden="true">
-                <span class="home-hero-preview-logo">MOMNT</span>
-                <span class="home-hero-preview-nav">
-                  <span>Modern</span>
-                  <span>Classic</span>
-                  <span>Sport</span>
-                </span>
-              </div>
-              <div class="home-hero-preview-copy">
-                <span class="home-hero-preview-kicker">${escapeHtml(home.heroKicker || "MOMNT")}</span>
-                <strong>${escapeHtml(home.heroTitle || "nova colecao")}</strong>
-                <p>${escapeHtml(home.heroText || "")}</p>
-              </div>
               <span class="product-image-drag" aria-label="Arraste para ordenar" title="Arraste para ordenar">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01"></path>

@@ -8,9 +8,6 @@
 
   const heroMedia = document.querySelector(".hero-media");
   const heroImage = document.querySelector(".hero-media img");
-  const heroKicker = document.querySelector(".hero-kicker");
-  const heroTitle = document.querySelector(".hero-content h1");
-  const heroText = document.querySelector(".hero-text");
   const productGrid = document.querySelector(".recommendations .product-grid");
   const featureGrid = document.querySelector(".categories .feature-grid");
 
@@ -102,18 +99,6 @@
 
   const updateHero = () => {
     updateHeroImages();
-
-    if (heroKicker && homeContent.heroKicker) {
-      heroKicker.textContent = homeContent.heroKicker;
-    }
-
-    if (heroTitle && homeContent.heroTitle) {
-      heroTitle.textContent = homeContent.heroTitle;
-    }
-
-    if (heroText && homeContent.heroText) {
-      heroText.textContent = homeContent.heroText;
-    }
   };
 
   const renderProducts = () => {
@@ -189,6 +174,7 @@
     )
       ? homeContent.featuredCategoryKeys
       : [];
+    const featuredCategorySet = new Set(featuredCategoryKeys);
     const categoryKeys = [
       ...featuredCategoryKeys,
       ...Object.keys(categoryMeta).filter((key) => key !== "all"),
@@ -207,14 +193,17 @@
           return "";
         }
 
+        const isFeatured = featuredCategorySet.has(categoryKey);
+
         return `
-          <article class="feature-card${index === 0 ? " feature-card-large" : ""} reveal is-visible">
+          <article class="feature-card${index === 0 ? " feature-card-large" : ""}${isFeatured ? " feature-card-featured" : ""} reveal is-visible">
             <img
               src="${escapeHtml(category.heroImage)}"
               alt="${escapeHtml(category.label)} MOMNT"
               loading="lazy"
             />
             <div class="feature-overlay">
+              ${isFeatured ? `<span class="feature-badge">Destaque</span>` : ""}
               <p class="section-label">${escapeHtml(category.label)}</p>
               <h3>${escapeHtml(category.title)}</h3>
               <a href="produtos.html?categoria=${encodeURIComponent(categoryKey)}">

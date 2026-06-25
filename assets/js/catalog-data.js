@@ -230,10 +230,6 @@ window.MOMNT_SITE_CONTENT = {
   home: {
     heroImage: "assets/images/lifestyle-04.jpg",
     heroImages: ["assets/images/lifestyle-04.jpg"],
-    heroKicker: "Inverno 26",
-    heroTitle: "nova coleção",
-    heroText:
-      "Shapes autorais, leitura premium e uma jornada mais curta entre desejo, produto e compra.",
     featuredProductSlugs: ["wave-2", "groove", "phase", "loop"],
     featuredCategoryKeys: ["modern", "classic", "sport"],
   },
