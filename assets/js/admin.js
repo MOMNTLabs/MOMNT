@@ -31,8 +31,6 @@
     productDuplicate: document.querySelector("#product-duplicate"),
     productRemove: document.querySelector("#product-remove"),
     productSave: document.querySelector("#product-save"),
-    productImageUrl: document.querySelector("#product-image-url"),
-    productImageAdd: document.querySelector("#product-image-add"),
     productPreview: document.querySelector("#product-preview"),
     categoryList: document.querySelector("#category-list"),
     categoryForm: document.querySelector("#category-form"),
@@ -2199,33 +2197,6 @@
   elements.productDuplicate?.addEventListener("click", duplicateProduct);
   elements.productRemove?.addEventListener("click", removeProduct);
   elements.productSave?.addEventListener("click", saveCatalog);
-  elements.productImageAdd?.addEventListener("click", () => {
-    if (!(elements.productImageUrl instanceof HTMLInputElement)) {
-      return;
-    }
-
-    const imageUrl = elements.productImageUrl.value.trim();
-
-    if (!imageUrl) {
-      return;
-    }
-
-    const images = getProductFormImages();
-
-    if (!images.includes(imageUrl)) {
-      setProductFormImages([...images, imageUrl]);
-    }
-
-    elements.productImageUrl.value = "";
-  });
-  elements.productImageUrl?.addEventListener("keydown", (event) => {
-    if (event.key !== "Enter") {
-      return;
-    }
-
-    event.preventDefault();
-    elements.productImageAdd?.click();
-  });
   elements.productPreview?.addEventListener("click", (event) => {
     const actionButton = event.target?.closest?.("[data-image-action]");
 

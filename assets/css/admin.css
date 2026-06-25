@@ -456,11 +456,13 @@ button {
   display: none !important;
 }
 
-.product-image-url-row {
-  display: grid;
-  grid-template-columns: minmax(180px, 1fr) auto;
-  gap: 8px;
-  min-width: min(100%, 420px);
+.product-images-field .image-tools {
+  display: block;
+}
+
+.product-images-field .image-tools input[type="file"] {
+  width: min(100%, 420px);
+  max-width: none;
 }
 
 .admin-preview {
