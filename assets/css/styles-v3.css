@@ -518,6 +518,14 @@ figure {
   gap: 1rem;
 }
 
+.feature-grid[data-feature-count="1"] {
+  grid-template-columns: 1fr;
+}
+
+.feature-grid[data-feature-count="2"] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .feature-card {
   position: relative;
   overflow: hidden;
@@ -531,10 +539,16 @@ figure {
   min-height: 520px;
 }
 
+.feature-grid[data-feature-count="1"] .feature-card-large {
+  min-height: 430px;
+}
+
 .feature-card-featured {
+  outline: 1px solid rgba(210, 173, 123, 0.68);
+  outline-offset: -8px;
   box-shadow:
-    inset 0 0 0 2px rgba(210, 173, 123, 0.86),
-    0 18px 34px rgba(17, 17, 17, 0.14);
+    0 0 0 1px rgba(210, 173, 123, 0.42),
+    0 22px 48px rgba(17, 17, 17, 0.18);
 }
 
 .feature-card img,
@@ -556,6 +570,12 @@ figure {
   );
 }
 
+.feature-card-featured::after {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.02) 18%, rgba(0, 0, 0, 0.76) 100%),
+    radial-gradient(circle at 22% 22%, rgba(210, 173, 123, 0.34), transparent 36%);
+}
+
 .feature-card:hover img,
 .editorial-card:hover img {
   transform: scale(1.03);
@@ -575,13 +595,13 @@ figure {
   justify-self: start;
   display: inline-flex;
   align-items: center;
-  min-height: 28px;
-  padding: 0 0.68rem;
-  border: 1px solid rgba(210, 173, 123, 0.78);
+  min-height: 34px;
+  padding: 0 0.82rem;
+  border: 1px solid rgba(210, 173, 123, 0.9);
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.42);
+  background: rgba(210, 173, 123, 0.18);
   color: var(--gold);
-  font-size: 0.64rem;
+  font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;

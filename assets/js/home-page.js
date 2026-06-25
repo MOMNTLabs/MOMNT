@@ -174,16 +174,20 @@
     )
       ? homeContent.featuredCategoryKeys
       : [];
-    const featuredCategorySet = new Set(featuredCategoryKeys);
-    const categoryKeys = [
-      ...featuredCategoryKeys,
-      ...Object.keys(categoryMeta).filter((key) => key !== "all"),
-    ].filter((key, index, list) => key !== "all" && list.indexOf(key) === index);
+    const selectedCategoryKeys = featuredCategoryKeys
+      .map((key) => String(key ?? "").trim())
+      .filter((key, index, list) => key && key !== "all" && list.indexOf(key) === index);
+    const categoryKeys = (
+      selectedCategoryKeys.length
+        ? selectedCategoryKeys
+        : Object.keys(categoryMeta).filter((key) => key !== "all")
+    ).filter((key, index, list) => key !== "all" && list.indexOf(key) === index);
 
     if (!categoryKeys.length) {
       return;
     }
 
+    featureGrid.setAttribute("data-feature-count", String(categoryKeys.length));
     featureGrid.innerHTML = categoryKeys
       .slice(0, 3)
       .map((categoryKey, index) => {
@@ -193,17 +197,15 @@
           return "";
         }
 
-        const isFeatured = featuredCategorySet.has(categoryKey);
-
         return `
-          <article class="feature-card${index === 0 ? " feature-card-large" : ""}${isFeatured ? " feature-card-featured" : ""} reveal is-visible">
+          <article class="feature-card${index === 0 ? " feature-card-large" : ""} feature-card-featured reveal is-visible">
             <img
               src="${escapeHtml(category.heroImage)}"
               alt="${escapeHtml(category.label)} MOMNT"
               loading="lazy"
             />
             <div class="feature-overlay">
-              ${isFeatured ? `<span class="feature-badge">Destaque</span>` : ""}
+              <span class="feature-badge">Em destaque</span>
               <p class="section-label">${escapeHtml(category.label)}</p>
               <h3>${escapeHtml(category.title)}</h3>
               <a href="produtos.html?categoria=${encodeURIComponent(categoryKey)}">
