@@ -7,7 +7,6 @@
 
   const heroImage = document.querySelector("#catalog-hero-image");
   const filtersRoot = document.querySelector("#catalog-filters");
-  const summaryText = document.querySelector("#catalog-summary-text");
   const gridRoot = document.querySelector("#catalog-grid");
   const emptyState = document.querySelector("#catalog-empty");
   const searchInput = document.querySelector("#catalog-search");
@@ -16,7 +15,6 @@
   if (
     !heroImage ||
     !filtersRoot ||
-    !summaryText ||
     !gridRoot ||
     !emptyState ||
     !searchInput
@@ -141,27 +139,6 @@
     }`;
   };
 
-  const renderSummary = (filteredProducts) => {
-    const totalByCategory =
-      state.category === "all"
-        ? products.length
-        : products.filter((product) => product.category === state.category)
-            .length;
-
-    if (!filteredProducts.length) {
-      summaryText.innerHTML =
-        "<strong>0 modelos</strong> para este filtro. Ajuste a busca ou troque a categoria.";
-      return;
-    }
-
-    if (state.search) {
-      summaryText.innerHTML = `<strong>${filteredProducts.length} modelos</strong> encontrados para "${state.search}".`;
-      return;
-    }
-
-    summaryText.innerHTML = `<strong>${filteredProducts.length} de ${totalByCategory}</strong> modelos exibidos nesta categoria.`;
-  };
-
   const renderGrid = (filteredProducts) => {
     if (!filteredProducts.length) {
       gridRoot.innerHTML = "";
@@ -217,7 +194,6 @@
     searchInput.value = state.search;
     renderFilters();
     renderHero(filteredProducts);
-    renderSummary(filteredProducts);
     renderGrid(filteredProducts);
     updateUrl();
   };
