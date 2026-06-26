@@ -711,6 +711,14 @@ figure {
   color: rgba(255, 255, 255, 0.72);
 }
 
+.footer-legal {
+  grid-column: 1 / -1;
+  justify-self: end;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
 .mobile-dock {
   position: fixed;
   right: 16px;
@@ -762,6 +770,10 @@ figure {
 
   .footer-copy {
     text-align: left;
+  }
+
+  .footer-legal {
+    justify-self: start;
   }
 }
 
