@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MOMNT | Produto</title>
+    <title>MOMNT | Login</title>
     <meta
       name="description"
-      content="Página de produto MOMNT com galeria, detalhes, especificações e navegação por categoria."
+      content="Area de login da MOMNT para acompanhar favoritos e pedidos."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,18 +16,18 @@
     />
     <link rel="icon" type="image/png" href="assets/images/momnt-symbol.png" />
     <link rel="stylesheet" href="assets/css/styles-v3.css?v=20260625d" />
-    <link rel="stylesheet" href="assets/css/shop-pages.css?v=20260625j" />
+    <link rel="stylesheet" href="assets/css/shop-pages.css?v=20260625k" />
   </head>
-  <body class="product-page">
+  <body class="login-page">
     <div class="announcement-bar">
       <div class="container announcement-row">
         <p>
-          <strong>Compra assistida</strong>
-          com suporte da MOMNT para fechar o modelo pelo WhatsApp.
+          <strong>Entrega local r&aacute;pida</strong>
+          na Grande Vit&oacute;ria com compra assistida pelo WhatsApp.
         </p>
         <a
           class="announcement-link"
-          href="https://wa.me/5511963238610?text=Oi%2C%20vim%20da%20página%20de%20produto%20da%20MOMNT."
+          href="https://wa.me/5511963238610?text=Oi%2C%20vim%20do%20site%20da%20MOMNT%20e%20quero%20ajuda%20para%20escolher%20um%20modelo."
           target="_blank"
           rel="noreferrer"
         >
@@ -37,15 +37,6 @@
     </div>
 
     <section class="hero page-top-hero">
-      <div class="hero-media">
-        <img
-          src="assets/images/lifestyle-03.jpg"
-          alt="Página de produto MOMNT com visual editorial"
-          fetchpriority="high"
-        />
-        <div class="hero-overlay" aria-hidden="true"></div>
-      </div>
-
       <header class="site-header">
         <div class="container header-shell">
           <a class="brand" href="index.html#top" aria-label="MOMNT">
@@ -57,7 +48,7 @@
             type="button"
             aria-expanded="false"
             aria-controls="site-nav"
-            aria-label="Abrir navegação"
+            aria-label="Abrir navega&ccedil;&atilde;o"
           >
             <span></span>
             <span></span>
@@ -78,8 +69,8 @@
               <input
                 type="search"
                 name="busca"
-                placeholder="Buscar no catálogo"
-                aria-label="Buscar no catálogo"
+                placeholder="Buscar no cat&aacute;logo"
+                aria-label="Buscar no cat&aacute;logo"
               />
               <button type="submit" aria-label="Buscar">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -89,7 +80,7 @@
               </button>
             </form>
 
-            <div class="icon-links" aria-label="Ações rápidas">
+            <div class="icon-links" aria-label="A&ccedil;&otilde;es r&aacute;pidas">
               <a href="favoritos.html" aria-label="Favoritos" title="Favoritos">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path
@@ -120,17 +111,35 @@
         </div>
       </header>
 
-      <div class="container hero-content">
-        <h1 class="page-hero-title">detalhe</h1>
-        <p class="hero-text">
-          Galeria, especificações, CTA de compra e relacionados para cada modelo
-          da MOMNT.
-        </p>
+      <div class="container hero-content compact-page-intro">
+        <div class="compact-page-intro-copy">
+          <h1 class="page-hero-title">login</h1>
+        </div>
       </div>
     </section>
 
     <main class="page-main">
-      <div class="container page-shell" id="product-page-root"></div>
+      <div class="container page-shell">
+        <section class="not-found-card">
+          <p class="section-label">Conta MOMNT</p>
+          <h1>Login em prepara&ccedil;&atilde;o.</h1>
+          <p>
+            A &aacute;rea de conta vai servir para salvar favoritos e acompanhar
+            pedidos. Por enquanto, a compra continua assistida pelo WhatsApp.
+          </p>
+          <div class="hero-actions">
+            <a
+              class="button button-dark"
+              href="https://wa.me/5511963238610?text=Oi%2C%20vim%20do%20site%20da%20MOMNT%20e%20quero%20ajuda%20com%20meu%20pedido."
+              target="_blank"
+              rel="noreferrer"
+            >
+              Falar no WhatsApp
+            </a>
+            <a class="button button-outline" href="produtos.html">Ver produtos</a>
+          </div>
+        </section>
+      </div>
     </main>
 
     <footer class="site-footer">
@@ -143,23 +152,14 @@
           <a href="index.html#contato">Contato</a>
         </nav>
         <p class="footer-copy">
-          Página individual pronta para receber os produtos finais da MOMNT sem
-          refazer a estrutura.
+          Conta MOMNT para favoritos e pedidos futuros.
         </p>
         <p class="footer-legal">MOMNT - CNPJ 60.007.831/0001-17</p>
       </div>
     </footer>
 
-    <div class="mobile-dock" aria-label="Ações rápidas no celular">
-      <a class="mobile-dock-link" href="produtos.html">Catálogo</a>
-      <a class="mobile-dock-link mobile-dock-link-primary" href="carrinho.html">
-        Carrinho
-      </a>
-    </div>
-
     <script src="assets/js/catalog-data.js?v=20260625b"></script>
     <script src="assets/js/cart.js?v=20260624r2b"></script>
-    <script src="assets/js/product-page.js?v=20260624r2b"></script>
     <script src="assets/js/main-v3.js?v=20260625e"></script>
   </body>
 </html>

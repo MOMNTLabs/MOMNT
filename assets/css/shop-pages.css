@@ -14,13 +14,17 @@
 body.catalog-page,
 body.product-page,
 body.cart-page,
-body.checkout-page {
+body.checkout-page,
+body.favorites-page,
+body.login-page {
   background: var(--shop-bg);
 }
 
 .catalog-page .page-top-hero,
 .cart-page .page-top-hero,
-.checkout-page .page-top-hero {
+.checkout-page .page-top-hero,
+.favorites-page .page-top-hero,
+.login-page .page-top-hero {
   min-height: auto;
   background:
     radial-gradient(
@@ -36,19 +40,27 @@ body.checkout-page {
 .cart-page .page-top-hero .hero-media,
 .cart-page .page-top-hero .hero-overlay,
 .checkout-page .page-top-hero .hero-media,
-.checkout-page .page-top-hero .hero-overlay {
+.checkout-page .page-top-hero .hero-overlay,
+.favorites-page .page-top-hero .hero-media,
+.favorites-page .page-top-hero .hero-overlay,
+.login-page .page-top-hero .hero-media,
+.login-page .page-top-hero .hero-overlay {
   display: none;
 }
 
 .catalog-page .page-top-hero .site-header,
 .cart-page .page-top-hero .site-header,
-.checkout-page .page-top-hero .site-header {
+.checkout-page .page-top-hero .site-header,
+.favorites-page .page-top-hero .site-header,
+.login-page .page-top-hero .site-header {
   padding-top: 0.45rem;
 }
 
 .catalog-page .page-top-hero .hero-content,
 .cart-page .page-top-hero .hero-content,
-.checkout-page .page-top-hero .hero-content {
+.checkout-page .page-top-hero .hero-content,
+.favorites-page .page-top-hero .hero-content,
+.login-page .page-top-hero .hero-content {
   min-height: auto;
   padding: 0.85rem 0 0.8rem;
 }
@@ -68,14 +80,18 @@ body.checkout-page {
 
 .catalog-page .page-hero-title,
 .cart-page .page-hero-title,
-.checkout-page .page-hero-title {
+.checkout-page .page-hero-title,
+.favorites-page .page-hero-title,
+.login-page .page-hero-title {
   font-size: clamp(2rem, 3vw, 2.9rem);
   line-height: 0.98;
 }
 
 .catalog-page .hero-text,
 .cart-page .hero-text,
-.checkout-page .hero-text {
+.checkout-page .hero-text,
+.favorites-page .hero-text,
+.login-page .hero-text {
   max-width: 58ch;
   margin-top: 0;
   font-size: 0.92rem;

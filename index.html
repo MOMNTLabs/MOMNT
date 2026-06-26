@@ -90,25 +90,26 @@
             </form>
 
             <div class="icon-links" aria-label="Ações rápidas">
-              <a href="produtos.html" aria-label="Favoritos">
+              <a href="favoritos.html" aria-label="Favoritos" title="Favoritos">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path
                     d="M12 20.5L4.8 13.6A4.7 4.7 0 1 1 12 7.9a4.7 4.7 0 1 1 7.2 5.7L12 20.5Z"
                   ></path>
                 </svg>
               </a>
-              <a href="#contato" aria-label="Minha conta">
+              <a href="login.html" aria-label="Login" title="Login">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <circle cx="12" cy="8" r="4"></circle>
                   <path d="M4 20c1.9-3.4 5-5 8-5s6.1 1.6 8 5"></path>
                 </svg>
               </a>
               <a
-                href="https://wa.me/5511963238610?text=Oi%2C%20vim%20do%20site%20da%20MOMNT."
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Sacola"
+                class="header-cart-link"
+                href="carrinho.html"
+                aria-label="Carrinho"
+                title="Carrinho"
               >
+                <span class="cart-count-badge" data-cart-count hidden></span>
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M6 8h12l-1 12H7L6 8Z"></path>
                   <path d="M9 8a3 3 0 0 1 6 0"></path>
@@ -463,6 +464,7 @@
     </div>
 
     <script src="assets/js/catalog-data.js?v=20260625b"></script>
+    <script src="assets/js/cart.js?v=20260624r2b"></script>
     <script src="assets/js/home-page.js?v=20260625c"></script>
     <script src="assets/js/main-v3.js?v=20260625e"></script>
   </body>
