@@ -7,40 +7,14 @@ const isHomePage =
   window.location.pathname.endsWith("/index.html") ||
   window.location.pathname.endsWith("index.html");
 
-const escapeHtml = (value) =>
-  String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
 const renderSiteNav = () => {
   if (!siteNav) {
     return;
   }
 
-  const categoryMeta = window.MOMNT_CATEGORY_META ?? {};
-  const categories = Object.entries(categoryMeta).filter(
-    ([categoryKey]) => categoryKey !== "all",
-  );
-
-  if (!categories.length) {
-    return;
-  }
-
-  const categoryLinks = categories
-    .map(([categoryKey, category]) => {
-      const highlightClass = category.highlightInNav
-        ? ' class="nav-link-highlight"'
-        : "";
-
-      return `<a${highlightClass} href="produtos.html?categoria=${encodeURIComponent(categoryKey)}">${escapeHtml(category.label)}</a>`;
-    })
-    .join("");
   const contactHref = isHomePage ? "#contato" : "index.html#contato";
 
-  siteNav.innerHTML = `${categoryLinks}<a href="${contactHref}">Contato</a>`;
+  siteNav.innerHTML = `<a href="produtos.html">Produtos</a><a href="${contactHref}">Contato</a>`;
 };
 
 const closeNav = () => {
