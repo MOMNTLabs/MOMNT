@@ -50,7 +50,7 @@ body.checkout-page {
 .cart-page .page-top-hero .hero-content,
 .checkout-page .page-top-hero .hero-content {
   min-height: auto;
-  padding: 1rem 0 1.05rem;
+  padding: 0.85rem 0 0.8rem;
 }
 
 .compact-page-intro {
@@ -69,8 +69,8 @@ body.checkout-page {
 .catalog-page .page-hero-title,
 .cart-page .page-hero-title,
 .checkout-page .page-hero-title {
-  font-size: clamp(2.15rem, 3.6vw, 3.35rem);
-  line-height: 0.9;
+  font-size: clamp(2rem, 3vw, 2.9rem);
+  line-height: 0.98;
 }
 
 .catalog-page .hero-text,
@@ -91,7 +91,7 @@ body.checkout-page {
   min-height: auto;
   max-width: 100%;
   margin: 0 auto;
-  padding: 3.2rem 0 2rem;
+  padding: 2.55rem 0 1.45rem;
   text-align: left;
   justify-items: start;
 }
@@ -102,8 +102,8 @@ body.checkout-page {
 }
 
 .page-top-hero .page-hero-title {
-  font-size: clamp(2.15rem, 3.6vw, 3.35rem);
-  line-height: 0.9;
+  font-size: clamp(2rem, 3vw, 2.9rem);
+  line-height: 0.98;
   text-transform: lowercase;
 }
 
@@ -1097,11 +1097,11 @@ body.checkout-page {
   }
 
   .catalog-page .page-top-hero .hero-content {
-    padding: 0.8rem 0 0.95rem;
+    padding: 0.7rem 0 0.75rem;
   }
 
   .catalog-page .page-hero-title {
-    font-size: clamp(2.2rem, 10vw, 2.9rem);
+    font-size: clamp(1.9rem, 9vw, 2.55rem);
   }
 
   .catalog-page .hero-text {
