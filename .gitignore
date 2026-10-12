@@ -1,4 +1,8 @@
 node_modules/
+dist/
+.wrangler/
+.xdg/
+.dev.vars
 .env
 .env.*
 !.env.example
