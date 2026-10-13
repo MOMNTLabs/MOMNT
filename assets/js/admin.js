@@ -1,6 +1,5 @@
 (function () {
   const start = () => {
-  const ACCESS_CODE = "momnt-admin";
   const ACCESS_CODE_KEY = "momnt-admin-access-code-v1";
   const SESSION_KEY = "momnt-admin-session-v1";
   const HEIC_CONVERTER_SRC =
@@ -310,7 +309,7 @@
   };
 
   const getAccessCode = () =>
-    window.localStorage.getItem(ACCESS_CODE_KEY) || ACCESS_CODE;
+    window.localStorage.getItem(ACCESS_CODE_KEY) || "";
 
   const canUseLocalFallback =
     window.location.protocol === "file:" ||
@@ -2356,7 +2355,7 @@
         await apiRequest("/api/admin/verify", { method: "POST" }, accessCode);
         isValid = true;
       } catch {
-        isValid = accessCode === ACCESS_CODE;
+        isValid = canUseLocalFallback;
       }
     }
 
@@ -2760,14 +2759,41 @@
     event.returnValue = "";
   });
 
-  const hasSession = window.localStorage.getItem(SESSION_KEY) === "ok";
-  const hasStoredAccessCode = Boolean(window.localStorage.getItem(ACCESS_CODE_KEY));
+  const restoreSession = async () => {
+    const hasSession = window.localStorage.getItem(SESSION_KEY) === "ok";
+    const storedAccessCode = window.localStorage.getItem(ACCESS_CODE_KEY) || "";
 
-  if (hasSession && (hasStoredAccessCode || canUseLocalFallback)) {
-    unlock();
-  } else if (hasSession) {
-    window.localStorage.removeItem(SESSION_KEY);
-  }
+    if (!hasSession || !storedAccessCode) {
+      window.localStorage.removeItem(SESSION_KEY);
+      window.localStorage.removeItem(ACCESS_CODE_KEY);
+      return;
+    }
+
+    if (canUseLocalFallback) {
+      unlock();
+      return;
+    }
+
+    try {
+      await apiRequest(
+        "/api/admin/verify",
+        { method: "POST" },
+        storedAccessCode,
+      );
+      unlock();
+    } catch {
+      window.localStorage.removeItem(SESSION_KEY);
+      window.localStorage.removeItem(ACCESS_CODE_KEY);
+
+      if (elements.loginFeedback) {
+        elements.loginFeedback.hidden = false;
+        elements.loginFeedback.textContent =
+          "Sua sessão expirou. Digite novamente o código de acesso.";
+      }
+    }
+  };
+
+  void restoreSession();
   };
 
   if (window.MOMNT_CATALOG_READY) {

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { File as NodeFile } from "node:buffer";
+import { readFile } from "node:fs/promises";
 
 globalThis.File ??= NodeFile;
 
@@ -48,6 +49,24 @@ const call = (path, init) =>
 let response = await call("/api/health");
 assert.equal(response.status, 200);
 assert.equal((await response.json()).catalog, "r2");
+
+response = await worker.fetch(
+  new Request("https://momnt.test/api/admin/verify", { method: "POST" }),
+  { ...env, ADMIN_ACCESS_CODE: "" },
+);
+assert.equal(response.status, 503);
+
+response = await call("/api/admin/verify", {
+  method: "POST",
+  headers: { "x-admin-code": "wrong" },
+});
+assert.equal(response.status, 401);
+
+response = await call("/api/admin/verify", {
+  method: "POST",
+  headers: { "x-admin-code": "test-admin-code" },
+});
+assert.equal(response.status, 200);
 
 response = await call("/api/catalog");
 assert.equal(response.status, 204);
@@ -103,5 +122,14 @@ assert.match(upload.url, /^https:\/\/media\.momnt\.com\.br\/oculos-modernos\//);
 response = await call("/");
 assert.equal(response.status, 200);
 assert.equal(await response.text(), "static asset");
+
+const adminScript = await readFile(
+  new URL("../assets/js/admin.js", import.meta.url),
+  "utf8",
+);
+assert.doesNotMatch(adminScript, /const ACCESS_CODE\s*=/);
+assert.doesNotMatch(adminScript, /momnt-admin["']/);
+assert.match(adminScript, /const restoreSession = async \(\) =>/);
+assert.match(adminScript, /await apiRequest\([\s\S]*?\/api\/admin\/verify/);
 
 console.log("Worker smoke tests passed.");
