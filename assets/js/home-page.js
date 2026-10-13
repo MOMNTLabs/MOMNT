@@ -131,17 +131,6 @@
               <span class="product-badge ${getBadgeClass(product.badgeTone)}">
                 ${escapeHtml(product.badge)}
               </span>
-              <button
-                class="wishlist-button"
-                type="button"
-                aria-label="Salvar ${escapeHtml(product.name)}"
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M12 20.5L4.8 13.6A4.7 4.7 0 1 1 12 7.9a4.7 4.7 0 1 1 7.2 5.7L12 20.5Z"
-                  ></path>
-                </svg>
-              </button>
               <img
                 src="${escapeHtml(product.images[0])}"
                 alt="${escapeHtml(product.name)}"
@@ -150,7 +139,7 @@
             </div>
             <div class="product-copy">
               <p class="product-category">
-                ${escapeHtml(product.categoryLabel)} collection
+                Coleção ${escapeHtml(product.categoryLabel)}
               </p>
               <h2>${escapeHtml(product.name)}</h2>
               <p class="product-price">${escapeHtml(product.price)}</p>

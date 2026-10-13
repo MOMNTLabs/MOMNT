@@ -132,4 +132,16 @@ assert.doesNotMatch(adminScript, /momnt-admin["']/);
 assert.match(adminScript, /const restoreSession = async \(\) =>/);
 assert.match(adminScript, /await apiRequest\([\s\S]*?\/api\/admin\/verify/);
 
+const publicSources = await Promise.all(
+  ["../index.html", "../produtos.html", "../produto.html", "../assets/js/catalog-data.js"].map(
+    (path) => readFile(new URL(path, import.meta.url), "utf8"),
+  ),
+);
+const publicCopy = publicSources.join("\n");
+assert.doesNotMatch(
+  publicCopy,
+  /collection-placeholder|product-placeholder|flagship|menos cara de landing/i,
+);
+assert.doesNotMatch(publicCopy, /halo-01|frame-01|rush-03/i);
+
 console.log("Worker smoke tests passed.");

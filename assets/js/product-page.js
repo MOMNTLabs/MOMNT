@@ -61,10 +61,10 @@
     root.innerHTML = `
       <article class="not-found-card reveal is-visible">
         <span class="breadcrumb">Produto não encontrado</span>
-        <h1>Esta página ainda não existe no catálogo.</h1>
+        <h1>Este produto não está disponível.</h1>
         <p>
-          O slug informado não está cadastrado. Volte para a vitrine e escolha um dos
-          modelos disponíveis ou ajuste o link que gerou esta URL.
+          Volte para a vitrine e escolha um dos modelos disponíveis ou fale com
+          a MOMNT para receber ajuda.
         </p>
         <div class="catalog-card-actions">
           <a class="shop-button shop-button-primary" href="produtos.html">Ir para produtos</a>
@@ -87,8 +87,8 @@
         <section class="pdp-purchase-box">
           <span class="breadcrumb">Disponibilidade</span>
           <p class="pdp-purchase-copy">
-            Este modelo ainda não está pronto para checkout. Deixe seu contato para
-            receber aviso ou finalizar com atendimento assistido.
+            Consulte a disponibilidade deste modelo e receba atendimento
+            diretamente pelo WhatsApp.
           </p>
           <div class="pdp-actions">
             <a
@@ -205,7 +205,7 @@
 
         <article class="pdp-card reveal is-visible">
           <div class="pdp-info">
-            <span class="pdp-meta">${product.categoryLabel} collection</span>
+            <span class="pdp-meta">Coleção ${product.categoryLabel}</span>
             <h1>${product.name}</h1>
             <p class="pdp-price">${product.price}</p>
             <p class="pdp-description">${product.description}</p>
@@ -278,7 +278,7 @@
                     alt="${relatedProduct.name}"
                     loading="lazy"
                   />
-                  <span class="catalog-card-meta">${relatedProduct.categoryLabel} collection</span>
+                  <span class="catalog-card-meta">Coleção ${relatedProduct.categoryLabel}</span>
                   <h3>${relatedProduct.name}</h3>
                   <p>${relatedProduct.shortDescription}</p>
                   <strong class="catalog-card-price">${relatedProduct.price}</strong>

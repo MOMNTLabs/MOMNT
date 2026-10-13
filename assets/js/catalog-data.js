@@ -5,18 +5,18 @@ window.MOMNT_PRODUCTS = [
     category: "modern",
     categoryLabel: "Modern",
     price: "R$ 150,00",
-    badge: "Best seller",
+    badge: "Destaque",
     badgeTone: "green",
     shortDescription:
-      "Frente translúcida com assinatura forte e leitura premium.",
+      "Frente translúcida com linhas marcantes e visual contemporâneo.",
     description:
-      "Wave 2.0 abre o catálogo da MOMNT com um shape protagonista, pensado para quem quer impacto visual sem perder versátilidade no uso.",
+      "Wave 2.0 combina um shape protagonista com linhas versáteis para quem busca presença no visual sem abrir mão do uso diário.",
     materials: "Acetato leve com lente UV400",
     availability: "Pronta entrega",
     dimensions: "Lente 53mm | Ponte 20mm | Haste 145mm",
     highlights: [
-      "Shape mais comercial da coleção Modern",
-      "Leitura urbana com acabamento limpo",
+      "Shape marcante da coleção Modern",
+      "Visual urbano com acabamento limpo",
       "Compra assistida e entrega local rápida",
     ],
     images: [
@@ -32,52 +32,26 @@ window.MOMNT_PRODUCTS = [
     category: "modern",
     categoryLabel: "Modern",
     price: "R$ 150,00",
-    badge: "Novo drop",
+    badge: "Modern",
     badgeTone: "green",
-    shortDescription: "Volume mais limpo para dominar a vitrine com presença.",
+    shortDescription:
+      "Frente marcante e encaixe versátil para diferentes estilos.",
     description:
-      "Groove combina frente marcante e encaixe versátil para puxar a categoria Modern para um visual mais atual, direto e comercial.",
+      "Groove combina frente marcante e encaixe versátil em uma proposta atual para acompanhar diferentes estilos e ocasiões.",
     materials: "Acetato polido com lente UV400",
     availability: "Pronta entrega",
     dimensions: "Lente 51mm | Ponte 22mm | Haste 145mm",
     highlights: [
-      "Silhueta protagonista para campanha",
-      "Boa leitura em look casual e mais fashion",
-      "Peca pensada para clique rápido no catálogo",
+      "Silhueta marcante e contemporânea",
+      "Combina com produções casuais ou mais expressivas",
+      "Compra assistida diretamente com a MOMNT",
     ],
     images: [
       "assets/images/product-groove.png",
       "assets/images/lifestyle-02.jpg",
-      "assets/images/collection-placeholder-modern.svg",
-    ],
-    whatsappText: "Oi, quero saber mais detalhes do Groove da MOMNT.",
-  },
-  {
-    slug: "halo-01",
-    name: "Halo 01",
-    category: "modern",
-    categoryLabel: "Modern",
-    price: "Sob consulta",
-    badge: "Preview",
-    badgeTone: "neutral",
-    shortDescription: "Slot genérico para um futuro produto da coleção Modern.",
-    description:
-      "Halo 01 entra como placeholder de produto. A estrutura da página já está pronta para receber foto oficial, descrição final e preço assim que o modelo for definido.",
-    materials: "Definir com produto final",
-    availability: "Em preparação",
-    dimensions: "A definir",
-    highlights: [
-      "Use esta página como molde para o produto real",
-      "Imagem e especificações podem ser trocadas depois",
-      "Já conectado ao fluxo de categoria e PDP",
-    ],
-    images: [
-      "assets/images/product-placeholder-modern.svg",
-      "assets/images/collection-placeholder-modern.svg",
       "assets/images/lifestyle-04.jpg",
     ],
-    whatsappText:
-      "Oi, quero receber novidades quando o Halo 01 estiver disponível.",
+    whatsappText: "Oi, quero saber mais detalhes do Groove da MOMNT.",
   },
   {
     slug: "phase",
@@ -89,48 +63,21 @@ window.MOMNT_PRODUCTS = [
     badgeTone: "green",
     shortDescription: "Visual limpo e elegante para uso diário.",
     description:
-      "Phase atende quem procura uma proposta mais atemporal dentro da MOMNT, com leitura refinada, versátilidade e menos agressividade formal.",
+      "Phase apresenta uma proposta mais atemporal dentro da MOMNT, com linhas refinadas, versatilidade e presença equilibrada.",
     materials: "Acetato leve com lente UV400",
     availability: "Pronta entrega",
     dimensions: "Lente 50mm | Ponte 21mm | Haste 143mm",
     highlights: [
       "Categoria Classic com encaixe versátil",
-      "Presença premium sem exagero visual",
-      "Boa opção para uso recorrente",
+      "Elegância com presença equilibrada",
+      "Versátil para diferentes ocasiões",
     ],
     images: [
       "assets/images/product-phase.png",
-      "assets/images/collection-placeholder-classic.svg",
+      "assets/images/lifestyle-04.jpg",
       "assets/images/lifestyle-03.jpg",
     ],
     whatsappText: "Oi, quero saber mais detalhes do Phase da MOMNT.",
-  },
-  {
-    slug: "frame-01",
-    name: "Frame 01",
-    category: "classic",
-    categoryLabel: "Classic",
-    price: "Sob consulta",
-    badge: "Preview",
-    badgeTone: "neutral",
-    shortDescription: "Placeholder da categoria Classic para o próximo drop.",
-    description:
-      "Frame 01 funciona como espaço reservado para a próxima entrada da categoria Classic. A ideia é substituir a arte assim que o produto real estiver fotografado.",
-    materials: "Definir com produto final",
-    availability: "Em preparação",
-    dimensions: "A definir",
-    highlights: [
-      "Placeholder pronto para substituição",
-      "Mantém o catálogo completo por categoria",
-      "Ajuda a validar UX antes das fotos finais",
-    ],
-    images: [
-      "assets/images/product-placeholder-classic.svg",
-      "assets/images/collection-placeholder-classic.svg",
-      "assets/images/lifestyle-01.jpg",
-    ],
-    whatsappText:
-      "Oi, quero receber novidades quando o Frame 01 estiver disponível.",
   },
   {
     slug: "loop",
@@ -138,11 +85,11 @@ window.MOMNT_PRODUCTS = [
     category: "sport",
     categoryLabel: "Sport",
     price: "R$ 150,00",
-    badge: "16% off",
-    badgeTone: "soft",
+    badge: "Sport",
+    badgeTone: "green",
     shortDescription: "Perfil versátil para energia urbana e uso diário.",
     description:
-      "Loop traz a leitura mais leve da categoria Sport, com traço comercial e visual adaptável para quem quer movimento sem radicalizar o shape.",
+      "Loop traz uma proposta leve e dinâmica para quem busca movimento, personalidade e um shape fácil de combinar.",
     materials: "Acetato leve com lente UV400",
     availability: "Pronta entrega",
     dimensions: "Lente 54mm | Ponte 19mm | Haste 145mm",
@@ -153,38 +100,10 @@ window.MOMNT_PRODUCTS = [
     ],
     images: [
       "assets/images/product-loop.png",
-      "assets/images/collection-placeholder-sport.svg",
+      "assets/images/lifestyle-03.jpg",
       "assets/images/lifestyle-02.jpg",
     ],
     whatsappText: "Oi, quero saber mais detalhes do Loop da MOMNT.",
-  },
-  {
-    slug: "rush-03",
-    name: "Rush 03",
-    category: "sport",
-    categoryLabel: "Sport",
-    price: "Sob consulta",
-    badge: "Preview",
-    badgeTone: "neutral",
-    shortDescription:
-      "Espaço reservado para um modelo mais tecnico da linha Sport.",
-    description:
-      "Rush 03 é um placeholder genérico para a próxima entrada da linha Sport. Use a mesma estrutura para trocar foto, benefícios e CTA quando o produto final existir.",
-    materials: "Definir com produto final",
-    availability: "Em preparação",
-    dimensions: "A definir",
-    highlights: [
-      "Slot pronto para produto futuro",
-      "Visual coerente com categoria Sport",
-      "Fácil de atualizar sem mudar layout",
-    ],
-    images: [
-      "assets/images/product-placeholder-sport.svg",
-      "assets/images/collection-placeholder-sport.svg",
-      "assets/images/lifestyle-03.jpg",
-    ],
-    whatsappText:
-      "Oi, quero receber novidades quando o Rush 03 estiver disponível.",
   },
 ];
 
@@ -192,36 +111,36 @@ window.MOMNT_CATEGORY_META = {
   all: {
     label: "Todos",
     eyebrow: "Catálogo completo",
-    title: "Produtos MOMNT com categorias prontas para crescer",
+    title: "Encontre o seu próximo MOMNT",
     description:
-      "Uma vitrine estática organizada por categoria, com produtos reais e placeholders para você substituir depois.",
+      "Explore os modelos disponíveis e encontre o shape que combina com o seu estilo.",
     heroImage: "assets/images/lifestyle-04.jpg",
   },
   modern: {
     label: "Modern",
     eyebrow: "Coleção Modern",
-    title: "Shapes fortes para abrir a vitrine da MOMNT",
+    title: "Shapes marcantes para uma presença contemporânea",
     description:
-      "A linha Modern concentra os modelos mais diretos e comerciais da marca, com linguagem visual mais protagonista.",
+      "A linha Modern reúne formas expressivas e uma leitura urbana para quem gosta de um visual protagonista.",
     heroImage: "assets/images/lifestyle-02.jpg",
     highlightInNav: false,
   },
   classic: {
     label: "Classic",
     eyebrow: "Coleção Classic",
-    title: "Silhuetas mais leves para uma leitura atemporal",
+    title: "Silhuetas leves para acompanhar todos os dias",
     description:
-      "A categoria Classic organiza modelos com encaixe versátil, foco em uso diário e visual mais refinado.",
-    heroImage: "assets/images/collection-placeholder-classic.svg",
+      "A linha Classic combina versatilidade, elegância e formas equilibradas para diferentes ocasiões.",
+    heroImage: "assets/images/lifestyle-03.jpg",
     highlightInNav: false,
   },
   sport: {
     label: "Sport",
     eyebrow: "Coleção Sport",
-    title: "Energia urbana, contraste visual e espaço para novos drops",
+    title: "Energia urbana em formas dinâmicas",
     description:
-      "A linha Sport agrupa produtos com leitura mais dinâmica, incluindo placeholders preparados para futuras entradas.",
-    heroImage: "assets/images/collection-placeholder-sport.svg",
+      "A linha Sport traz uma leitura mais dinâmica para quem busca movimento e personalidade no visual.",
+    heroImage: "assets/images/lifestyle-01.jpg",
     highlightInNav: false,
   },
 };
@@ -407,7 +326,8 @@ window.MOMNT_SITE_CONTENT = {
       description: String(product.description ?? "").trim(),
       materials: String(product.materials ?? "").trim(),
       availability:
-        String(product.availability ?? "").trim() || "Em preparação",
+        String(product.availability ?? "").trim() ||
+        "Consulte disponibilidade",
       dimensions: String(product.dimensions ?? "").trim(),
       stockQuantity: parseStockQuantity(product.stockQuantity),
       highlights: normalizeStringList(product.highlights),
@@ -459,7 +379,7 @@ window.MOMNT_SITE_CONTENT = {
       product.categoryLabel = category?.label || product.categoryLabel;
       product.images = product.images.length
         ? product.images
-        : ["assets/images/product-placeholder-modern.svg"];
+        : ["assets/images/category-modern.png"];
       product.badgeTone = inferBadgeTone(product);
       product.highlights = product.highlights.length
         ? product.highlights

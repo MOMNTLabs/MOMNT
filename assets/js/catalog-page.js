@@ -164,7 +164,7 @@
               <img src="${product.images[0]}" alt="${product.name}" loading="lazy" />
             </div>
             <div class="catalog-card-copy">
-              <p class="catalog-card-meta">${product.categoryLabel} collection</p>
+              <p class="catalog-card-meta">Coleção ${product.categoryLabel}</p>
               <h2>${product.name}</h2>
               <p class="catalog-card-description">${product.shortDescription}</p>
               <p class="catalog-card-price">${product.price}</p>
